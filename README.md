@@ -1,9 +1,8 @@
 # Benchmarks
 
-This is a repository that contains items relevant for benchmarking activities
-relating to Advanced Simulation & Computing (ASC) Advanced Technology Systems
-(HPC). ASC is a Program under the Department of Energy (DOE) National Nuclear
-Security Administration (NNSA).
+This is a repository that contains items relevant for Tri-lab benchmarking activities
+relating to Advanced Simulation & Computing (ASC). ASC is a Program under the Department 
+of Energy (DOE) National Nuclear Security Administration (NNSA).
 
 ## Documentation
 [Benchmark Documentation Site](https://software.llnl.gov/benchmarks/)
