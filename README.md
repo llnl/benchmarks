@@ -1,7 +1,7 @@
 # Benchmarks
 
 This is a repository that contains items relevant for Tri-lab benchmarking activities
-relating to Advanced Simulation & Computing (ASC). ASC is a Program under the Department 
+related to Advanced Simulation & Computing (ASC). ASC is a Program under the Department 
 of Energy (DOE) National Nuclear Security Administration (NNSA).
 
 ## Documentation
