@@ -1,0 +1,75 @@
+cp: -r not specified; omitting directory '/p/lustre5/haque1/benchpark/workspaces/lammps/2025.11.04/tuolumne2152_254e/spack/opt/spack/linux-x86_64/lammps-20250722-ord6yfhx4yhdgo4ef7x7nb6nyroj36ck/src/examples/PACKAGES/pace/compute'
+cp: -r not specified; omitting directory '/p/lustre5/haque1/benchpark/workspaces/lammps/2025.11.04/tuolumne2152_254e/spack/opt/spack/linux-x86_64/lammps-20250722-ord6yfhx4yhdgo4ef7x7nb6nyroj36ck/src/examples/PACKAGES/pace/plugin'
+LAMMPS (22 Jul 2025)
+KOKKOS mode with Kokkos version 4.6.2 is enabled
+  will use up to 1 GPU(s) per node
+Lattice spacing in x,y,z = 3.597 3.597 3.597
+Created orthogonal box = (0 0 0) to (230.208 230.208 230.208)
+  2 by 4 by 4 MPI processor grid
+Created 1048576 atoms
+  using lattice units in orthogonal box = (0 0 0) to (230.208 230.208 230.208)
+  create_atoms CPU = 0.008 seconds
+ACE version: 2023.11.25
+Product evaluator is used
+Loading Cu-PBE-core-rep.ace
+Total number of basis functions
+	Cu: 16 (r=1) 726 (r>1)
+Mapping LAMMPS atom type #1(Cu) -> ACE species type #0
+Neighbor list info ...
+  update: every = 2 steps, delay = 10 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7.7
+  ghost atom cutoff = 7.7
+  binsize = 7.7, bins = 30 30 30
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair pace/kk, perpetual
+      attributes: full, newton on, kokkos_device
+      pair build: full/bin/kk/device
+      stencil: full/bin/3d
+      bin: kk/device
+Setting up Verlet run ...
+  Unit style    : metal
+  Current step  : 0
+  Time step     : 0.0005
+Per MPI rank memory allocation (min/avg/max) = 8069 | 8069 | 8069 Mbytes
+   Step          Temp          E_pair         TotEng         Press       v_delenergy     v_delpress  
+         0   300           -3874764       -3834102.3      45373.721     -1.6163103e-06  4.3655746e-11
+        10   280.4853      -3872118.5     -3834101.8      46360.814     -1.8626451e-09  0            
+        20   228.11704     -3865019.1     -3834100.3      48985.342     -6.0535967e-09  2.1827873e-11
+        30   159.67505     -3855740.6     -3834098.4      52350.82       1.3969839e-09  7.2759576e-12
+        40   97.13267      -3847262       -3834096.8      55323.403      7.4505806e-09 -3.6379788e-11
+        50   59.314669     -3842135.5     -3834096.1      56975.071      1.3969839e-09  3.6379788e-11
+        60   54.098495     -3841429.1     -3834096.6      56957.975      2.3283064e-09 -5.0931703e-11
+        70   75.960377     -3844393.5     -3834097.9      55603.518      1.8626451e-09 -2.1827873e-11
+        80   110.44167     -3849068.4     -3834099.2      53690.837      2.3283064e-09 -1.4551915e-11
+        90   142.08387     -3853358       -3834100.1      52043.686      3.7252903e-09 -7.2759576e-12
+       100   160.91421     -3855910.4     -3834100.2      51186.318     -9.3132257e-10 -2.910383e-11 
+Loop time of 7.50402 on 32 procs for 100 steps with 1048576 atoms
+
+Performance: 0.576 ns/day, 41.689 hours/ns, 13.326 timesteps/s, 13.974 Matom-step/s
+102.0% CPU use with 32 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 6.7314     | 6.9783     | 7.3276     |   4.6 | 92.99
+Neigh   | 0.001218   | 0.0025462  | 0.0043822  |   2.1 |  0.03
+Comm    | 0.1288     | 0.47698    | 0.72479    |  17.8 |  6.36
+Output  | 0.033235   | 0.033674   | 0.033941   |   0.1 |  0.45
+Modify  | 0.0030925  | 0.003679   | 0.0048945  |   0.8 |  0.05
+Other   |            | 0.00889    |            |       |  0.12
+
+Nlocal:          32768 ave       32815 max       32719 min
+Histogram: 3 3 3 3 4 4 2 4 1 5
+Nghost:          28589 ave       28638 max       28542 min
+Histogram: 5 1 4 2 4 4 3 3 3 3
+Neighs:              0 ave           0 max           0 min
+Histogram: 32 0 0 0 0 0 0 0 0 0
+FullNghs:  5.50718e+06 ave 5.51573e+06 max 5.49835e+06 min
+Histogram: 3 4 2 3 4 3 3 5 2 3
+
+Total # of neighbors = 1.762298e+08
+Ave neighs/atom = 168.06584
+Neighbor list builds = 2
+Dangerous builds = 0
+Total wall time: 0:00:09
