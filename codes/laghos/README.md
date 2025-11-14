@@ -41,7 +41,7 @@ The scripts automate the process of setting up the build environment, cloning th
 ```bash
    # Example laghos_env.sh
    export ROCM_PATH=/opt/rocm
-   export ROCM_ARCH=AMD_GFX942_APU
+   export ROCM_ARCH=gfx942
    export CXX=hipcc
    export MPICXX=mpicxx
    # Modify other environment variables as needed
