@@ -19,9 +19,9 @@ import glob
 # define GLOBAL vars
 VERSION = "2.71"
 TIMEOUT = 30
-IS_ALL = True
+IS_ALL = False
 IS_PDF = False
-IS_HTML = False
+IS_HTML = True
 DIR_BUILD = "_build"
 EXIT_CODES = {"success": 0, "no app": 1, "app run issue": 2, "directory issue": 3}
 
