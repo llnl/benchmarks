@@ -21,7 +21,7 @@ VERSION = "2.71"
 TIMEOUT = 30
 IS_ALL = False
 IS_PDF = False
-IS_HTML = True
+IS_HTML = False
 DIR_BUILD = "_build"
 EXIT_CODES = {"success": 0, "no app": 1, "app run issue": 2, "directory issue": 3}
 
