@@ -6,16 +6,19 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Benchmarks"
-copyright = ""
-author = ""
+project = "FCR Benchmarks"
+copyright = "Advanced Simulation and Computing"
+author = "Tri-labs"
+
+# The full version, including alpha/beta/rc tags
+release = "2.7"
 
 import os
 import sys
 
 from sphinx.ext.apidoc import main as sphinx_apidoc
 
-# -- Benchpark customizations ------------------------------------------------
+# -- Benchmark customizations ------------------------------------------------
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -37,8 +40,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".spack-env"]
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
-html_logo = ""
-html_theme_options = {"logo_only": True}
+# html_logo = ""
+# html_theme_options = {"logo_only": True}
 
 ## -- Run sphinx-apidoc -------------------------------------------------
 ## Remove any previous API docs
@@ -56,3 +59,9 @@ html_theme_options = {"logo_only": True}
 #        "../benchpark",
 #    ]
 #)
+
+# -- Enable Figure Numbering -------------------------------------------------
+numfig = True
+
+# -- LaTeX Engine ------------------------------------------------------------
+latex_engine = "lualatex"
