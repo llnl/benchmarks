@@ -132,7 +132,7 @@ Plot Generation and Table Inclusion
 This section contains an example table being automatically included
 and plotted from both Gnuplot [Gnuplot]_ and Matplotlib
 [Matplotlib]_. An easy workflow is to create data in a CSV [CSV]_
-format so it can be direcly manipulated to create tables and figures.
+format so it can be directly manipulated to create tables and figures.
 
 
 Creating a Table from CSV
