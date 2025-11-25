@@ -1,4 +1,7 @@
+# Typical
 _build
+foo.log
+output.log
 
 # Prerequisites
 *.d
