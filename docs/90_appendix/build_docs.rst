@@ -130,7 +130,25 @@ Plot Generation and Table Inclusion
 ===================================
 
 This section contains an example table being automatically included
-and plotted from both Gnuplot [Gnuplot]_ and Matplotlib [Matplotlib]_.
+and plotted from both Gnuplot [Gnuplot]_ and Matplotlib
+[Matplotlib]_. An easy workflow is to create data in a CSV [CSV]_
+format so it can be direcly manipulated to create tables and figures.
+
+
+Creating a Table from CSV
+-------------------------
+
+Tables can easily be generated within Sphinx from CSV via the
+``csv-table`` capability; an example Sphinx code block and the result
+it produces are provided below.
+
+.. code-block:: none
+
+   .. csv-table:: APP Scaling on HAL 9000 Utilizing All Memory Circuits
+      :file: example.csv
+      :align: center
+      :widths: 10, 10, 10
+      :header-rows: 1
 
 .. csv-table:: APP Scaling on HAL 9000 Utilizing All Memory Circuits
    :file: example.csv
@@ -138,12 +156,37 @@ and plotted from both Gnuplot [Gnuplot]_ and Matplotlib [Matplotlib]_.
    :widths: 10, 10, 10
    :header-rows: 1
 
+
+Creating a Figure with Gnuplot
+------------------------------
+
+A figure of the example data can be generated automatically with
+Gnuplot by having a file with the ".gp" extension. The script that
+performs this is ``wrk/gnuplot.sh``. The Gnuplot example script that
+generates this figure is provided immediately followed by the
+resultant figure.
+
+.. literalinclude:: example.gp
+
 .. figure:: example-gnuplot.png
    :align: center
    :scale: 50%
    :alt: APP Scaling on HAL 9000 Utilizing All Memory Circuits
 
    APP Scaling on HAL 9000 Utilizing All Memory Circuits Generated With Gnuplot
+
+
+Creating a Figure with Matplotlib
+---------------------------------
+
+A figure of the example data can be generated automatically with
+Matplotlib by having a file with the ".matplotlib.py" extension. The
+script that performs this is ``wrk/matplotlib.sh``. The Matplotlib
+example script that generates this figure is provided immediately
+followed by the resultant figure.
+
+.. literalinclude:: example.matplotlib.py
+   :language: python
 
 .. figure:: example-matplotlib.png
    :align: center
@@ -201,3 +244,4 @@ The aforementioned script that builds this is replicated below for reference.
 .. [MarkdownBuilder] J. Risser and M. Brett, 'GitHub - clayrisser/sphinx-markdown-builder: sphinx builder that outputs markdown files.', 2022. [Online]. Available: https://github.com/clayrisser/sphinx-markdown-builder. [Accessed: 8- Feb- 2022]
 .. [Gnuplot] T. Williams and C. Kelley, 'Gnuplot homepage', 2025. [Online]. Available: https://gnuplot.info. [Accessed: 24- Nov- 2025]
 .. [Matplotlib] Matplotlib Development Team, 'Matplotlib - Visualization with Python', 2025. [Online]. Available: https://matplotlib.org. [Accessed: 24- Nov- 2025]
+.. [CSV] Wikipedia, "Comma-separated values", 2025. [Online[. Available: https://en.wikipedia.org/wiki/Comma-separated_values. [Accessed: 24- Nov- 2025]
