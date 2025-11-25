@@ -4,9 +4,10 @@
 Project Documentation
 *********************
 
-This appendix chapter will discuss this project's documentation including its
-dependencies (see :ref:`DocDependencies`), building it (see :ref:`DocBuilding`),
-and contributing (see :ref:`DocContributing`) to it.
+This appendix chapter will discuss this project's documentation
+including its dependencies (see :ref:`DocDependencies`), building it
+(see :ref:`DocBuilding`), and contributing (see
+:ref:`DocContributing`) to it.
 
 
 .. _DocDependencies:
@@ -14,28 +15,29 @@ and contributing (see :ref:`DocContributing`) to it.
 Dependencies
 ============
 
-The documentation is written using the Sphinx Python Documentation Generator
-[Sphinx]_. Sphinx is built atop Python [Python]_ and uses reStructuredText
-[RST]_ as its lightweight markup language. Sphinx can output to multiple
-formats. This documentation targets HTML, PDF (via LaTeX [LaTeX]_), Unix manual
-pages, and Markdown. So, installations of Python (e.g., Miniconda [Miniconda]_)
-and LaTeX (e.g., TeX Live [TeXLive]_) are needed as Sphinx dependencies.
-Additionally, the theme being used for HTML rendering (i.e., "sphinx_rtd_theme"
-[RTDTheme]_) is developed by Read the Docs, Inc. [ReadTheDocs]_; this, too, is a
-dependency. Outputting to Markdown requires the "sphinx-markdown-builder"
-package [MarkdownBuilder]_. The steps for installation are provided below.
+The documentation is written using the Sphinx Python Documentation
+Generator [Sphinx]_. Sphinx is built atop Python [Python]_ and uses
+reStructuredText [RST]_ as its lightweight markup language. Sphinx can
+output to multiple formats. This documentation targets HTML, PDF (via
+LaTeX [LaTeX]_), Unix manual pages, and Markdown. So, installations of
+Python (e.g., Miniconda [Miniconda]_) and LaTeX (e.g., TeX Live
+[TeXLive]_) are needed as Sphinx dependencies.  Additionally, the
+theme being used for HTML rendering (i.e., "sphinx_rtd_theme"
+[RTDTheme]_) is developed by Read the Docs, Inc. [ReadTheDocs]_; this,
+too, is a dependency.
 
-1. Install a Python distribution. This project recommends Miniconda which will
-   work on Microsoft Windows, Apple macOS, and GNU/Linux distributions. Refer to
-   their site [Miniconda]_ for more information.
+1. Install a Python distribution. This project recommends Miniconda
+   which will work on Microsoft Windows, Apple macOS, and GNU/Linux
+   distributions. Refer to their site [Miniconda]_ for more
+   information.
 
 .. note::
 
    The Miniconda installer will automatically add items to your shell
-   initialization file (e.g., ``~/.bashrc`` for Bash) to load Miniconda into the
-   environment. If you do not want Miniconda in your environment all of the
-   time, then you can add a function to do this when invoked; an example for
-   Bash is below::
+   initialization file (e.g., ``~/.bashrc`` for Bash) to load
+   Miniconda into the environment. If you do not want Miniconda in
+   your environment all of the time, then you can add a function to do
+   this when invoked; an example for Bash is below::
 
        envconda()
        {
@@ -45,28 +47,17 @@ package [MarkdownBuilder]_. The steps for installation are provided below.
        }
        export -f envconda
 
-.. note::
-
-   An easy way to deal with typical proxy issues with the ``conda`` command is
-   to create your Conda RC file (e.g., ``~/.condarc`` on Apple macOS and
-   GNU/Linux distributions). The contents of this file for me, as an example, is
-   below::
-
-       ssl_verify: false
-       proxy_servers:
-         http: http://nouser:nopass@proxy.sandia.gov:80
-         https: http://nouser:nopass@proxy.sandia.gov:80
-
-2. It is recommended to create a Miniconda environment specifically for building
-   this documentation. This can be done with the command(s) below (which creates
-   an environment named ``docs`` and switches into it)::
+2. It is recommended to create a Miniconda environment specifically
+   for building this documentation. This can be done with the
+   command(s) below (which creates an environment named ``docs`` and
+   switches into it)::
 
        conda create --name docs
        conda activate docs
 
-3. Install Sphinx within your Python distribution. If you are using Miniconda,
-   then this can be performed with the following command within the
-   aforementioned ``docs`` environment::
+3. Install Sphinx within your Python distribution. If you are using
+   Miniconda, then this can be performed with the following command
+   within the aforementioned ``docs`` environment::
 
        conda install sphinx
 
@@ -74,21 +65,23 @@ package [MarkdownBuilder]_. The steps for installation are provided below.
 
        pip install --upgrade \
            --trusted-host pypi.org --trusted-host files.pythonhosted.org \
-           --proxy proxy.sandia.gov:80 sphinx-rtd-theme
+           sphinx-rtd-theme
 
 .. note::
 
-   Miniconda has a version of the "sphinx_rtd_theme" package, however it is not
-   updated at a desired frequency.
+   Miniconda has a version of the "sphinx_rtd_theme" package, however
+   it is not updated at a desired frequency.
 
-5. Install TeX Live [TeXLive]_ for your system (e.g., MacTeX [MacTeX]_ for Apple
-   macOS) with one of the appropriate URLs provided.
+5. Install TeX Live [TeXLive]_ for your system (e.g., MacTeX [MacTeX]_
+   for Apple macOS) with one of the appropriate URLs provided if PDF
+   generation is desired.
 
-6. Install the "sphinx-markdown-builder" theme with the following command::
+6. Install the "sphinx-markdown-builder" theme with the following
+   command::
 
        pip install --upgrade \
            --trusted-host pypi.org --trusted-host files.pythonhosted.org \
-           --proxy proxy.sandia.gov:80 sphinx-markdown-builder
+           sphinx-markdown-builder
 
 
 .. _DocBuilding:
@@ -96,37 +89,39 @@ package [MarkdownBuilder]_. The steps for installation are provided below.
 Building
 ========
 
-Building the documentation is mostly managed through the ``build_doc.py`` Python
-script. Its help page can be viewed with the command ``build_doc.py -h``.
-Running the command sans command line parameters will generate the HTML and PDF
-builds of the documentation. This script puts the build files and final outputs
+Building the documentation is mostly managed through the
+``build_doc.py`` Python script. Its help page can be viewed with the
+command ``build_doc.py -h``.  Running the command sans command line
+parameters will generate the HTML and PDF builds of the
+documentation. This script puts the build files and final outputs
 within the ``_build`` directory.
 
 .. note::
 
-   If the ``_build`` directory is already present and you are about to do a new
-   build, you may want to delete it beforehand. 
+   If the ``_build`` directory is already present and you are about to
+   do a new build, you may want to delete it beforehand.
 
-The command to automatically remove ``_build`` if it already exists, build the
-documentation, and to pipe the output to a log file is below.
+The command to automatically remove ``_build`` if it already exists,
+build the HTML and PDF documentation, and to pipe the output to a log
+file is below.
 
 .. code-block:: bash
 
-   rm -rf _build ; ./build_doc.py --all 2>&1 | tee output.log
+   rm -rf _build ; ./build_doc.py --html --pdf 2>&1 | tee output.log
 
-If successful, the following top-level files are made. They can be opened with
-common tools, e.g., Mozilla Firefox for the HTML and Adobe Acrobat for the PDF.
+If successful, the following top-level files are made. They can be
+opened with common tools, e.g., Mozilla Firefox for the HTML and Adobe
+Acrobat for the PDF.
 
 #. **HTML**: ``_build/html/index.html``
-#. **Markdown**: ``_build/markdown/index.md``
-#. **PDF**: ``_build/latex/tempi.pdf``
-#. **Unix manpage**: ``_build/man/tempi.1``
+#. **PDF**: ``_build/latex/fcrbenchmarks.pdf``
 
-If things are not successful, then peruse the output from the build (e.g.,
-captured within ``output.log`` from above). If you are debugging something, then
-it may be desired to only build the HTML and not the other targets (e.g., PDF)
-since the HTML builds far faster; consult the ``build_doc.py`` help page for
-information on how to achieve this.
+If things are not successful, then peruse the output from the build
+(e.g., captured within ``output.log`` from above). If you are
+debugging something, then it may be desired to only build the HTML and
+not the other targets (e.g., PDF) since the HTML builds far faster;
+consult the ``build_doc.py`` help page for information on how to
+achieve this and increasing its logging activity.
 
 
 .. _DocContributing:
