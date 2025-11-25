@@ -124,6 +124,35 @@ consult the ``build_doc.py`` help page for information on how to
 achieve this and increasing its logging activity.
 
 
+.. _PlotTableGen:
+
+Plot Generation and Table Inclusion
+===================================
+
+This section contains an example table being automatically included
+and plotted from both Gnuplot [Gnuplot]_ and Matplotlib [Matplotlib]_.
+
+.. csv-table:: APP Scaling on HAL 9000 Utilizing All Memory Circuits
+   :file: example.csv
+   :align: center
+   :widths: 10, 10, 10
+   :header-rows: 1
+
+.. figure:: example-gnuplot.png
+   :align: center
+   :scale: 50%
+   :alt: APP Scaling on HAL 9000 Utilizing All Memory Circuits
+
+   APP Scaling on HAL 9000 Utilizing All Memory Circuits Generated With Gnuplot
+
+.. figure:: example-matplotlib.png
+   :align: center
+   :scale: 50%
+   :alt: APP Scaling on HAL 9000 Utilizing All Memory Circuits
+
+   APP Scaling on HAL 9000 Utilizing All Memory Circuits Generated With Matplotlib
+
+
 .. _DocContributing:
 
 Contributing
@@ -170,3 +199,5 @@ The aforementioned script that builds this is replicated below for reference.
 .. [ReadTheDocs] Read the Docs, Inc., 'Home | Read the Docs', 2021. [Online]. Available: https://readthedocs.org. [Accessed: 12- Jan- 2021]
 .. [MacTeX] MacTeX Developers, 'MacTeX - TeX Users Group', TuG Users Group, 2020. [Online]. Available: https://www.tug.org/mactex. [Accessed: 12- Jan- 2021]
 .. [MarkdownBuilder] J. Risser and M. Brett, 'GitHub - clayrisser/sphinx-markdown-builder: sphinx builder that outputs markdown files.', 2022. [Online]. Available: https://github.com/clayrisser/sphinx-markdown-builder. [Accessed: 8- Feb- 2022]
+.. [Gnuplot] T. Williams and C. Kelley, 'Gnuplot homepage', 2025. [Online]. Available: https://gnuplot.info. [Accessed: 24- Nov- 2025]
+.. [Matplotlib] Matplotlib Development Team, 'Matplotlib - Visualization with Python', 2025. [Online]. Available: https://matplotlib.org. [Accessed: 24- Nov- 2025]
