@@ -44,7 +44,7 @@ Heavily pulled from their [site]_:
 Characteristics
 ===============
 
-The goal is to utlize the specified version of SPARTA (see
+The goal is to utilize the specified version of SPARTA (see
 :ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
 :ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
 changes are made to SPARTA) for the SSI and SSNI problems (see
@@ -702,7 +702,7 @@ the following.
    Output  | 0.19404    | 1.0017     | 7.2883     | 105.4 |  0.15
    Other   |            | 101        |            |       | 14.64
 
-A desription of the work performed for each of the sections is
+A description of the work performed for each of the sections is
 provided below.
 
 ``Move``
