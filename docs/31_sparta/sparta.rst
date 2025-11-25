@@ -2,19 +2,20 @@
 SPARTA
 ******
 
-This is the documentation for the ATS-5 Benchmark [SPARTA]_. The content herein
-was created by the following authors (in alphabetical order).
+This is the documentation for the ATS-5 Benchmark [SPARTA]_. The
+content herein was created by the following authors (in alphabetical
+order).
 
 - `Anthony M. Agelastos <mailto:amagela@sandia.gov>`_
 - `Michael A. Gallis <mailto:magalli@sandia.gov>`_
 - `Stan Moore <mailto:stamoor@sandia.gov>`_
-- `Joel O. Stevenson <mailto:josteve@sandia.gov>`_
 
-This material is based upon work supported by the Sandia National Laboratories
-(SNL), a multimission laboratory managed and operated by National Technology and
-Engineering Solutions of Sandia under the U.S. Department of Energy's National
-Nuclear Security Administration under contract DE-NA0003525. Content herein
-considered unclassified with unlimited distribution under SAND2023-01070O.
+This material is based upon work supported by the Sandia National
+Laboratories (SNL), a multimission laboratory managed and operated by
+National Technology and Engineering Solutions of Sandia under the
+U.S. Department of Energy's National Nuclear Security Administration
+under contract DE-NA0003525. Content herein considered unclassified
+with unlimited distribution under SAND2023-01070O.
 
 
 Purpose
@@ -22,20 +23,22 @@ Purpose
 
 Heavily pulled from their [site]_:
 
-   SPARTA is an acronym for **S**\ tochastic **PA**\ rallel **R**\ arefied-gas
-   **T**\ ime-accurate **A**\ nalyzer. SPARTA is a parallel Direct Simulation
-   Monte Carlo (DSMC) code for performing simulations of low-density gases in
-   2d or 3d. Particles advect through a hierarchical Cartesian grid that
-   overlays the simulation box. The grid is used to group particles by grid
-   cell for purposes of performing collisions and chemistry. Physical objects
-   with triangulated surfaces can be embedded in the grid, creating cut and
-   split grid cells. The grid is also used to efficiently find particle/surface
-   collisions. SPARTA runs on single processors or in parallel using
-   message-passing techniques and a spatial-decomposition of the simulation
-   domain. The code is designed to be easy to modify or extend with new
-   functionality. Running SPARTA and the input command syntax is very similar
-   to the LAMMPS molecular dynamics code (but SPARTA and LAMMPS use different
-   underlying algorithms).
+   SPARTA is an acronym for **S**\ tochastic **PA**\ rallel **R**\
+   arefied-gas **T**\ ime-accurate **A**\ nalyzer. SPARTA is a
+   parallel Direct Simulation Monte Carlo (DSMC) code for performing
+   simulations of low-density gases in 2d or 3d. Particles advect
+   through a hierarchical Cartesian grid that overlays the simulation
+   box. The grid is used to group particles by grid cell for purposes
+   of performing collisions and chemistry. Physical objects with
+   triangulated surfaces can be embedded in the grid, creating cut and
+   split grid cells. The grid is also used to efficiently find
+   particle/surface collisions. SPARTA runs on single processors or in
+   parallel using message-passing techniques and a
+   spatial-decomposition of the simulation domain. The code is
+   designed to be easy to modify or extend with new
+   functionality. Running SPARTA and the input command syntax is very
+   similar to the LAMMPS molecular dynamics code (but SPARTA and
+   LAMMPS use different underlying algorithms).
 
 
 Characteristics
@@ -43,9 +46,10 @@ Characteristics
 
 The goal is to utlize the specified version of SPARTA (see
 :ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
-:ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if changes are
-made to SPARTA) for the SSI and SSNI problems (see :ref:`SPARTASSNISSI`) and
-other single-node strong scaling benchmarking (see :ref:`SPARTAResults`).
+:ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
+changes are made to SPARTA) for the SSI and SSNI problems (see
+:ref:`SPARTASSNISSI`) and other single-node strong scaling
+benchmarking (see :ref:`SPARTAResults`).
 
 
 .. _SPARTAApplicationVersion:
@@ -53,8 +57,9 @@ other single-node strong scaling benchmarking (see :ref:`SPARTAResults`).
 Application Version
 -------------------
 
-The target application version corresponds to the Git SHA that the SPARTA git
-submodule at the root of this repository is set to, i.e., within ``sparta``.
+The target application version corresponds to the Git SHA that the
+SPARTA git submodule at the root of this repository is set to, i.e.,
+within ``sparta``.
 
 
 .. _SPARTAProblem:
@@ -62,31 +67,34 @@ submodule at the root of this repository is set to, i.e., within ``sparta``.
 Problem
 -------
 
-This problem models 2D hypersonic flow of nitrogen over a circle with periodic
-boundary conditions in the z dimension, which physically translates to 3D flow
-over a cylinder of infinite length. Particles are continuously emitted from the
-4 faces of the simulation box during the simulation, bounce off the circle, and
-then exit. The hierarchical cartesian grid is statically adapted to 6 levels
-around the circle. The memory array used to hold particles is reordered by grid
-cell every 100 timesteps to improve data locality and cache access patterns.
+This problem models 2D hypersonic flow of nitrogen over a circle with
+periodic boundary conditions in the z dimension, which physically
+translates to 3D flow over a cylinder of infinite length. Particles
+are continuously emitted from the 4 faces of the simulation box during
+the simulation, bounce off the circle, and then exit. The hierarchical
+cartesian grid is statically adapted to 6 levels around the
+circle. The memory array used to hold particles is reordered by grid
+cell every 100 timesteps to improve data locality and cache access
+patterns.
 
-This problem is present within the upstream SPARTA repository. The components of
-this problem are listed below (paths given are within SPARTA repository). Each
-of these files will need to be copied into a run directory for the simulation.
+This problem is present within the upstream SPARTA repository. The
+components of this problem are listed below (paths given are within
+SPARTA repository). Each of these files will need to be copied into a
+run directory for the simulation.
 
 ``examples/cylinder/in.cylinder``
-   This is the primary input file that controls the simulation. Some parameters
-   within this file may need to be changed depending upon what is being run
-   (i.e., these parameters control how long this simulation runs for and how
-   much memory it uses).
+   This is the primary input file that controls the simulation. Some
+   parameters within this file may need to be changed depending upon
+   what is being run (i.e., these parameters control how long this
+   simulation runs for and how much memory it uses).
 
 ``examples/cylinder/circle_R0.5_P10000.surf``
    This is the mesh file and will remain unchanged.
 
 ``examples/cylinder/air.*``
-   These three files (i.e., ``air.species``, ``air.tce``, and ``air.vss``)
-   contain the composition and reactions inherent with the air. These files,
-   like the mesh file, are not to be edited.
+   These three files (i.e., ``air.species``, ``air.tce``, and
+   ``air.vss``) contain the composition and reactions inherent with
+   the air. These files, like the mesh file, are not to be edited.
 
 An excerpt from this input file that has its key parameters is
 provided below.
@@ -123,16 +131,16 @@ provided below.
 These parameters are described below.
 
 ``L``
-   This corresponds to the **l**\ ength scale factor. This will scale the x and
-   y dimensions of the problem, e.g., a doubling of this parameter will result
-   in a domain that is 4x larger. This is used to weak scale a problem, e.g.,
-   setting this to 32 would be sufficient to weak scale a single-node problem
-   onto 1,024 nodes.
+   This corresponds to the **l**\ ength scale factor. This will scale
+   the x and y dimensions of the problem, e.g., a doubling of this
+   parameter will result in a domain that is 4x larger. This is used
+   to weak scale a problem, e.g., setting this to 32 would be
+   sufficient to weak scale a single-node problem onto 1,024 nodes.
 
 ``ppc``
-   This sets the **p**\ articles **p**\ er **c**\ ell variable. This variable
-   controls the size of the problem and, accordingly, the amount of memory it
-   uses.
+   This sets the **p**\ articles **p**\ er **c**\ ell variable. This
+   variable controls the size of the problem and, accordingly, the
+   amount of memory it uses.
 
 ``collide_modify``
    The official documentation for this value is `here
@@ -142,14 +150,15 @@ These parameters are described below.
 
 ``stats``
    This sets the interval at which the output required to compute the
-   :ref:`SPARTAFigureOfMerit` is generated. In general, it is good to select a
-   value that will produce approx. 20 entries between the time range of
-   interest. If it produces too much data, then it may slow down the simulaton.
-   If it produces too little, then it may adversely impact the FOM calculations.
+   :ref:`SPARTAFigureOfMerit` is generated. In general, it is good to
+   select a value that will produce approx. 20 entries between the
+   time range of interest. If it produces too much data, then it may
+   slow down the simulaton.  If it produces too little, then it may
+   adversely impact the FOM calculations.
 
 ``run``
-   This sets how many iterations it will run for, which also controls the wall
-   time required for termination.
+   This sets how many iterations it will run for, which also controls
+   the wall time required for termination.
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -174,8 +183,9 @@ enabled, the following excerpts should be found within the log file.
 Figure of Merit
 ---------------
 
-Each SPARTA simulation writes out a file named "log.sparta". At the end of this
-simulation is a block that resembles the following example.
+Each SPARTA simulation writes out a file named "log.sparta". At the
+end of this simulation is a block that resembles the following
+example.
 
 .. code-block::
    :emphasize-lines: 8-25
@@ -211,19 +221,21 @@ simulation is a block that resembles the following example.
        4346    716.89228 392914687  1445860  1069859        6
    Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
 
-The quantity of interest (QOI) is "Mega particle steps per second," which can be
-computed from the above table by multiplying the third column (no. of particles)
-by the first (no. of steps), dividing the result by the second column (elapsed
-time in seconds), and finally dividing by 1,000,000 (normalize). The number of
-steps must be large enough so the times mentioned in the second column exceed
-600 (i.e., so it runs for at least 10 minutes).
+The quantity of interest (QOI) is "Mega particle steps per second,"
+which can be computed from the above table by multiplying the third
+column (no. of particles) by the first (no. of steps), dividing the
+result by the second column (elapsed time in seconds), and finally
+dividing by 1,000,000 (normalize). The number of steps must be large
+enough so the times mentioned in the second column exceed 600 (i.e.,
+so it runs for at least 10 minutes).
 
-The Figure of Merit (**FOM**) is the harmonic mean of the QOI computed from the
-times between 300 and 600 seconds and then divided by the number of nodes, i.e.,
-"Mega particle steps per second per node." A Python script
-(:download:`sparta_fom.py <sparta_fom.py>`) is included within the repository to
-aid in computing this quantity. Pass it the ``-h`` command line argument to view
-its help page for additional information.
+The Figure of Merit (**FOM**) is the harmonic mean of the QOI computed
+from the times between 300 and 600 seconds and then divided by the
+number of nodes, i.e., "Mega particle steps per second per node." A
+Python script (:download:`sparta_fom.py <sparta_fom.py>`) is included
+within the repository to aid in computing this quantity. Pass it the
+``-h`` command line argument to view its help page for additional
+information.
 
 It is desired to capture the FOM for varying problem sizes that
 encompass utilizing 35% to 75% of available memory (when all PEs are
@@ -236,8 +248,8 @@ utilizing at least 50% of available memory.
 Correctness
 -----------
 
-The aforementioned relevant block of output within "log.sparta" is replicated
-below.
+The aforementioned relevant block of output within "log.sparta" is
+replicated below.
 
 .. code-block::
    :emphasize-lines: 8-25
@@ -273,7 +285,8 @@ below.
        4346    716.89228 392914687  1445860  1069859        6
    Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
 
-There are several columns of interest regarding correctness; these are listed below.
+There are several columns of interest regarding correctness; these are
+listed below.
 
 ``Step``
    This is the step number and is the first column.
@@ -290,9 +303,10 @@ There are several columns of interest regarding correctness; these are listed be
 ``Ncoll``
    This is the number of collisions and is the fifth column.
 
-Assessing the correctness will involve comparing these quantities across
-modified (henceforth denoted with "mod" subscript) and unmodified ("unmod"
-subscript) SPARTA subject to the methodology below.
+Assessing the correctness will involve comparing these quantities
+across modified (henceforth denoted with "mod" subscript) and
+unmodified ("unmod" subscript) SPARTA subject to the methodology
+below.
 
 The **first** step is to adjust the ``run`` input file parameter so
 that SPARTA\ :sub:`mod` has ``CPU`` output that exceeds 600 seconds
@@ -311,9 +325,10 @@ same ``run`` and ``stats`` settings.
    problem. This is why output, for this correctness step, needs to
    occur at each time step.
 
-The **second** step is to compute the absolute differences between modified and
-unmodified SPARTA for ``Np``, ``Natt``, and ``Ncoll`` for each row, *i*, whose
-``Step`` is relevant for the FOM for SPARTA\ :sub:`mod`,
+The **second** step is to compute the absolute differences between
+modified and unmodified SPARTA for ``Np``, ``Natt``, and ``Ncoll`` for
+each row, *i*, whose ``Step`` is relevant for the FOM for SPARTA\
+:sub:`mod`,
 
 .. math::
    \Delta \texttt{Np}_i &= | \texttt{Np}_{\textrm{mod},i}-\texttt{Np}_{\textrm{unmod},i} | \\
@@ -337,26 +352,27 @@ where
 .. math::
    n = \sum_{i} 1
 
-The **fourth** step is to compute the arithmetic mean of the *n* matching rows
-of the unmodified SPARTA,
+The **fourth** step is to compute the arithmetic mean of the *n*
+matching rows of the unmodified SPARTA,
 
 .. math::
    \mu _{\texttt{Np},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Np}_{\textrm{unmod},i}}{n} \\
    \mu _{\texttt{Natt},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Natt}_{\textrm{unmod},i}}{n} \\
    \mu _{\texttt{Ncoll},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Ncoll}_{\textrm{unmod},i}}{n}
 
-The **fifth** step is to normalize the differences with the baseline values to
-create the error ratios,
+The **fifth** step is to normalize the differences with the baseline
+values to create the error ratios,
 
 .. math::
    \varepsilon _{\texttt{Np}} &= \frac{\mu _{\Delta \texttt{Np}}}{\mu _{\texttt{Np},\textrm{unmod}}} \\
    \varepsilon _{\texttt{Natt}} &= \frac{\mu _{\Delta \texttt{Natt}}}{\mu _{\texttt{Natt},\textrm{unmod}}} \\
    \varepsilon _{\texttt{Ncoll}} &= \frac{\mu _{\Delta \texttt{Ncoll}}}{\mu _{\texttt{Ncoll},\textrm{unmod}}}
 
-The **sixth** and final step is to check over all of the error ratios and if any
-of them exceed 25%, then the modifications are not approved without discussing
-them with this benchmark's authors. This is the same criteria that SPARTA uses
-for its own testing. The success criteria are:
+The **sixth** and final step is to check over all of the error ratios
+and if any of them exceed 25%, then the modifications are not approved
+without discussing them with this benchmark's authors. This is the
+same criteria that SPARTA uses for its own testing. The success
+criteria are:
 
 .. math::
    \varepsilon _{\texttt{Np}} &\le 25\% \\
@@ -385,7 +401,8 @@ across the nodes.
 System Information
 ==================
 
-The platforms utilized for benchmarking activities are listed and described below.
+The platforms utilized for benchmarking activities are listed and
+described below.
 
 * Advanced Technology System 3 (ATS-3), also known as Crossroads (see
   :ref:`GlobalSystemATS3`)
@@ -396,10 +413,10 @@ The platforms utilized for benchmarking activities are listed and described belo
 Building
 ========
 
-If Git Submodules were cloned within this repository, then the source code to
-build the appropriate version of SPARTA is already present at the top level
-within the "sparta" folder. Instructions are provided on how to build SPARTA for
-the following systems:
+If Git Submodules were cloned within this repository, then the source
+code to build the appropriate version of SPARTA is already present at
+the top level within the "sparta" folder. Instructions are provided on
+how to build SPARTA for the following systems:
 
 * Generic (see :ref:`BuildGeneric`)
 * Advanced Technology System 3 (ATS-3), also known as Crossroads (see
@@ -421,10 +438,11 @@ Refer to SPARTA's [build]_ documentation for generic instructions.
 Crossroads
 ----------
 
-Instructions for building on Crossroads are provided below. These instructions
-assume this repository has been cloned and that the current working directory is
-at the top level of this repository. This is tested with Intel's 2023 developer
-tools release. The script discussed below is :download:`build-crossroads.sh
+Instructions for building on Crossroads are provided below. These
+instructions assume this repository has been cloned and that the
+current working directory is at the top level of this repository. This
+is tested with Intel's 2023 developer tools release. The script
+discussed below is :download:`build-crossroads.sh
 <build-crossroads.sh>`.
 
 .. code-block:: bash
@@ -453,7 +471,8 @@ script discussed below is :download:`build-vortex.sh
 Running
 =======
 
-Instructions are provided on how to run SPARTA for the following systems:
+Instructions are provided on how to run SPARTA for the following
+systems:
 
 * Advanced Technology System 3 (ATS-3), also known as Crossroads (see
   :ref:`RunATS3`)
@@ -466,19 +485,19 @@ Instructions are provided on how to run SPARTA for the following systems:
 Crossroads
 ----------
 
-Instructions for performing the simulations on Crossroads are provided below.
-There are two scripts that facilitate running several single-node strong-scaling
-ensembles.
+Instructions for performing the simulations on Crossroads are provided
+below.  There are two scripts that facilitate running several
+single-node strong-scaling ensembles.
 
 :download:`run-crossroads-mapcpu.sh <run-crossroads-mapcpu.sh>`
-   This script successively executes SPARTA on a single node for the same set of
-   input parameters; there are many environment variables that can be set to
-   control what it runs.
+   This script successively executes SPARTA on a single node for the
+   same set of input parameters; there are many environment variables
+   that can be set to control what it runs.
 
 :download:`sbatch-crossroads-mapcpu.sh <sbatch-crossroads-mapcpu.sh>`
-   This script runs the previous script for different numbers of MPI ranks,
-   problem size, problem duration, and other parameters to yield several strong
-   scaling trends.
+   This script runs the previous script for different numbers of MPI
+   ranks, problem size, problem duration, and other parameters to
+   yield several strong scaling trends.
 
 :download:`scale-crossroads-mapcpu.sh <scale-crossroads-mapcpu.sh>`
    This script successively executes SPARTA on a specified number of
@@ -486,7 +505,8 @@ ensembles.
    environment variables that can be set to control what it runs.
 
 :download:`sbatch-crossroads-mapcpu-scale.sh <sbatch-crossroads-mapcpu-scale.sh>`
-   This script runs the previous script for different numbers of nodes.
+   This script runs the previous script for different numbers of
+   nodes.
 
 
 .. _RunATS2:
@@ -494,9 +514,9 @@ ensembles.
 Sierra
 ------
 
-Instructions for performing the simulations on Sierra are provided below.
-There are two scripts that facilitate running several single-node strong-scaling
-ensembles.
+Instructions for performing the simulations on Sierra are provided
+below. There are two scripts that facilitate running several
+single-node strong-scaling ensembles.
 
 :download:`run-vortex.sh <run-vortex.sh>`
    This script successively executes SPARTA on a single node for the same set of
@@ -532,10 +552,10 @@ Multi-node results from SPARTA are provided on the following system(s):
 Crossroads - Single Node
 ------------------------
 
-Strong single-node scaling throughput (i.e., fixed problem size being run on
-different MPI rank counts on a single node) plots of SPARTA on Crossroads are
-provided within the following subsections. The throughput corresponds to Mega
-particle steps per second per node.
+Strong single-node scaling throughput (i.e., fixed problem size being
+run on different MPI rank counts on a single node) plots of SPARTA on
+Crossroads are provided within the following subsections. The
+throughput corresponds to Mega particle steps per second per node.
 
 15 Particles per Cell
 ^^^^^^^^^^^^^^^^^^^^^
