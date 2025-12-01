@@ -467,7 +467,7 @@ Hans De Sterck, Ulrike Meier Yang and Jeffrey Heys, "Reducing Complexity in Para
 
 Hans De Sterck, Robert D. Falgout, Josh W. Nolting and Ulrike Meier Yang, "Distance-Two Interpolation for Parallel Algebraic Multigrid", Numerical Linear Algebra with Applications 15 (2008), pp. 115-139. 
 
-Ulrike Meier Yang, "On Long Range Interpolation Operators for Aggressive Coarsening", Numer. Linear Algebra Appl.,  17 (2010), pp. 453-472. 
+Ulrike Meier Yang, "On Long Range Interpolation Operators for Aggressive Coarsening", Numerical Linear Algebra Appl.,  17 (2010), pp. 453-472. 
 
 Allison Baker, Rob Falgout, Tzanio Kolev, and Ulrike Yang, "Multigrid Smoothers for Ultraparallel Computing", SIAM J. Sci. Comput., 33 (2011), pp. 2864-2887. 
 
