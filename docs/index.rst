@@ -27,7 +27,7 @@ FCR Benchmarks Project
    10_amg/amg
    11_kripke/kripke
    12_laghos/laghos
-   13_RAJAPerf/rajaperf
+   13_rajaperf/rajaperf
    14_scaffold/scaffold
    20_branson/branson
    31_sparta/sparta

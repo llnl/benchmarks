@@ -53,7 +53,7 @@ Benchmark Overview
    - Kokkos
  * - LAMMPS ACE
    - | Molecular dynamics using
-   - | Atomic Cluster Expansion (ACE)
+     | Atomic Cluster Expansion (ACE)
    - C++
    - MPI+Kokkos
    - Kokkos
@@ -63,12 +63,12 @@ Benchmark Overview
    - C++
    - MPI+RAJA/CUDA/HIP
    - MFEM, Hypre
-* - MiniEM
+ * - MiniEM
    - Electro-Magnetics solver
    - C++
    - MPI+Kokkos
    - Kokkos
-* - MLPerf
+ * - MLPerf
    - Llama 3.1 405B training 
    - NVIDIA NeMo
    - 
