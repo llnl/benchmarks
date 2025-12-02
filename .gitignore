@@ -35,3 +35,13 @@ output.log
 *.exe
 *.out
 *.app
+
+# Temporary files
+*~
+*.swp
+*.swo
+
+lisp
+
+\#*#
+.[#]*[#]
