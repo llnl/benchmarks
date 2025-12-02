@@ -31,15 +31,25 @@ Benchmark Overview
    - RAJA
  * - Laghos
    - | LAGrangian High-Order Solver, 
-     | unstructured high-order finite element compressible gas dynamics
+     | unstructured high-order finite 
+     | element compressible gas dynamics
    - C++
    - MPI+RAJA/CUDA/HIP
    - MFEM, Hypre
+ * - RAJA Performance Suite
+   - | Collection of loop-based computational 
+     | kernels found in HPC applications
+   - C++
+   - | MPI+RAJA 
+     | /CUDA/HIP/OpenMP
+   - RAJA
  * - ScaFFold
-   - | LAGrangian High-Order Solver, 
-     | unstructured high-order finite element method
-   - Python, C++
-   - MPI/NCCL/RCCL+CUDA/HIP
+   - | Scale-Free Fractal Benchmark, 
+     | Proxy for emerging models such as 
+     | programmatic inverse-design projects
+   - Python
+   - | MPI/NCCL/RCCL 
+     | CUDA/HIP
    - PyTorch
  * - Branson
    - Implicit Monte Carlo transport
@@ -58,8 +68,8 @@ Benchmark Overview
    - MPI+Kokkos
    - Kokkos
  * - Remhos
-   - | REMap High-Order Solver, 
-     | unstructured high-order finite element advection
+   - | REMap High-Order Solver, unstructured 
+     | high-order finite element advection
    - C++
    - MPI+RAJA/CUDA/HIP
    - MFEM, Hypre
@@ -70,9 +80,9 @@ Benchmark Overview
    - Kokkos
  * - MLPerf
    - Llama 3.1 405B training 
+   - Python
+   - NCCL+CUDA
    - NVIDIA NeMo
-   - 
-   - 
 
 
 .. _GlobalRunRules:
