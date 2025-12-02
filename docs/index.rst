@@ -5,10 +5,8 @@
    10-19 :: LLNL Mini-Apps
    20-29 :: LANL Mini-Apps
    30-39 :: SNL Mini-Apps
-   40-49 :: LLNL Microbenchmarks
-   50-59 :: LANL Microbenchmarks
-   60-69 :: SNL Microbenchmarks
-   70-89 :: Random Microbenchmarks
+   40-69 :: More Mini-Apps
+   70-89 :: Microbenchmarks
    90-99 :: Appendices
 
 FCR Benchmarks Project
@@ -27,7 +25,24 @@ FCR Benchmarks Project
    :caption: Mini-Applications
 
    10_amg/amg
+   11_kripke/kripke
+   12_laghos/laghos
+   13_RAJAPerf/rajaperf
+   14_scaffold/scaffold
+   20_branson/branson
    31_sparta/sparta
+   32_lammpsACE/lammpsACE
+   40_remhos/remhos
+   50_miniemor/miniemor
+   60_mlperf/mlperf
+   
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: Microbenchmarks
+
+   70_omb/omb
+   80_ior/ior
 
 .. toctree::
    :maxdepth: 3
