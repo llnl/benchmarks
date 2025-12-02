@@ -80,9 +80,9 @@ Benchmark Overview
    - Kokkos
  * - MLPerf
    - Llama 3.1 405B training 
+   - Python
+   - NCCL+CUDA
    - NVIDIA NeMo
-   - 
-   - 
 
 
 .. _GlobalRunRules:
