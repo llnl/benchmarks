@@ -35,6 +35,11 @@ Benchmark Overview
    - C++
    - MPI+RAJA/CUDA/HIP
    - MFEM, Hypre
+ * - RAJA Performance Suite
+   - Collection of loop-based computational kernels found in HPC applications
+   - C++
+   - MPI+RAJA/CUDA/HIP/OpenMP
+   - RAJA
  * - ScaFFold
    - | LAGrangian High-Order Solver, 
      | unstructured high-order finite element method
