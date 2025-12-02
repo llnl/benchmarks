@@ -16,24 +16,63 @@ Benchmark Overview
    - **Description**
    - **Language**
    - **Parallelism** 
+   - **Libraries**
  * - AMG2023
-   - | AMG solver of sparse matrices 
-     | using Hypre 
+   - AMG solver of sparse matrices  
    - C 
    - | MPI+CUDA/HIP/SYCL
      | OpenMP on CPU
+   - Hypre
+ * - Kripke
+   - | Scalable 3D Sn deterministic 
+     | particle transport code 
+   - C++
+   - MPI+RAJA
+   - RAJA
+ * - Laghos
+   - | LAGrangian High-Order Solver, 
+     | unstructured high-order finite element compressible gas dynamics
+   - C++
+   - MPI+RAJA/CUDA/HIP
+   - MFEM, Hypre
+ * - ScaFFold
+   - | LAGrangian High-Order Solver, 
+     | unstructured high-order finite element method
+   - Python, C++
+   - MPI/NCCL/RCCL+CUDA/HIP
+   - PyTorch
  * - Branson
    - Implicit Monte Carlo transport
    - C++
-   - MPI + Cuda/HIP
- * - MiniEM
-   - Electro-Magnetics solver
-   - C++
-   - MPI+Kokkos
+   - MPI+CUDA/HIP
+   - N/A
  * - Sparta
    - Direct Simulation Monte Carlo
    - C++
    - MPI+Kokkos
+   - Kokkos
+ * - LAMMPS ACE
+   - | Molecular dynamics using
+   - | Atomic Cluster Expansion (ACE)
+   - C++
+   - MPI+Kokkos
+   - Kokkos
+ * - Remhos
+   - | REMap High-Order Solver, 
+     | unstructured high-order finite element advection
+   - C++
+   - MPI+RAJA/CUDA/HIP
+   - MFEM, Hypre
+* - MiniEM
+   - Electro-Magnetics solver
+   - C++
+   - MPI+Kokkos
+   - Kokkos
+* - MLPerf
+   - Llama 3.1 405B training 
+   - NVIDIA NeMo
+   - 
+   - 
 
 
 .. _GlobalRunRules:
