@@ -43,7 +43,8 @@ FCR Benchmarks Project
 
    70_omb/omb
    80_ior/ior
-   81_mdtest/mdtest   
+   81_mdtest/mdtest
+   82_dlio/dlio
 
 .. toctree::
    :maxdepth: 3
