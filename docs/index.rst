@@ -15,12 +15,7 @@ FCR Benchmarks Project
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: ATTENTION: This page is a work in progress and nothing is considered to be final.
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Getting Started
+   :caption: ATTENTION: This page is a work in progress and nothing is considered to be final
 
    00_intro/introduction
 
