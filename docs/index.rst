@@ -56,6 +56,7 @@ FCR Benchmarks Project
    :caption: Appendices
 
    90_appendix/build_docs
+   91_reference_systems/reference_systems
 
 .. Indices and tables
    ==================
