@@ -9,13 +9,13 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-FCR Benchmarks Project
-======================
+FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
+========================================================================================================
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: ATTENTION: This page is a work in progress and nothing is considered to be final
+   :caption: Getting Started
 
    00_intro/introduction
 
