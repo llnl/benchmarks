@@ -33,7 +33,7 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    31_sparta/sparta
    32_lammpsACE/lammpsACE
    40_remhos/remhos
-   50_miniemor/miniemor
+   50_miniem/miniem
    60_mlperf/mlperf
    
 .. toctree::
