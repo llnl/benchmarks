@@ -2,6 +2,8 @@
 RAJA Performance Suite
 **********************
 
+https://github.com/LLNL/RAJAPerf
+
 
 Purpose
 =======
