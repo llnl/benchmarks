@@ -42,8 +42,10 @@ Memory Usage
 ============
 
 
-Strong Scaling on El Capitan
-============================
+Strong Scaling
+==============
+
+Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
 
 
 Weak Scaling on El Capitan
