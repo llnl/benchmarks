@@ -1,6 +1,6 @@
-******
-Kripke
-******
+***
+MDTEST
+***
 
 
 Purpose
@@ -42,10 +42,8 @@ Memory Usage
 ============
 
 
-Strong Scaling
-==============
-
-Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
+Strong Scaling on El Capitan
+============================
 
 
 Weak Scaling on El Capitan
