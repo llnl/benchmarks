@@ -1,6 +1,6 @@
-********
-MiniEMor
-********
+******
+MiniEM
+******
 
 
 Purpose

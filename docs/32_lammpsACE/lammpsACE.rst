@@ -2,6 +2,8 @@
 LAMMPS ACE
 **********
 
+https://docs.lammps.org/pair_pace.html
+
 
 Purpose
 =======

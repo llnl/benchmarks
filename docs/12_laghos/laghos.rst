@@ -2,6 +2,7 @@
 Laghos
 ******
 
+https://github.com/CEED/Laghos
 
 Purpose
 =======
