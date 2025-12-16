@@ -224,8 +224,12 @@ The second figure provides memory use on 1 node of CTS-1 (Quartz) using 4 MPI ta
    Approximate memory use for Problems 1 and 2 on CTS-1
 
 
-Strong Scaling on Crossroads
+Strong Scaling on El Capitan
 ============================
+
+Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
+
+The Crossroads results below will be replaced with El Capitan results.
 
 We present strong scaling results for varying problem sizes on Crossroads with HBM below. The code was configured and compiled using hypre v2.29.0 with MPI only and optimization -O2.
 
