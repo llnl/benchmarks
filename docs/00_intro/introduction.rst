@@ -28,7 +28,7 @@ Benchmark Overview
      | particle transport code 
    - C++
    - MPI+RAJA
-   - RAJA
+   - RAJA, CHAI, Camp
  * - Laghos
    - | LAGrangian High-Order Solver, 
      | unstructured high-order finite 
@@ -96,17 +96,15 @@ Source code modification categories:
 
   * Code modifications not permitted
 
-  * Compiler options can be modified, library substitutions permitted, problem decomposition may be changed
+  * Compiler options can be modified, library substitutions permitted unless prohibited for a specific benchmark (see details on benchmark pages), problem decomposition may be changed
 
-* Ported: “alternative baseline for new architectures”
-
-  * Limited source-code modifications are permitted to port and tune for the target architecture using directives or commonly used interfaces.
+  * If provided code cannot run on the proposed architecture as-is, limited source code modifications are permitted to port and tune for the target architecture using directives or commonly used interfaces.
 
 * Optimized: "speed of light"
 
-  * Aggressive code changes that enhance performance are permitted.
+  * Aggressive code changes that enhance performance are permitted.  Optimizations that will be applicable to mission applications are of more value.
 
-  * Algorithms fundamental to the program may not be replaced.
+  * Algorithms fundamental to the program may not be replaced.  Wholesale algorithm changes or manual rewriting of loops that become strongly architecture specific are of less value.  
 
   * The modified code must still pass validation tests.
 

@@ -2,6 +2,8 @@
 Laghos
 ******
 
+Laghos source code is near-final at this point. The problems to run are yet to be finalized.
+
 Purpose
 =======
 
@@ -238,6 +240,8 @@ TODO
 
 Strong Scaling on El Capitan
 ============================
+
+Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
 
 TODO
 
