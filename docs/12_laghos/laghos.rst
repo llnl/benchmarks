@@ -68,7 +68,8 @@ Metis (required)
 
 TODO: only if not doing cartesian partitioning, need to decide on problem size configurations.
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/KarypisLab/METIS.git
                 cd METIS
                 mkdir build
@@ -83,7 +84,8 @@ It is only recommended to use Umpire for GPU-accelerated configurations.
 
 CUDA:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/LLNL/Umpire.git
                 cd Umpire
                 mkdir build
@@ -93,7 +95,8 @@ CUDA:
 
 HIP:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/LLNL/Umpire.git
                 cd Umpire
                 mkdir build
@@ -106,7 +109,8 @@ Hypre (required)
 
 CPU-only:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
@@ -114,7 +118,8 @@ CPU-only:
 
 CUDA:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
@@ -124,7 +129,8 @@ CUDA:
 
 HIP:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
@@ -137,7 +143,8 @@ MFEM (required)
 
 CPU-only:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/mfem/mfem.git
                 cd mfem
                 mkdir build
@@ -147,7 +154,8 @@ CPU-only:
 
 CUDA:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/mfem/mfem.git
                 cd mfem
                 mkdir build
@@ -159,7 +167,8 @@ CUDA:
 
 HIP:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/mfem/mfem.git
                 cd mfem
                 mkdir build
@@ -174,7 +183,8 @@ Laghos (required)
 
 CPU-only:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/CEED/Laghos.git
                 cd Laghos
                 mkdir build
@@ -184,7 +194,8 @@ CPU-only:
 
 CUDA:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/CEED/Laghos.git
                 cd Laghos
                 mkdir build
@@ -194,7 +205,8 @@ CUDA:
 
 HIP:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 git clone https://github.com/CEED/Laghos.git
                 cd Laghos
                 mkdir build
@@ -209,7 +221,8 @@ Running
 
 2D:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 # 2D Q1Q0
                 laghos -dim 2 -p 3 -ok 1 -ot 0 -pa -no-nc -ms 100 -tf 100000
                 # 2D Q2Q1
@@ -219,7 +232,8 @@ Running
 
 3D:
 
-.. code-block:: sh
+.. code-block:: console
+                
                 # 3D Q1Q0
                 laghos -dim 3 -p 1 -ok 1 -ot 0 -pa -no-nc -ms 100 -tf 100000
                 # 3D Q2Q1
