@@ -43,7 +43,7 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 For Laghos we define the following restrictions on source code modifications:
 
-* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``.
+* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
 * The listed command line options shown in :ref:`RunningLaghos` must be used without modification. A few additional command line options may be added:
   
   * ``-d gpu`` or ``-d raja-gpu`` for GPU acceleration (note: the latter requires MFEM to be built with RAJA).
@@ -56,6 +56,7 @@ Building
 ========
 
 Prerequisites:
+
 * CMake 3.24.0+
 * C compiler
 * C++17 compiler
@@ -224,24 +225,26 @@ Running
 .. code-block:: console
                 
                 # 2D Q1Q0
-                laghos -dim 2 -p 3 -ok 1 -ot 0 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 2 -p 3 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000
                 # 2D Q2Q1
-                laghos -dim 2 -p 3 -ok 2 -ot 1 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 2 -p 3 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000
                 # 2D Q3Q2
-                laghos -dim 2 -p 3 -ok 3 -ot 2 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 2 -p 3 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000
 
 3D:
 
 .. code-block:: console
                 
                 # 3D Q1Q0
-                laghos -dim 3 -p 1 -ok 1 -ot 0 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000
                 # 3D Q2Q1
-                laghos -dim 3 -p 1 -ok 2 -ot 1 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000
                 # 3D Q3Q2
-                laghos -dim 3 -p 1 -ok 3 -ot 2 -pa -no-nc -ms 100 -tf 100000
+                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000
 
 TODO: problem sizes and partitioning options
+
+.. _ValidateLaghos:
 
 Validation
 ==========
