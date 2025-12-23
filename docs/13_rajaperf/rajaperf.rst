@@ -2,12 +2,37 @@
 RAJA Performance Suite
 **********************
 
-https://github.com/LLNL/RAJAPerf
+The RAJA Performance Suite is a companion project to the
+`RAJA project <https://github.com/LLNL/RAJA>`_, which is an open-source library
+of C++ abstractions that enable single-source portable application code. The
+RAJA Performance Suite contains loop-based computational kernels representative
+of those found in production HPC applications. Each kernel appears in RAJA and
+non-RAJA variants to enable comparison of performance between them.
+
+The RAJA Performance Suite is available at https://github.com/LLNL/RAJAPerf
 
 
 Purpose
 =======
 
+The RAJA Performance Suite is designed to analyze performance of loop-based
+computational kernels found in HPC applications, specifically those implemented
+using `RAJA <https://github.com/LLNL/RAJA>`_. Each kernel in the Suite appears
+in multiple RAJA and *non-RAJA* variants using common parallel programming
+models, such as OpenMP, CUDA, HIP, and SYCL. 
+
+The kernels in the RAJA Performance Suite originate from other HPC benchmark
+suites as well as peroduction applications. Kernels are chosen and/or
+developed for performance analysis of RAJA on various types of loop structures
+(e.g., simple for-loops, perfectly and non-perfectly nested for-loops) and
+operations (e.g., reductions, atomics, scans, sorts). In particular, many
+kernels are designed to reproduce compiler optimization and other issues
+observed in real applications that use RAJA. The RAJA team works with compiler
+and hardware vendors to resolve the issues.
+
+The RAJA Performance Suite benchmark exercises a small subset of kernels in the
+Suite that are chosen because they represent important computational patterns
+in relevant applications.
 
 Characteristics
 ===============
