@@ -99,7 +99,6 @@ Source code modification categories:
   * Compiler options can be modified, library substitutions permitted unless prohibited for a specific benchmark (see details on benchmark pages), problem decomposition may be changed
 
   * If provided code cannot run on the proposed architecture as-is, limited source code modifications are permitted to port and tune for the target architecture using directives or commonly used interfaces.
-
 #. Optimized: "speed of light"
 
   * Aggressive code changes that enhance performance are permitted.  Optimizations that will be applicable to mission applications are of more value.
