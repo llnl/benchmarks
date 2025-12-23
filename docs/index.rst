@@ -42,6 +42,8 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    :caption: Microbenchmarks
 
    70_omb/omb
+   71_gpcnet/gpcnet
+   72_phloem/phloem
    80_ior/ior
    81_mdtest/mdtest
    82_dlio/dlio
