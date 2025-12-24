@@ -2,48 +2,79 @@
 RAJA Performance Suite
 **********************
 
-The RAJA Performance Suite is a companion project to the
-`RAJA project <https://github.com/LLNL/RAJA>`_, which is an open-source library
-of C++ abstractions that enable single-source portable application code. The
-RAJA Performance Suite contains loop-based computational kernels representative
-of those found in production HPC applications. Each kernel appears in RAJA and
-non-RAJA variants to enable comparison of performance between them.
-
-The RAJA Performance Suite is available at https://github.com/LLNL/RAJAPerf
-
 RAJA Performance Suite source code is near-final at this point. The problems to run are yet to be finalized.
+
+The RAJA Performance Suite contains a collection of computational kernels that
+represent important computational patterns found in HPC applications. It is a
+companion project to RAJA, which is a library of software abstractions used to
+write portable, single-source application code in C++. The Suite provides a
+means to assess and analyze RAJA performance and, in particular, to compare
+kernel implementations that use RAJA and those that do not use RAJA.
+
+Source code and documentation for RAJA and RAJA Performance Suite is 
+available at:
+
+  * `RAJA Performance Suite GitHub project <https://github.com/LLNL/RAJAPerf>`_ 
+
+  * `RAJA GitHub project <https://github.com/LLNL/RAJAPerf>`_
+
+.. important:: The RAJA Performance Suite benchmark is limited to a subset of
+               kernels in the RAJA Performance Suite, as described below.
 
 
 Purpose
 =======
 
-The RAJA Performance Suite is designed to analyze performance of loop-based
-computational kernels found in HPC applications, specifically those implemented
-using `RAJA <https://github.com/LLNL/RAJA>`_. Each kernel in the Suite appears
-in multiple RAJA and *non-RAJA* variants using common parallel programming
-models, such as OpenMP, CUDA, HIP, and SYCL. 
+The RAJA Performance Suite is used to analyze performance of loop-based
+computational kernels representative of those found in HPC applications and
+which are implemented using `RAJA <https://github.com/LLNL/RAJA>`_. Each kernel
+in the Suite appears in RAJA and *non-RAJA* variants that employ standard or
+vendor-defined parallel programming models, such as OpenMP, CUDA, HIP, and
+SYCL. RAJA and non-RAJA variants enable comparison of performance and
+compiler-generated code that uses RAJA and that which does not.
 
-The kernels in the RAJA Performance Suite originate from other HPC benchmark
-suites as well as peroduction applications. Kernels are chosen and/or
-developed for performance analysis of RAJA on various types of loop structures
-(e.g., simple for-loops, perfectly and non-perfectly nested for-loops) and
-operations (e.g., reductions, atomics, scans, sorts). In particular, many
-kernels are designed to reproduce compiler optimization and other issues
-observed in real applications that use RAJA. The RAJA team works with compiler
-and hardware vendors to resolve the issues.
+The kernels in the RAJA Performance Suite originate from open-source HPC
+benchmark suites and restricted-access production applications. Kernels
+represent various types of loop structures, such as simple for-loops,
+perfectly and non-perfectly nested for-loops, and important parallel operations
+including reductions, atomics, scans, and sorts. Often, kernels in the Suite
+are developed to serve as reproducers of performance and compiler optimization
+issues observed in production applications that use RAJA.
 
-The RAJA Performance Suite benchmark exercises a small subset of kernels in the
-Suite that are chosen because they represent important computational patterns
-in relevant applications.
+When used, RAJA is the *X* in *MPI + X* parallel application paradigm, where
+MPI is used for distributed memory, multi-node parallelism and X (RAJA in this
+case) supports fine-grained parallelism within an MPI rank. The RAJA Performance
+Suite supports MPI so that performance of a kernel in the Suite aligns with how
+the kernel would perform in a real application. For example, observed memory
+bandwidth may be different when running on a many core system using OpenMP
+multithreading to exercise all cores than when each core is mapped to an MPI
+rank. Similarly, on a system where a GPU can be partitioned into multiple 
+compute devices, performance can be different when running only a single
+partition than when exercising the entire GPU with each partition assigned to
+a different MPI rank. 
+
 
 Characteristics
 ===============
 
+The RAJA Performance Suite repository contains all of its software dependencies
+as submodules whose versions are pinned to the Suite version. Thus,
+recursively cloning the Suite repo and its submodules is all that is needed to
+configure, build, and run the Suite.
+
+The Suite is designed so that its key parameters and options are defined via
+command-line options. The intent is that one would write scripts to execute
+a series of Suite runs to generate data for a performance experiment.
+
 Problems
 --------
 
+List and describe subset of kernels in the benchmark....
+
 Figure of Merit
 ---------------
+
+
 
 
 Source code modifications
