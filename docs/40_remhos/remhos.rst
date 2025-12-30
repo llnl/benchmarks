@@ -55,9 +55,9 @@ Source code modifications
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 For Remhos, we define the following restrictions on source code modifications:
 
-* Remhos uses MFEM and Hypre as libraries, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre .  While source code changes to MFEM and Hypre can be proposed, MFEM and Hypre in Remhos may not be replaced with any other libraries.
+* Remhos uses MFEM and Hypre as libraries, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre . While source code changes to MFEM and Hypre can be proposed, MFEM and Hypre in Remhos may not be replaced with any other libraries.
 
-* Solver parameters should remain unchanged (smoothers, coarsening, etc.).  Remhos uses the default MFEM and Hypre parameters appropriate for each platform.
+* Solver parameters should remain unchanged (smoothers, coarsening, etc.). Remhos uses the default MFEM and Hypre parameters appropriate for each platform.
 
 
 Building
@@ -65,19 +65,22 @@ Building
 
 Remhos has the following external dependencies:
 
-- **hypre**, used for parallel linear algebra, we recommend version 2.10.0b<br>
-  https://computation.llnl.gov/casc/hypre/software.html
+- **hypre**, used for parallel linear algebra, we recommend version 2.24.0
 
-- **MFEM**, used for (high-order) finite element discretization, its GitHub master branch <br>
+  https://github.com/hypre-space/hypre
+
+- **MFEM**, used for (high-order) finite element discretization, its GitHub master branch
+
   https://github.com/mfem/mfem
 
 To build the miniapp, first download **hypre** from the links above
 and put everything on the same level as the `Remhos` directory::
 
+    ~> mkdir remhos
     ~> ls
-    Remhos/  hypre.tar.gz
+    remhos/  hypre.tar.gz
  
-Build **hypre**::
+Build **hypre** (note that the folder must be named ``hypre``)::
 
     ~> tar -zxvf hypre.tar.gz
     ~> cd hypre/src/
@@ -92,20 +95,23 @@ Clone and build the parallel version of MFEM::
 
     ~> git clone https://github.com/mfem/mfem.git ./mfem
     ~> cd mfem/
-    ~/mfem> make parallel -j
+    ~/mfem> make parallel -j MFEM_USE_METIS=NO
     ~/mfem> cd ..
 
 The above uses the `master` branch of MFEM. See the [MFEM building page](http://mfem.org/building/) for additional details.
 
 Build Remhos::
 
-    ~> cd Remhos/
-    ~/Remhos> make
+    ~> git clone https://github.com/CEED/Remhos.git ./remhos
+    ~> cd remhos/
+    ~/remhos> make
 
 See ``make help`` for additional options.
 
 Running
 =======
+
+The main performance-related options are the device ``(-d)``, number of tasks ``(-n)``, the elements per task ``(-epm)``, and the finite element order ``(-o)``. Appropriate mesh and partitioning are generated automatically. The product of ``(-n)`` and ``(-epm)`` determines the mesh size. The order ``(-o)`` can also be increased, resulting in more work per mesh element. For example, for weak scaling, vary ``(-n)`` and fix ``(-epm)``; for strong scaling, make sure the product of ``(-n)*(-epm)`` is constant.
 
 
 Validation
