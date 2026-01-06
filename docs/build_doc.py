@@ -307,7 +307,7 @@ class BuildDoc(object):
         self.logger.info("Building PDF...")
 
         run_app(self.logger, ["sphinx-build", "-b", "latex", ".", "_build"])
-        run_app(self.logger, ["make", "latexpdf"])
+        run_app(self.logger, ["make", "latexpdf", "WORKSPACE_PATH=/tmp/workspace"])
 
     def _build_html(self):
         """This builds the documentation with exporting to HTML."""
@@ -317,7 +317,7 @@ class BuildDoc(object):
         self.logger.info("Building HTML...")
 
         run_app(self.logger, ["sphinx-build", "-b", "html", ".", "_build"])
-        run_app(self.logger, ["make", "html"])
+        run_app(self.logger, ["make", "html", "WORKSPACE_PATH=/tmp/workspace"])
 
     def build_doc(self):
         """This builds the documentation."""
