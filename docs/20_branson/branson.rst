@@ -223,9 +223,9 @@ the same temperature in a standard marshak wave problem after 100 cycles. For th
 
 
 This output is expected as long as the spatial, boundary and region blocks are kept the same in the
-input file. The IMC method that Branson uses is stocahstic so changing the random number seed or the
+input file. The IMC method that Branson uses is stochastic so changing the random number seed or the
 number of particles will produce a slightly different answer, but the difference should not be more
-than 3% if one million or more particles aarre used. This test is sensitive to precision changes in
+than 3% if one million or more particles are used. This test is sensitive to precision changes in
 Branson as propagating the energy correctly involves many small summations as particle's slowly
 lose their energy into the material.
 
