@@ -117,11 +117,19 @@ The main performance-related options are the device ``(-d)``, number of tasks ``
 Validation
 ==========
 
+Code correctness is validated by running the two tests above and comparing the final solution mass. The following quantities must agree between the CPU and GPU runs:
+
+.. code-block:: console
+                
+                lrun -n 8 remhos -dim 2 -epm 1024 -o 3 -p 14 -dt -1.0 -tf 0.5 -ho 3 -lo 5 -fct 2 -vs 1 -ms 5 -no-vis -pa
+                Final mass u:  0.0930949258
+                lrun -n 8 remhos -dim 3 -epm 512 -o 2 -p 10 -dt -1.0 -tf 0.5 -ho 3 -lo 5 -fct 2 -vs 1 -ms 5 -no-vis -pa
+                Final mass u:  0.1160152403
 
 Example Scalability Results
 ===========================
 
-Not available.
+TODO.
 
 Memory Usage
 ============
@@ -138,11 +146,39 @@ Strong Scaling on El Capitan
 
 Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
 
+TODO.
 
 Weak Scaling on El Capitan
 ==========================
 
-Not available.
+TODO.
 
 References
 ==========
+
+Remhos combines discretization methods described in the following articles:
+
+R. Anderson, V. Dobrev, Tz. Kolev and R. Rieben,
+Monotonicity in high-order curvilinear finite element arbitrary Lagrangian-Eulerian remap
+(https://doi.org/10.1002/fld.3965),
+International Journal for Numerical Methods in Fluids 77(5), 2015, pp. 249-273.
+
+R. Anderson, V. Dobrev, Tz. Kolev, D. Kuzmin, M. Quezada de Luna, R. Rieben and V. Tomov,
+High-order local maximum principle preserving (MPP) discontinuous Galerkin finite element method for the transport equation
+(https://doi.org/10.1016/j.jcp.2016.12.031),
+Journal of Computational Physics 334, 2017, pp. 102-124.
+
+R. Anderson, V. Dobrev, Tz. Kolev, R. Rieben and V. Tomov,
+High-order multi-material ALE hydrodynamics
+(https://doi.org/10.1137/17M1116453),
+SIAM Journal on Scientific Computing 40(1), 2018, pp. B32-B58.
+
+H. Hajduk, D. Kuzmin, Tz. Kolev and R. Abgrall,
+Matrix-free subcell residual distribution for Bernstein finite element discretizations of linear advection equations
+(https://doi.org/10.1016/j.cma.2019.112658),
+Computer Methods in Applied Mechanics and Engineering 359, 2020.
+
+H. Hajduk, D. Kuzmin, Tz. Kolev, V. Tomov, I. Tomas and J. Shadid,
+Matrix-free subcell residual distribution for Bernstein finite elements: Monolithic limiting
+(https://doi.org/10.1016/j.compfluid.2020.104451),
+Computers and Fluids 200, 2020.
