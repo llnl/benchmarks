@@ -17,7 +17,7 @@ Characteristics
 Problems
 --------
 
-The test problems to be run are the triple point problem (problem 3) in 2D and 3D.
+The test problems to be run are the Sedov shock (problem 1) in 3D.
 These are to be run with a conforming mesh.
 
 The problem sizes and partitioning scheme for both problems can be set by the user from the command line.
@@ -49,6 +49,7 @@ For Laghos we define the following restrictions on source code modifications:
   * ``-d gpu`` or ``-d raja-gpu`` for GPU acceleration (note: the latter requires MFEM to be built with RAJA).
   * ``-dev`` for specifying which GPU to run on for a multi-GPU system
   * ``-gam`` for GPU-aware MPI
+  * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
     
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
 
@@ -219,19 +220,6 @@ HIP:
 
 Running
 =======
-
-2D:
-
-.. code-block:: console
-                
-                # 2D Q1Q0
-                laghos -dim 2 -p 3 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000
-                # 2D Q2Q1
-                laghos -dim 2 -p 3 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000
-                # 2D Q3Q2
-                laghos -dim 2 -p 3 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000
-
-3D:
 
 .. code-block:: console
                 
