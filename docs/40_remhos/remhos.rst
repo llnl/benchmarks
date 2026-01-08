@@ -121,10 +121,17 @@ Validation
 Example Scalability Results
 ===========================
 
+Not available.
 
 Memory Usage
 ============
 
+For each task, the memory usage is determined by the number of elements per task ``(-n)`` and the finite-element order ``(-o)``.
+The dominant contributors are the mesh data structures and the finite-element operator storage.
+
+Let ``d`` denote the spatial dimension and ``r`` the number of uniform refinements in one dimension (``r ≈ (n)^(1/d)``).
+The number of elements per task then scales as ``O(r^d)``. The storage required per element (mesh plus operators) depends on the polynomial order ``o``.
+Because Remhos employs partial assembly, the per-element operator storage is optimal, scaling as ``O(o^d)``. Consequently, the total memory consumption per task scales as ``O(r^d o^d) = O((r o)^d)``.
 
 Strong Scaling on El Capitan
 ============================
@@ -135,6 +142,7 @@ Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
 Weak Scaling on El Capitan
 ==========================
 
+Not available.
 
 References
 ==========
