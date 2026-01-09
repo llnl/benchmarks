@@ -7,9 +7,9 @@ RAJA Performance Suite source code is near-final at this point. The problems to 
 The RAJA Performance Suite contains a variety of numerical kernels that
 represent important computational patterns found in HPC applications. It is a
 companion project to RAJA, which is a library of software abstractions used by
-developers of C++ applications to write portable, single-source code. The Suite
-enables RAJA performance analysis experiments and performance comparisons
-between kernel implementations that use RAJA and those that do not.
+developers of C++ applications to write portable, single-source code. The RAJA
+Performance Suite enables performance experiments and comparisons for kernel
+variants that use RAJA and those that do not.
 
 Source code and documentation for RAJA and the RAJA Performance Suite is 
 available at:
@@ -28,32 +28,32 @@ Purpose
 The main purpose of the RAJA Performance Suite is to analyze performance of
 loop-based computational kernels representative of those found in HPC
 applications and which are implemented using `RAJA <https://github.com/LLNL/RAJA>`_. 
-Each kernel in the Suite appears in RAJA and non-RAJA variants that exercise
-common parallel programming models, such as OpenMP, CUDA, HIP, and SYCL.
-RAJA and non-RAJA variants enable performance comparisons between
-implementations that use RAJA and those that do not. Such comparisons are
-helpful to improve RAJA implementation and to identify potential impacts
-C++ abstractions have on compilers' ability to optimize.
+The kernels in the Suite originate from different sources ranging from
+open-source HPC benchmarks to restricted-access production applications.
+Kernels exercise various loop structures as well as parallel operations such
+as reductions, atomics, scans, and sorts.
 
-The kernels in the RAJA Performance Suite originate from different sources
-ranging from open-source HPC benchmark suites to restricted-access production
-applications. Kernels exercise various loop structures as well as parallel
-operations such as reductions, atomics, scans, and sorts. Often, kernels in
-the Suite are developed to work with vendors to resolve performance issues
+Each kernel in the Suite appears in RAJA and non-RAJA variants that exercise
+common programming models, such as OpenMP, CUDA, HIP, and SYCL. Performance
+comparisons between RAJA and non-RAJA variants are helpful to improve RAJA
+implementation and to identify impacts C++ abstractions have on compilers'
+ability to optimize. Often, kernels in the Suite serve as collaboration tools
+enabling the RAJA team to work with vendors to resolve performance issues
 observed in production applications that use RAJA.
 
 RAJA is a potential *X* in the commonly used *MPI + X* parallel application
 paradigm, where MPI is used for coarse-grained, distributed memory parallelism
-and X (RAJA in this case) enables fine-grained parallelism in each MPI rank.
-The RAJA Performance Suite supports MPI so that execution of kernels in the
-Suite aligns with the way numerical kernels are exercised in an MPI + X HPC
-applications. For example, one may want to compare performance of a kernel
-running on a many core system using OpenMP multithreading to exercise all
-cores and the case where each core is mapped to an MPI rank and code within
-each rank is executed sequentially. Similarly, on a system where a GPU can be
-partitioned into multiple compute devices, one may want to compare performance
-of different GPU partitionings where each partition is assigned to a different
-MPI rank. 
+and X (e.g., RAJA) supports fine-grained parallelism within an MPI rank.
+The RAJA Performance Suite can be configured with MPI so that execution of
+kernels in the Suite is representative of the ways in which numerical kernels
+are exercised in an MPI + X HPC applications. When the RAJA Performance Suite
+is run using multiple MPI ranks, the same kernel code is executed on each rank.
+Synchronization and communication across ranks involves only sending execution
+timing information to rank zero.
+
+.. important:: For RAJA Performance Suite benchmark execution, MPI must be used
+               to ensure that all resources on a compute node are being 
+               exercised and avoid misrepresenting node performance.
 
 
 Characteristics
