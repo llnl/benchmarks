@@ -163,11 +163,15 @@ Memory Usage
 Strong Scaling on El Capitan
 ============================
 
-Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
+The RAJA Performance Suite is primarily a single-node and compiler assessment
+tool. Thus, strong scaling is not part of the benchmark.
 
 
 Weak Scaling on El Capitan
 ==========================
+
+The RAJA Performance Suite is primarily a single-node and compiler assessment
+tool. Thus, weak scaling is not part of the benchmark.
 
 
 References
