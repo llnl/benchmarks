@@ -2,7 +2,7 @@
 RAJA Performance Suite
 **********************
 
-RAJA Performance Suite source code is near-final at this point. The problems to run are yet to be finalized.
+RAJA Performance Suite source code is near-final at this point. The problems to run are not yet finalized.
 
 The RAJA Performance Suite contains a variety of numerical kernels that
 represent important computational patterns found in HPC applications. It is a
@@ -82,29 +82,39 @@ listed below.
           reference is a C-style sequential implementation of the kernel in
           a comment section near the top of the header file.
 
- * *Apps* group (directory src/apps)
+ * *Apps* group (directory src/apps) -- Tier 1
 
-   #. **CONVECTION3DPA** action of a 3D finite element convection operator via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
    #. **DIFFUSION3DPA** action of a 3D finite element diffusion operator via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
    #. **ENERGY** internal energy calculation from an explicit hydrodynamics algorithm; *(multiple single-loop operations in sequence, conditional logic for correctness checks and cutoffs, RAJA::forall API)*
    #. **FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport *(nested loops, RAJA::launch API)*
    #. **INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
    #. **INTSC_HEXRECT** intersection between a 24-sided hexahedron and a rectangular solid, including volume and moment calculations *(single loop, RAJA::forall API)*
-   #. **LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
-   #. **MASS3DEA** assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MASSVEC3DPA** action of a 3D finite element mass matrix via partial assembly on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
    #. **NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a constribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
-   #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, RAJA::forall API)*
+   #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
 
- * *Basic* group (directory src/basic)
+ * *Apps* group (directory src/apps) -- Tier 2
 
-   #. **MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)* 
+   #. **CONVECTION3DPA** action of a 3D finite element convection operator via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **MASS3DPA** action of a 3D finite element mass matrix via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASSVEC3DPA_ATOMIC** action of a 3D finite element mass matrix via partial assembly on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
+
+
+ * *Basic* group (directory src/basic) -- Tier 1
+
+   #. **MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
    #. **REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
 
- * *Comm* group (directory src/comm)
+ * *Basic* group (directory src/basic) -- Tier 2
+
+   #. **INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
+
+ * *Comm* group (directory src/comm) -- Tier 2
 
    #. **HALO_EXCHANGE_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
 
