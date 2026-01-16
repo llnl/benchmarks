@@ -89,14 +89,14 @@ Priority 1 kernels
 
  * *Apps* group (directory src/apps)
 
-   #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
    #. **ENERGY** internal energy calculation from an explicit hydrodynamics algorithm; *(multiple single-loop operations in sequence, conditional logic for correctness checks and cutoffs, RAJA::forall API)*
    #. **FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport *(nested loops, RAJA::launch API)*
    #. **INTSC_HEXRECT** intersection between a 24-sided hexahedron and a rectangular solid, including volume and moment calculations *(single loop, RAJA::forall API)*
    #. **MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
    #. **NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a constribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
    #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
@@ -107,11 +107,11 @@ Priority 2 kernels
 
  * *Apps* group (directory src/apps)
 
-   #. **CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
    #. **INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
    #. **LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
-   #. **MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
 
  * *Basic* group (directory src/basic)
 
