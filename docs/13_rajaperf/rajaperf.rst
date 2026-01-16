@@ -268,7 +268,7 @@ output, such as an output data array computed by the kernel. The checksum
 depends on the problem size run for the kernel; thus, each checksum is 
 computed at run time. Validation criteria is defined in terms of the checksum
 difference between each kernel variant and problem size run and a corresponding
-reference variant. Typically, the ``Base_Seq`` variant is used to define the
+reference variant. The ``Base_Seq`` variant is used to define the
 reference checksum and so that variant should be run for each kernel as part of
 a performance study. Each kernel is annotated in the source code as to whether
 the checksum for each variant is expected to match the reference checksum
@@ -279,6 +279,8 @@ Whether the checksum for each kernel is considered to be within its expected
 tolerance is reported as checksum ``PASSED`` or ``FAILED`` in the output files.
 
 **Show an example of this for the EL Capitan baseline runs!!**
+
+**Reminder: add more accurate Base_Seq summation tunings (left fold is inaccurate for large problem sizes).**
 
 .. _rajaperf_results-label:
 
