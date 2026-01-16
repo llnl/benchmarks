@@ -62,7 +62,7 @@ to rank zero for reporting purposes.
                to run to ensure that all resources on a compute node are being 
                exercised and avoid misrepresentation of kernel and node
                performance. This is described in the instructions provided in
-               :ref:`raja-perf_run-label`.
+               :ref:`rajaperf_run-label`.
 
 
 Characteristics
@@ -82,7 +82,7 @@ performance experiment.
 
 In particular, variants, problem sizes, etc. for the kernels can be set by a
 user from the command line. Specific instructions for running the RAJA
-Performance Suite benchmark are described in :ref:`raja-perf_run-label`.
+Performance Suite benchmark are described in :ref:`rajaperf_run-label`.
 
 
 .. _rajaperf_problems-label:
@@ -145,10 +145,9 @@ Figure of Merit
 ---------------
 
 There are two figures of merit (FOM) for each benchmark kernel: execution time
-and memory bandwidth.....
+and memory bandwidth..... **fill this in***
 
-Describe how to determine problem size and how key output quantities are 
-computed.....
+**Describe how to set problem size based on architecture and how key output quantities are computed.....***
 
 
 
@@ -166,7 +165,7 @@ code modifications:
   Suite or replaced with any other library. The *Base kernel variants* in the
   Suite are provided to show how each kernel could be implemented directly
   in the corresponding programming model back-end without the RAJA abstraction
-  layer. Apart from some special cases, the RAJA and Base variants of each
+  layer. Apart from some special cases, the RAJA and Base variants for each
   kernel should perform the same computation.
 
 
