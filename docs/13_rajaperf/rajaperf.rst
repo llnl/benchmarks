@@ -136,7 +136,7 @@ Priority 2 kernels
 
  * *Comm* group (directory src/comm)
 
-   #. **HALO_EXCHANGE_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
+   #. **HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
 
 
 .. _rajaperf_fom-label:
