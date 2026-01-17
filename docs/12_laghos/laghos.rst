@@ -248,6 +248,14 @@ Code correctness is validated by using the following tests and comparing the out
                 Energy  diff: 8.82e-06
                 Density L2 error: 1.03e-01
 
+The **Density L2 error** for other resolutions is shown in the following plot.
+                
+.. figure:: plots/rho_err_3d.png
+   :alt: **Density L2 error** for an ``NxNxN`` zone domain
+   :align: center
+
+   **Density L2 error** for an ``NxNxN`` zone domain
+
 Example Scalability Results
 ===========================
 
