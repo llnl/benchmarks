@@ -52,6 +52,8 @@ For Laghos we define the following restrictions on source code modifications:
   * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
     
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
+* `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get accurate an accurate FOM.
+* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
 
 Building
 ========
