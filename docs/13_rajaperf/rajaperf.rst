@@ -21,7 +21,7 @@ available at:
   * `RAJA GitHub project <https://github.com/LLNL/RAJAPerf>`_
 
 .. important:: The RAJA Performance Suite benchmark is limited to a subset of
-               kernels in the RAJA Performance Suite as described in
+               kernels in the RAJA Performance Suite described in
                :ref:`rajaperf_problems-label`.
 
 
@@ -39,30 +39,10 @@ as reductions, atomics, scans, and sorts.
 Each kernel in the Suite appears in RAJA and non-RAJA variants that exercise
 common programming models, such as OpenMP, CUDA, HIP, and SYCL. Performance
 comparisons between RAJA and non-RAJA variants are helpful to improve RAJA
-implementation and to identify impacts C++ abstractions have on compilers'
-ability to optimize. Often, kernels in the Suite serve as collaboration tools
-enabling the RAJA team to work with vendors to resolve performance issues
-observed in production applications that use RAJA.
-
-To more closely align execution of kernels in the Suite with how they would 
-run in the context of a full application, benchmark runs must be done using
-multiple MPI ranks to ensure that all resources on a compute node are being
-exercised and avoid misrepresentation of kernel and node performance. RAJA is
-a potential *X* in the often referred to *MPI + X* parallel application
-paradigm, where MPI is used for coarse-grained, distributed memory parallelism
-and X (e.g., RAJA) supports fine-grained parallelism within an MPI rank. The
-RAJA Performance Suite can be configured with MPI so that execution of kernels
-in the Suite represents how those kernels would be exercised in an MPI + X HPC
-application. When the RAJA Performance Suite is run using multiple MPI ranks,
-the same kernel code is executed on each rank. Synchronization and
-communication across ranks involves only sending execution timing information
-to rank zero for reporting purposes.
-
-.. important:: For RAJA Performance Suite benchmark execution, MPI must be used
-               to run to ensure that all resources on a compute node are being 
-               exercised and avoid misrepresentation of kernel and node
-               performance. This is described in the instructions provided in
-               :ref:`rajaperf_run-label`.
+implementation and to identify impacts that C++ abstractions have on compilers'
+abilities to optimize. Often, kernels in the Suite serve as collaboration tools
+between the RAJA team and vendors to resolve performance issues observed in
+production applications that use RAJA.
 
 
 Characteristics
@@ -78,11 +58,9 @@ library installation when MPI is to be used.
 The Suite can be run in a myriad of ways by specifying parameters and options
 as command-line arguments. The intent is that one can build the code and
 use scripts to execute multiple Suite runs to generate data for a desired
-performance experiment.
-
-In particular, variants, problem sizes, etc. for the kernels can be set by a
-user from the command line. Specific instructions for running the RAJA
-Performance Suite benchmark are described in :ref:`rajaperf_run-label`.
+performance experiment. In particular, variants, problem sizes, etc. for the
+kernels can be set by users via command line options. Instructions for running the
+RAJA Performance Suite benchmark are described in :ref:`rajaperf_run-label`.
 
 
 .. _rajaperf_problems-label:
@@ -92,12 +70,8 @@ Problems
 
 The RAJA Performance Suite benchmark is limited to a subset of kernels in the
 full Suite to focus on some of the more important computational patterns found
-in LLNL applications. The subset of kernels is described.
-
-.. note:: Each kernel contains a complete reference description located in the
-          header file for the kernel object ``<kernel-name>.hpp``. The 
-          reference is a C-style sequential implementation of the kernel in
-          a comment section near the top of the header file.
+in LLNL applications. The subset of kernels is described below, including key
+kernel features and RAJA contructs used (in parentheses). 
 
 Priority 1 kernels
 ^^^^^^^^^^^^^^^^^^^
@@ -137,6 +111,31 @@ Priority 2 kernels
  * *Comm* group (directory src/comm)
 
    #. **HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
+
+.. note:: In the RAJA Performance Suite repository, each kernel contains a
+          detailed reference description located in the header file for the kernel
+          object; i.e., a C++ header file named ``<kernel-name>.hpp``. The 
+          reference description appears as a C-style sequential implementation of
+          the kernel in a comment section near the top of the header file.
+
+To align execution of kernels in the Suite with how they would perform in the
+context of a full application, **benchmark runs must be done using multiple MPI
+ranks** to ensure that all resources on a compute node are being exercised so that
+kernel and node performance is not misrepresented. RAJA is an *X* in the often
+referred to *MPI + X* parallel application paradigm, where MPI is used for
+coarse-grained, distributed memory parallelism and X (e.g., RAJA) supports
+fine-grained parallelism within an MPI rank. The RAJA Performance Suite can be
+configured with MPI so that execution of kernels in the Suite follows the *MPI + X*
+application paradigm. When the RAJA Performance Suite is run using multiple MPI
+ranks, the same kernel code executes on each MPI rank. Synchronization and
+communication across ranks involves sending execution only timing information
+from each rank to rank zero for reporting purposes.
+
+.. important:: For RAJA Performance Suite benchmark execution, MPI must be used
+               to run to ensure that all resources on a compute node are being 
+               exercised and avoid misrepresentation of kernel and node
+               performance. This is described in the instructions provided in
+               :ref:`rajaperf_run-label`.
 
 
 .. _rajaperf_fom-label:
