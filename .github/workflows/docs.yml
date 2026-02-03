@@ -29,6 +29,7 @@ jobs:
 
     - name: Install Gnuplot
       run: |
+        sudo apt update
         sudo apt install -y gnuplot
 
     - name: Build with sphinx
