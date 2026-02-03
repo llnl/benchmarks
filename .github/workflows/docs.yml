@@ -27,10 +27,16 @@ jobs:
       run: |
         pip install -r .github/workflows/requirements/docs.txt
 
+    - name: Install Gnuplot
+      run: |
+        sudo apt update
+        sudo apt install -y gnuplot
+
     - name: Build with sphinx
       run: |
         cd docs
-        make html WORKSPACE_PATH=/tmp/workspace
+        # make html WORKSPACE_PATH=/tmp/workspace
+        ./build_doc.py --html
 
     - name: Check for Typos using Codespell
       run: |
