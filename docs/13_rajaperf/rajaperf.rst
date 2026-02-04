@@ -143,11 +143,59 @@ from each rank to rank zero for reporting purposes.
 Figure of Merit
 ---------------
 
-There are two figures of merit (FOM) for each benchmark kernel: execution time
-and memory bandwidth..... **fill this in***
+The figure of merit (FOM) for each benchmark kernel is determined by the problem
+size at which the kernel *saturates* the resources on a compute node. That is, the
+problem size at which a computational throughput curve becomes flat, with zero
+derivative, and beyond which running larger problem sizes does not yield an
+increase in compute rate. The FOM is the saturation problem size (GB), and the
+compute rate (GFLOP/s) and memory bandwidth (BG/s) at the saturation problem size.
 
-**Describe how to set problem size based on architecture and how key output quantities are computed.....***
+We determine computational throughput using a plot where compute rate (GFLOP/s
+along the vertical axis) is a function of problem size (GB along the horizontal
+axis). Ideally, such a curve is monotonically increasing and asymptotes to a flat,
+horizontal line. Then, the saturation point is the problem size at which the
+derivative of the throughput curve becomes zero.
 
+In reality, such throughput curves can be non-monotonic and/or not have a zero 
+deritive for all points beyond some problem size. Therefore, apply a simple 
+algorithm to estimate the saturation point described in :ref:`rajaperf_throughput-smooth`.
+
+
+.. _rajaperf_throughput-smooth:
+
+Smoothing a throughput curve to estimate saturation
+---------------------------------------------------
+
+To estimate the saturation point of a throughput curve as described earlier, we
+apply a simple algorithm to the actual throughput data points from a run as 
+follows.
+
+After running a kernel, we have a throughput data set consisting of a set of
+*x* and *y* values:
+
+.. math::
+   {x_{0}, x_{1}, ... , x_{N}}
+   {y_{0}, y_{1}, ... , y_{N}}
+
+where the *x* values are problem sizes (GB) and the *y* values are compute rates
+(GLOP/s).
+
+First, we smooth the curve using a *moving median method*, which is robust to
+outliers and a few extrema do not affect the result too much:
+
+   #. Choose a window size *k* and define :math:`m = (k - 1) / 2`. The value of *k*
+      is an odd integer such as 3, 5, or 7. In our analyses, we use :math:`k = 5`.
+   
+   #. Define a smooth curve using the same *x* values as above, but with :math:`y^{smooth}_{i}` values defined as::
+
+      for i in 0..N:
+        window_indices = { max(0, i - m), ..., min(N, i + m) }
+        window_values = x[ window_indices ]
+        y^{smooth}[i] = median( window_values )
+
+   #. Compute the global max of the :math:`y^{smooth}_{i}`: :math:`y_{max} = max( y^{smooth}_{i} for i = 0..N`
+
+   #. Find the approximate saturation point, we which we define as the minimum :math:`x_{i}` value where :math:`y^{smooth}_{i} >= (1 - eps) * y_{max}` for *w* consecutive *i* values. In our analyses, we use :math:`eps = 0.1` and :math:`w = 3`.
 
 
 .. _rajaperf_codemod-label:
