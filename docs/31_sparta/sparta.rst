@@ -176,6 +176,16 @@ These parameters are described below.
    This sets how many iterations it will run for, which also controls
    the wall time required for termination.
 
+Sometimes text from STDOUT and STDERR is buffered extensively and not
+accessible until a large time after it was initially generated. If
+this occurs (e.g., on El Capitan), the following line can be added
+above the ``run`` command. This command may incur a slight performance
+penalty which is why it is not turned on by default.
+
+.. code-block::
+
+   stats_modify        flush yes
+
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
 within Kokkos that helps to keep this problem as well behaved from a
