@@ -2,9 +2,16 @@
 SPARTA
 ******
 
-This is the documentation for the ATS-5 Benchmark [SPARTA]_. The
-content herein was created by the following authors (in alphabetical
-order).
+.. note::
+   The documentation herein needs to be updated for building on El
+   Capitan.
+
+.. note::
+   The documentation herein needs to be updated for current
+   performance.
+
+This is the documentation for the benchmark [SPARTA]_. The content
+herein was created by the following authors (in alphabetical order).
 
 - `Anthony M. Agelastos <mailto:amagela@sandia.gov>`_
 - `Michael A. Gallis <mailto:magalli@sandia.gov>`_
@@ -57,9 +64,18 @@ benchmarking (see :ref:`SPARTAResults`).
 Application Version
 -------------------
 
-The target application version corresponds to the Git SHA that the
-SPARTA git submodule at the root of this repository is set to, i.e.,
-within ``sparta``.
+The target application version corresponds to the following Git SHA:
+``478143bcc766083a100480a0a6e8a0c42c85e7e4``. The command to clone is
+provided below.
+
+.. code-block:: sh
+   
+   git clone git@github.com:sparta/sparta.git
+   cd sparta
+   git checkout 478143bcc766083a100480a0a6e8a0c42c85e7e4
+
+.. note::
+   The Git SHA will be updated with a tag soon.
 
 
 .. _SPARTAProblem:
@@ -433,12 +449,12 @@ Generic
 Refer to SPARTA's [build]_ documentation for generic instructions.
 
 
-.. _BuildATS3:
+.. _BuildATS4:
 
-Crossroads
+El Capitan
 ----------
 
-Instructions for building on Crossroads are provided below. These
+Instructions for building on El Capitan are provided below. These
 instructions assume this repository has been cloned and that the
 current working directory is at the top level of this repository. This
 is tested with Intel's 2023 developer tools release. The script
