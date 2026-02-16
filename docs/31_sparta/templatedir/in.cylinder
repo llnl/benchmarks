@@ -59,7 +59,9 @@ variable            yncells equal (${ymax}-${ymin})/${mfp}*${cpmfp}
 
 variable            Fnum equal  ${nden}*(${xmax}-${xmin})*(${ymax}-${ymin})/${ppc}/${xncells}/${yncells}
 
-variable            tstep equal (-${xmin}+${xmax})/${Vx}/${xncells}/10/4
+# The default time step is too small
+# variable            tstep equal (-${xmin}+${xmax})/${Vx}/${xncells}/10/4
+variable            tstep equal (-${xmin}+${xmax})/${Vx}/${xncells}/4
 
 ###################################
 # Print variable values to log file
@@ -116,7 +118,7 @@ collide_modify      vremax 100 yes vibrate no rotate smooth nearcp yes 10
 #####################################################
 # Surface generation and collision specification
 #####################################################
-read_surf	    circle_R0.5_P10000.surf group 1 invert
+read_surf	        circle_R0.5_P10000.surf group 1 invert scale ${L} ${L} 1.0
 surf_collide	    1 diffuse ${surftemp} 1.0 
 surf_modify         1 collide 1 
 
@@ -142,13 +144,13 @@ stats_style         step cpu np nattempt ncoll maxlevel
 
 stats               100
 
-# El Capitan buffers extensively
+# Some systems buffer extensively
 stats_modify        flush yes
 
-# Let's fix run to stop after 11 minutes
+# Stop after 11 minutes
 fix 1 halt 10 tlimit > 660.0 message no
 
-# Let's print out the value of L to make parsing easy
+# Print out the value of L for parsing ease
 print "The value of L is $L" 
 
 run                 10000000
