@@ -452,10 +452,6 @@ how to build SPARTA for the following systems:
 * Generic (see :ref:`BuildGeneric`)
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`BuildATS4`)
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`BuildATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`BuildATS2`)
 
 
 .. _BuildGeneric:
@@ -463,7 +459,8 @@ how to build SPARTA for the following systems:
 Generic
 -------
 
-Refer to SPARTA's [build]_ documentation for generic instructions.
+Refer to SPARTA's [sparta-build]_ documentation for generic
+instructions.
 
 
 .. _BuildATS4:
@@ -473,53 +470,19 @@ El Capitan
 
 Instructions for building on El Capitan are provided below. These
 instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. The
-script discussed below is :download:`build-elcapitan.sh
-<build-elcapitan.sh>` and is produced below for convenience and
-reference.
+current working directory is at the top level of this repository. 
 
 .. code-block:: bash
 
    cd docs/31_sparta
    ./build-elcapitan.sh
 
+The script discussed above is :download:`build-elcapitan.sh
+<build-elcapitan.sh>` and is produced below for convenience and
+reference.
+
 .. literalinclude:: build-elcapitan.sh
    :language: bash
-
-
-.. _BuildATS3:
-
-Crossroads
-----------
-
-Instructions for building on Crossroads are provided below. These
-instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. This
-is tested with Intel's 2023 developer tools release. The script
-discussed below is :download:`build-crossroads.sh
-<build-crossroads.sh>`.
-
-.. code-block:: bash
-
-   cd doc/sphinx/08_sparta
-   ./build-crossroads.sh
-
-
-.. _BuildATS2:
-
-Sierra
-------
-
-Instructions for building on Sierra are provided below. These
-instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. The
-script discussed below is :download:`build-vortex.sh
-<build-vortex.sh>`.
-
-.. code-block:: bash
-
-   cd doc/sphinx/08_sparta
-   ./build-vortex.sh
 
 
 Running
@@ -528,59 +491,46 @@ Running
 Instructions are provided on how to run SPARTA for the following
 systems:
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`RunATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`RunATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`RunATS4`)
 
 
-.. _RunATS3:
+.. _RunATS4:
 
-Crossroads
+El Capitan
 ----------
 
-Instructions for performing the simulations on Crossroads are provided
-below.  There are two scripts that facilitate running several
-single-node strong-scaling ensembles.
+.. note::
 
-:download:`run-crossroads-mapcpu.sh <run-crossroads-mapcpu.sh>`
-   This script successively executes SPARTA on a single node for the
-   same set of input parameters; there are many environment variables
-   that can be set to control what it runs.
+   This section will be updated with some more content soon.
 
-:download:`sbatch-crossroads-mapcpu.sh <sbatch-crossroads-mapcpu.sh>`
-   This script runs the previous script for different numbers of MPI
-   ranks, problem size, problem duration, and other parameters to
-   yield several strong scaling trends.
+A single-node example for performing the simulations on El Capitan is
+provided below.
 
-:download:`scale-crossroads-mapcpu.sh <scale-crossroads-mapcpu.sh>`
-   This script successively executes SPARTA on a specified number of
-   nodes for the same set of input parameters; there are many
-   environment variables that can be set to control what it runs.
+.. code-block:: bash
 
-:download:`sbatch-crossroads-mapcpu-scale.sh <sbatch-crossroads-mapcpu-scale.sh>`
-   This script runs the previous script for different numbers of
-   nodes.
-
-
-.. _RunATS2:
-
-Sierra
-------
-
-Instructions for performing the simulations on Sierra are provided
-below. There are two scripts that facilitate running several
-single-node strong-scaling ensembles.
-
-:download:`run-vortex.sh <run-vortex.sh>`
-   This script successively executes SPARTA on a single node for the same set of
-   input parameters; there are many environment variables that can be set to
-   control what it runs.
-
-:download:`bsub-vortex.sh <bsub-vortex.sh>`
-   This script runs the previous script for differing problem size,
-   problem duration, and other parameters to yield several strong
-   scaling trends.
+   flux alloc \
+       -N 1 \
+       --exclusive \
+       --setattr=thp=always \
+       --setattr=hugepages=512GB \
+       -q pbatch
+   pushd sparta/examples/cylinder/
+   flux run \
+       -u \
+       --exclusive \
+       --verbose \
+       -N 1 \
+       -n 4 \
+       -x \
+       -c24 \
+       -o cpu-affinity=off \
+       -o gpu-affinity=off \
+       -o mpibind=on,smt:1,verbose:0 \
+       ../../_build/src/spa_elcapitan_kokkos \
+           -sf kk -k on g 1 \
+           -in in.cylinder
+   popd
 
 
 .. _SPARTAResults:
@@ -590,155 +540,41 @@ Verification of Results
 
 Single-node results from SPARTA are provided on the following systems:
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`ResultsATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`ResultsATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsATS4`)
 
 Multi-node results from SPARTA are provided on the following system(s):
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`ResultsScaleATS3`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsScaleATS4`)
 
 
-.. _ResultsATS3:
+.. _ResultsATS4:
 
-Crossroads - Single Node
+El Capitan - Single Node
 ------------------------
 
-Strong single-node scaling throughput (i.e., fixed problem size being
-run on different MPI rank counts on a single node) plots of SPARTA on
-Crossroads are provided within the following subsections. The
-throughput corresponds to Mega particle steps per second per node.
+.. note::
 
-15 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=15
-   :file: ats3--15.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--15.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=15
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=15
-
-.. figure:: ats3mem--15.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=15
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=15
-
-35 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=35
-   :file: ats3--35.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--35.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=35
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=35
-
-.. figure:: ats3mem--35.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=35
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=35
-
-55 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=55
-   :file: ats3--55.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--55.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=55
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=55
-
-.. figure:: ats3mem--55.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=55
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=55
+   This section will be updated with some more content soon.
 
 
-.. _ResultsATS2:
+.. _ResultsScaleATS4:
 
-Sierra - Single Node
---------------------
-
-Strong single-node scaling throughput for varying problem sizes (i.e.,
-changing ``ppc`` and running on a single Nvidia V100) of SPARTA on
-Sierra are provided below. The throughput corresponds to Mega particle
-steps per second per node.
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Sierra Utilizing a Single Nvidia V100
-   :file: ats2.csv
-   :align: center
-   :widths: 10, 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats2.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Sierra Utilizing a Single Nvidia V100
-
-   SPARTA Single Node Strong Scaling Throughput on Sierra Utilizing a Single Nvidia V100
-
-
-.. _ResultsScaleATS3:
-
-Crossroads - Many Nodes
+El Capitan - Many Nodes
 -----------------------
 
-Multi-node weak scaling throughput (i.e., fixed problem size being run
-on different node counts) plots of SPARTA on Crossroads are provided
-below. The throughput corresponds to Mega particle steps per second
-per node.
-
 .. note::
-   Weak-scaled data with nodes increasing by powers of 2 have been
-   gathered. The single-node data for this particular weak-scaling
-   bundle is more performant than the data gathered for the
-   single-node benchmarks (see :ref:`ResultsATS3` above). The
-   single-node data within that section will not be updated at this
-   time to avoid churn.
 
-.. csv-table:: SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35
-   :file: ats3--scale--main.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--scale--main.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35 
-
-   SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35
+   This section will be updated with some more content soon.
 
 
 Timing Breakdown
 ^^^^^^^^^^^^^^^^
+
+.. note::
+
+   This section will be updated with some more content soon.
 
 Timing breakdown information directly from SPARTA is provided for
 various node counts. SPARTA writes out a timer block that resembles
@@ -783,81 +619,6 @@ provided below.
    include load imbalance (i.e., ranks waiting at a collective
    operation)
 
-These tables are provided below for the various rank counts for
-reference.
-
-
-1 Node
-""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0001.log
-
-
-2 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0002.log
-
-
-4 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0004.log
-
-
-8 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0008.log
-
-
-16 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0016.log
-
-
-32 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0032.log
-
-
-64 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0064.log
-
-
-128 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0128.log
-
-
-256 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0256.log
-
-
-512 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0512.log
-
-
-1024 Nodes
-""""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-1024.log
-
-
-2048 Nodes
-""""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-2048.log
-
 
 References
 ==========
@@ -869,7 +630,7 @@ References
 .. [site] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Direct Simulation
           Monte Carlo Simulator', 2023. [Online]. Available:
           https://sparta.github.io. [Accessed: 22- Feb- 2023]
-.. [build] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Documentation Getting
-           Started', 2023. [Online]. Available:
-           https://sparta.github.io/doc/Section_start.html#start_2. [Accessed:
-           26- Mar- 2023]
+.. [sparta-build] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Documentation Getting
+                  Started', 2023. [Online]. Available:
+                  https://sparta.github.io/doc/Section_start.html#start_2. [Accessed:
+                  26- Mar- 2023]
