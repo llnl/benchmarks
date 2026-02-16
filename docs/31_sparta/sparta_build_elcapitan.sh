@@ -34,11 +34,11 @@ test -d "${dir_build}" && rm -rf "${dir_build}"
 mkdir -p "${dir_build}"
 
 # build
-# list current environment
+#   list current environment
 module list
-# alter environment
-. ats4_env.sh
-# list current environment
+#   alter environment
+. sparta_env_elcapitan.sh
+#   list current environment
 module list
 pushd "${dir_build}"
 cmake \
