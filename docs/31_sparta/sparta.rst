@@ -155,7 +155,8 @@ These parameters are described below.
 ``ppc``
    This sets the **p**\ articles **p**\ er **c**\ ell variable. This
    variable controls the size of the problem and, accordingly, the
-   amount of memory it uses.
+   amount of memory it uses. Adjust this if the initial memory size is
+   too high and a value of ``L`` would need to be less than 1.0.
 
 ``collide_modify``
    The official documentation for this value is `here
