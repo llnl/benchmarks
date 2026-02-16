@@ -3,10 +3,6 @@ SPARTA
 ******
 
 .. note::
-   The documentation herein needs to be updated for building on El
-   Capitan.
-
-.. note::
    The documentation herein needs to be updated for current
    performance.
 
