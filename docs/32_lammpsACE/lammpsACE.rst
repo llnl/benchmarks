@@ -6,8 +6,9 @@ LAMMPS ACE
    The documentation herein needs to be updated for current
    performance.
 
-This is the documentation for the benchmark [LAMMPS]_. The content
-herein was created by the following authors (in alphabetical order).
+This is the documentation for the benchmark [LAMMPS]_, specifically
+KOKKOS-LAMMPS (see [KOKKOS-LAMMPS]_). The content herein was created
+by the following authors (in alphabetical order).
 
 - `Anthony M. Agelastos <mailto:amagela@sandia.gov>`_
 - `Stan Moore <mailto:stamoor@sandia.gov>`_
@@ -73,8 +74,16 @@ The script to clone can be downloaded from :download:`lammps_clone.sh
    ./lammps_clone.sh
 
 
-Problems
---------
+.. _LAMMPSProblem:
+
+Problem
+-------
+
+This problem runs an ACE (atomic cluster expansion) machine-learned
+potential for a copper crystal using a face-entered cubic (fcc)
+lattice at 300 K. Please refer to [pace-site]_ and [pace-article]_ for
+more information.
+
 
 Figure of Merit
 ---------------
@@ -124,5 +133,15 @@ References
             C. Trott, S. J. Plimpton, Comp Phys Comm, 271 (2022) 10817.
 .. [lammps-site] LAMMPS Developers, 'LAMMPS Molecular Dynamics Simulator', 2026.
                  [Online]. Available: https://lammps.org. [Accessed: 15- Feb- 2026]
-
-.. https://docs.lammps.org/pair_pace.html
+.. [pace-site] LAMMPS Developers, 'pair_style pace command - LAMMPS Documentation', 2026.
+               [Online]. Available: https://docs.lammps.org/pair_pace.html#description
+.. [pace-article] Lysogorskiy, Y., Oord, C.v.d., Bochkarev, A. et al.,
+                  Performant implementation of the atomic cluster expansion (PACE)
+                  and application to copper and silicon. NPJ Comput Mater 7, 97 (2021).
+                  https://doi.org/10.1038/s41524-021-00559-9
+.. [KOKKOS-LAMMPS] Anders Johansson, Evan Weinberg, Christian Trott, Megan McCarthy, and Stan Moore.
+                   2025. LAMMPS-KOKKOS: Performance Portable Molecular Dynamics Across Exascale Architectures.
+                   In Proceedings of the SC '25 Workshops of the International Conference for High Performance
+                   Computing, Networking, Storage and Analysis (SC Workshops '25).
+                   Association for Computing Machinery, New York, NY, USA, 1217–1232.
+                   https://doi.org/10.1145/3731599.3767498
