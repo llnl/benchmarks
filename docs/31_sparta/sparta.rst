@@ -64,15 +64,11 @@ benchmarking (see :ref:`SPARTAResults`).
 Application Version
 -------------------
 
-The target application version corresponds to the following Git SHA:
-``478143bcc766083a100480a0a6e8a0c42c85e7e4``. The command to clone is
-provided below.
+The command to clone is provided below.
 
-.. code-block:: sh
-   
-   git clone git@github.com:sparta/sparta.git
-   cd sparta
-   git checkout 478143bcc766083a100480a0a6e8a0c42c85e7e4
+.. literalinclude:: clone.sh
+   :language: sh
+   :lines: 2-
 
 .. note::
    The Git SHA will be updated with a tag soon.
@@ -445,6 +441,8 @@ the top level within the "sparta" folder. Instructions are provided on
 how to build SPARTA for the following systems:
 
 * Generic (see :ref:`BuildGeneric`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`BuildATS3`)
 * Advanced Technology System 3 (ATS-3), also known as Crossroads (see
   :ref:`BuildATS3`)
 * Advanced Technology System 2 (ATS-2), also known as Sierra (see
@@ -465,6 +463,23 @@ El Capitan
 ----------
 
 Instructions for building on El Capitan are provided below. These
+instructions assume this repository has been cloned and that the
+current working directory is at the top level of this repository. The
+script discussed below is :download:`build-elcapitan.sh
+<build-elcapitan.sh>`.
+
+.. code-block:: bash
+
+   cd doc/31_sparta
+   ./build-elcapitan.sh
+
+
+.. _BuildATS3:
+
+Crossroads
+----------
+
+Instructions for building on Crossroads are provided below. These
 instructions assume this repository has been cloned and that the
 current working directory is at the top level of this repository. This
 is tested with Intel's 2023 developer tools release. The script
