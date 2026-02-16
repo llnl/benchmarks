@@ -47,6 +47,10 @@ lisp
 .[#]*[#]
 
 # SPARTA
+docs/31_sparta/sparta
+docs/31_sparta/kokkos-tools
+docs/31_sparta/sparta_build.log
+docs/31_sparta/kokkos_tools_build.log
 docs/31_sparta/templatedir/kokkos_tools_env_elcapitan.sh
 docs/31_sparta/templatedir/circle_R0.5_P10000.surf
 docs/31_sparta/templatedir/sparta_fom.py
@@ -55,3 +59,4 @@ docs/31_sparta/templatedir/air.species
 docs/31_sparta/templatedir/air.tce
 docs/31_sparta/templatedir/sparta_env_elcapitan.sh
 docs/31_sparta/templatedir/sparta
+docs/31_sparta/check*
