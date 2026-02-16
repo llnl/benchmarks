@@ -66,12 +66,21 @@ Application Version
 
 The command to clone is provided below.
 
-.. literalinclude:: clone.sh
+.. literalinclude:: clone-sparta.sh
    :language: sh
    :lines: 2-
 
 .. note::
    The Git SHA will be updated with a tag soon.
+
+The script to clone can be downloaded from :download:`clone-sparta.sh
+<clone-sparta.sh>`. It can also be executed in place to clone into
+``docs/31_sparta/sparta``.
+ 
+.. code-block:: bash
+
+   cd docs/31_sparta
+   ./clone-sparta.sh
 
 
 .. _SPARTAProblem:
@@ -442,7 +451,7 @@ how to build SPARTA for the following systems:
 
 * Generic (see :ref:`BuildGeneric`)
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`BuildATS3`)
+  :ref:`BuildATS4`)
 * Advanced Technology System 3 (ATS-3), also known as Crossroads (see
   :ref:`BuildATS3`)
 * Advanced Technology System 2 (ATS-2), also known as Sierra (see
@@ -466,12 +475,16 @@ Instructions for building on El Capitan are provided below. These
 instructions assume this repository has been cloned and that the
 current working directory is at the top level of this repository. The
 script discussed below is :download:`build-elcapitan.sh
-<build-elcapitan.sh>`.
+<build-elcapitan.sh>` and is produced below for convenience and
+reference.
 
 .. code-block:: bash
 
-   cd doc/31_sparta
+   cd docs/31_sparta
    ./build-elcapitan.sh
+
+.. literalinclude:: build-elcapitan.sh
+   :language: bash
 
 
 .. _BuildATS3:
