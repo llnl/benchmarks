@@ -66,21 +66,21 @@ Application Version
 
 The command to clone is provided below.
 
-.. literalinclude:: clone-sparta.sh
+.. literalinclude:: sparta_clone.sh
    :language: sh
    :lines: 2-
 
 .. note::
    The Git SHA will be updated with a tag soon.
 
-The script to clone can be downloaded from :download:`clone-sparta.sh
-<clone-sparta.sh>`. It can also be executed in place to clone into
+The script to clone can be downloaded from :download:`sparta_clone.sh
+<sparta_clone.sh>`. It can also be executed in place to clone into
 ``docs/31_sparta/sparta``.
  
 .. code-block:: bash
 
    cd docs/31_sparta
-   ./clone-sparta.sh
+   ./sparta_clone.sh
 
 
 .. _SPARTAProblem:
@@ -475,13 +475,13 @@ current working directory is at the top level of this repository.
 .. code-block:: bash
 
    cd docs/31_sparta
-   ./build-elcapitan.sh
+   ./sparta_build_elcapitan.sh
 
-The script discussed above is :download:`build-elcapitan.sh
-<build-elcapitan.sh>` and is produced below for convenience and
+The script discussed above is :download:`sparta_build_elcapitan.sh
+<sparta_build_elcapitan.sh>` and is produced below for convenience and
 reference.
 
-.. literalinclude:: build-elcapitan.sh
+.. literalinclude:: sparta_build_elcapitan.sh
    :language: bash
 
 
