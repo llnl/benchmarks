@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#flux: --nodes=1
+#flux: # --nodes=1
 #flux: -u
 #flux: --exclusive
 #flux: -q pbatch
@@ -15,11 +15,13 @@
 # define runtime params
 sparta_len=${sparta_len:-1}
 is_kokkos_tools=${is_kokkos_tools:-0}
+flux_job_nodes=${flux_job_nodes:-`flux resource list -s up -no {nnodes}`}
+echo "sparta_len=${sparta_len}"
+echo "is_kokkos_tools=${is_kokkos_tools}"
+echo "flux_job_nodes=${flux_job_nodes}"
 
 # define useful locations
 dir_base="` pwd -P `"
-# date_stamp="`date '+%Y%m%d-%H%M%S'`"
-# dir_run="${dir_base}/sparta-${date_stamp}"
 
 # set up environment appropriately
 . sparta_env_elcapitan.sh
@@ -30,10 +32,10 @@ flux run \
      -u \
      --exclusive \
      --verbose \
-     -N 1 \
-     -n 4 \
+     -N ${flux_job_nodes} \
+     -n $((4 * flux_job_nodes)) \
      -x \
-     -c24 \
+     -c 24 \
      -o cpu-affinity=off \
      -o gpu-affinity=off \
      -o mpibind=on,smt:1,verbose:0 \
