@@ -50,9 +50,7 @@ Characteristics
 The goal is to utilize the specified version of SPARTA (see
 :ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
 :ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
-changes are made to SPARTA) for the SSI and SSNI problems (see
-:ref:`SPARTASSNISSI`) and other single-node strong scaling
-benchmarking (see :ref:`SPARTAResults`).
+changes are made to SPARTA).
 
 
 .. _SPARTAApplicationVersion:
@@ -405,24 +403,6 @@ criteria are:
    \varepsilon _{\texttt{Np}} &\le 25\% \\
    \varepsilon _{\texttt{Natt}} &\le 25\% \\
    \varepsilon _{\texttt{Ncoll}} &\le 25\%
-
-
-.. _SPARTASSNISSI:
-
-SSNI & SSI
-----------
-
-The SSNI requires the vendor to choose any problem size to maximize
-throughput. The only caveat is that the problem size must be large
-enough so that the high-water memory mark of the simulation uses at
-least 50% of the available memory available to the processing
-elements.
-
-The SSI problem requires applying the methodology of the SSNI and weak
-scaling it up to at least 1/3 of the system. Specifically, any problem
-size can be arbitrarily selected provided the high-water memory mark
-of the simulation is greater than 50% on the processing elements
-across the nodes.
 
 
 System Information
