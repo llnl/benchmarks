@@ -564,7 +564,7 @@ A script (``sparta_fom.py``) is provided to compute the figure of
 merit (FOM). A single-node example of it is below on El Capitan
 showcasing 2,408 Mega particle steps per second per node. Its default
 values are to always run ``--all``, to set 4 MPI ranks per node, and
-to look for a file named "log.sparta" meaning the argments in the
+to look for a file named "log.sparta" meaning the arguments in the
 example were unnecessary.
 
 .. code-block::
