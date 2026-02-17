@@ -92,16 +92,18 @@ circle. The memory array used to hold particles is reordered by grid
 cell every 100 timesteps to improve data locality and cache access
 patterns.
 
-This problem is present within the upstream SPARTA repository. The
-components of this problem are listed below (paths given are within
-SPARTA repository). Each of these files will need to be copied into a
-run directory for the simulation.
+This problem is *mostly* present within the upstream SPARTA
+repository. The components of this problem are listed below (paths
+given are within SPARTA repository). Each of these files will need to
+be copied into a run directory for the simulation.
 
 ``examples/cylinder/in.cylinder``
-   This is the primary input file that controls the simulation. Some
+   This is the default input file that controls the simulation. Some
    parameters within this file may need to be changed depending upon
    what is being run (i.e., these parameters control how long this
-   simulation runs for and how much memory it uses).
+   simulation runs for and how much memory it uses). The modified
+   version of this within the template directory should be preferred;
+   more on this below.
 
 ``examples/cylinder/circle_R0.5_P10000.surf``
    This is the mesh file and will remain unchanged.
@@ -111,23 +113,41 @@ run directory for the simulation.
    ``air.vss``) contain the composition and reactions inherent with
    the air. These files, like the mesh file, are not to be edited.
 
+A template run directory was created to help ease performing a
+simulation; this directory is ``templatedir``. There are some key
+files within it.
+
+``templatedir/in.cylinder``
+   This is a modified version of the input file with some key parameters
+   changed to be more appropriate as a benchmark.
+
+``templatedir/sparta_ln.sh``
+   This file creates symbolic links to files and folders needed for
+   the simulation.
+
+``templatedir/sparta_batch_elcapitan.sh``
+   This is a batch script compatible with El Capitan. It has
+   capabilities for setting key job parameters from the command line;
+   more on that below.
+
+
 An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 6,11,17,23,25
+   :emphasize-lines: 6,11,17,23,26,29,32,34
 
    <snip>
    ###################################
    # Trajectory inputs
    ###################################
    <snip>
-   variable            L equal 1.
+   variable            L index 1.
    <snip>
    ###################################
    # Simulation initialization standards
    ###################################
-   variable            ppc equal 55
+   variable            ppc equal 47
    <snip>
    #####################################
    # Gas/Collision Model Specification #
@@ -139,9 +159,18 @@ provided below.
    # Output
    ###################################
    <snip>
-   stats                100
+   stats               100
    <snip>
-   run                 4346
+   # Some systems buffer extensively
+   stats_modify        flush yes
+   <snip>
+   # Stop after 11 minutes
+   fix 1 halt 10 tlimit > 660.0 message no
+   <snip>
+   # Print out the value of L for parsing ease
+   print "The value of L is $L" 
+   <snip>
+   run                 10000000
 
 These parameters are described below.
 
@@ -172,19 +201,22 @@ These parameters are described below.
    slow down the simulaton.  If it produces too little, then it may
    adversely impact the FOM calculations.
 
+``stats_modify flush yes``
+   This enables the log output to buffer continuously on El Capitan.
+
+``fix 1 halt 10 tlimit > 660.0 message no``
+   This sets job termination to 660.0 seconds of wall time by checking
+   on progress every 10 steps.
+
+``print "The value of L is $L"``
+   This line outputs the value of ``L`` in a way that is easy to parse
+   since it can be set external to the input file.
+
 ``run``
    This sets how many iterations it will run for, which also controls
-   the wall time required for termination.
-
-Sometimes text from STDOUT and STDERR is buffered extensively and not
-accessible until a large time after it was initially generated. If
-this occurs (e.g., on El Capitan), the following line can be added
-above the ``run`` command. This command may incur a slight performance
-penalty which is why it is not turned on by default.
-
-.. code-block::
-
-   stats_modify        flush yes
+   the wall time required for termination. If the ``fix 1 halt ...``
+   is used, then set this to a large number so it allows the ``halt``
+   to stop at the appropriate time.
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -197,12 +229,13 @@ enabled, the following excerpts should be found within the log file.
 .. code-block::
    :emphasize-lines: 2,6
    
-   SPARTA (13 Apr 2023)
-   KOKKOS mode is enabled (../kokkos.cpp:40)
-     requested 0 GPU(s) per node
+   SPARTA (dd mmm yyyy)
+   KOKKOS mode is enabled (/path/to/kokkos.cpp:40)
+     requested 1 GPU(s) per node
      requested 1 thread(s) per MPI task
-   Running on 32 MPI task(s)
+   Running on 4 MPI task(s)
    package kokkos
+
 
 .. _SPARTAFigureOfMerit:
 
@@ -214,38 +247,23 @@ end of this simulation is a block that resembles the following
 example.
 
 .. code-block::
-   :emphasize-lines: 8-25
+   :emphasize-lines: 8-12
 
-       Step          CPU        Np     Natt    Ncoll Maxlevel
-          0            0 392868378        0        0        6
-        100    18.246846 392868906       33       30        6
-        200    35.395156 392868743      166      145        6
-   <snip>
-       1700    282.11911 392884637     3925     3295        6
-       1800    298.63468 392886025     4177     3577        6
-       1900    315.12601 392887614     4431     3799        6
-       2000    331.67258 392888822     4700     4055        6
-       2100    348.07854 392888778     4939     4268        6
-       2200    364.41121 392890325     5191     4430        6
-       2300    380.85177 392890502     5398     4619        6
-       2400    397.32636 392891138     5625     4777        6
-       2500    413.76181 392891420     5857     4979        6
-       2600    430.15228 392892709     6077     5165        6
-       2700    446.56604 392895923     6307     5396        6
-       2800    463.05626 392897395     6564     5613        6
-       2900    479.60999 392897644     6786     5777        6
-       3000    495.90306 392899444     6942     5968        6
-       3100    512.24813 392901339     7092     6034        6
-       3200    528.69194 392903824     7322     6258        6
-       3300    545.07902 392904150     7547     6427        6
-       3400    561.46527 392905692     7758     6643        6
-       3500    577.82469 392905983     8002     6826        6
-       3600    594.21442 392906621     8142     6971        6
-       3700    610.75031 392907947     8298     7110        6
-       3800    627.17841 392909478     8541     7317        6
-   <snip>
-       4346    716.89228 392914687  1445860  1069859        6
-   Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
+       Step          CPU         Np     Natt    Ncoll Maxlevel
+          0            0 1342895588        0        0        3 
+        100    55.100981 1342896690 30660997 24422279        3 
+        200    108.04593 1342894859 30715618 24465908        3 
+        300    162.82546 1342894246 30765809 24505854        3 
+        400    217.92144 1342895598 30812328 24539812        3 
+        500    274.18419 1342897827 30854579 24573110        3 
+        600    330.94615 1342897254 30902088 24612675        3 
+        700    387.95385 1342893864 30939073 24640919        3 
+        800    445.66487 1342885429 30978764 24674696        3 
+        900    505.13571 1342886863 31014395 24701985        3 
+       1000    564.62459 1342883798 31050409 24731144        3 
+       1100    624.14498 1342885848 31083875 24756941        3 
+       1200    683.65841 1342884461 31116135 24780002        3 
+   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
 
 The quantity of interest (QOI) is "Mega particle steps per second,"
 which can be computed from the above table by multiplying the third
@@ -278,38 +296,23 @@ The aforementioned relevant block of output within "log.sparta" is
 replicated below.
 
 .. code-block::
-   :emphasize-lines: 8-25
+   :emphasize-lines: 8-12
 
-       Step          CPU        Np     Natt    Ncoll Maxlevel
-          0            0 392868378        0        0        6
-        100    18.246846 392868906       33       30        6
-        200    35.395156 392868743      166      145        6
-   <snip>
-       1700    282.11911 392884637     3925     3295        6
-       1800    298.63468 392886025     4177     3577        6
-       1900    315.12601 392887614     4431     3799        6
-       2000    331.67258 392888822     4700     4055        6
-       2100    348.07854 392888778     4939     4268        6
-       2200    364.41121 392890325     5191     4430        6
-       2300    380.85177 392890502     5398     4619        6
-       2400    397.32636 392891138     5625     4777        6
-       2500    413.76181 392891420     5857     4979        6
-       2600    430.15228 392892709     6077     5165        6
-       2700    446.56604 392895923     6307     5396        6
-       2800    463.05626 392897395     6564     5613        6
-       2900    479.60999 392897644     6786     5777        6
-       3000    495.90306 392899444     6942     5968        6
-       3100    512.24813 392901339     7092     6034        6
-       3200    528.69194 392903824     7322     6258        6
-       3300    545.07902 392904150     7547     6427        6
-       3400    561.46527 392905692     7758     6643        6
-       3500    577.82469 392905983     8002     6826        6
-       3600    594.21442 392906621     8142     6971        6
-       3700    610.75031 392907947     8298     7110        6
-       3800    627.17841 392909478     8541     7317        6
-   <snip>
-       4346    716.89228 392914687  1445860  1069859        6
-   Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
+       Step          CPU         Np     Natt    Ncoll Maxlevel
+          0            0 1342895588        0        0        3 
+        100    55.100981 1342896690 30660997 24422279        3 
+        200    108.04593 1342894859 30715618 24465908        3 
+        300    162.82546 1342894246 30765809 24505854        3 
+        400    217.92144 1342895598 30812328 24539812        3 
+        500    274.18419 1342897827 30854579 24573110        3 
+        600    330.94615 1342897254 30902088 24612675        3 
+        700    387.95385 1342893864 30939073 24640919        3 
+        800    445.66487 1342885429 30978764 24674696        3 
+        900    505.13571 1342886863 31014395 24701985        3 
+       1000    564.62459 1342883798 31050409 24731144        3 
+       1100    624.14498 1342885848 31083875 24756941        3 
+       1200    683.65841 1342884461 31116135 24780002        3 
+   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
 
 There are several columns of interest regarding correctness; these are
 listed below.
@@ -412,18 +415,15 @@ System Information
 The platforms utilized for benchmarking activities are listed and
 described below.
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`GlobalSystemATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`GlobalSystemATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ElCapitanSystemDescription`)
 
 
 Building
 ========
 
-If Git Submodules were cloned within this repository, then the source
-code to build the appropriate version of SPARTA is already present at
-the top level within the "sparta" folder. Instructions are provided on
+A script (``sparta_clone.sh``) is provided to clone the SPARTA
+repository within the "sparta" folder. Instructions are provided on
 how to build SPARTA for the following systems:
 
 * Generic (see :ref:`BuildGeneric`)
