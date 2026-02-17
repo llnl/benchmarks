@@ -26,7 +26,7 @@ assert sys.version_info >= (3, 5), "Please use Python version 3.5 or later."
 VERSION = "2.71"
 TIMEOUT = 30
 IS_ALL = True
-NUM_RANKS_PER_NODE = 112
+NUM_RANKS_PER_NODE = 4
 EXIT_CODES = {"success": 0, "no file": 1, "bad loop time block": 2}
 
 
