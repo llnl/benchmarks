@@ -469,10 +469,12 @@ Instructions are provided on how to run SPARTA for the following
 systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`RunATS4`)
+  :ref:`SPARTARunATS4`)
+  * Profiling with Kokkos Tools on El Capitan (see
+    :ref:`SPARTAProfileKokkosToolsElCapitan`)
 
 
-.. _RunATS4:
+.. _SPARTARunATS4:
 
 El Capitan
 ----------
@@ -481,39 +483,66 @@ El Capitan
 
    This section will be updated with some more content soon.
 
-A single-node example for performing the simulations on El Capitan is
+An example for performing simulations on El Capitan is
 provided below.
 
 .. code-block:: bash
 
-   flux alloc \
-       -N 1 \
-       --exclusive \
-       --setattr=thp=always \
-       --setattr=hugepages=512GB \
-       -q pbatch
-   pushd sparta/examples/cylinder/
-   flux run \
-       -u \
-       --exclusive \
-       --verbose \
-       -N 1 \
-       -n 4 \
-       -x \
-       -c24 \
-       -o cpu-affinity=off \
-       -o gpu-affinity=off \
-       -o mpibind=on,smt:1,verbose:0 \
-       ../../_build/src/spa_elcapitan_kokkos \
-           -sf kk -k on g 1 \
-           -in in.cylinder
-   popd
+   # first, copy templatedir into something useful
+   cp -a templatedir useful
+
+   # next, go into the run folder
+   cd useful
+
+   # submit job and set parameters on command line if desired
+   #   this example sets L (aka sparta_len) to 2.5
+   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
+   #   this example runs on 1 node (aka --nodes=1)
+   sparta_len=2.5 is_kokkos_tools=1 flux batch --nodes=1 sparta_batch_elcapitan.s
+
+
+.. _SPARTAProfileKokkosTools:
+
+Profiling with Kokkos Tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scripts are provided to clone and build Kokkos Tools. The steps to do
+both are provided below.
+
+.. code-block:: bash
+
+   # go into the SPARTA documentation folder
+   cd docs/31_sparta
+
+   # clone Kokkos Tools
+   ./kokkos_tools_clone.sh
+
+   # build Kokkos Tools' Space Time
+   ./kokkos_tools_build_elcapitan.sh
+
+Once built, the command line variable ``is_kokkos_tools`` can be set
+to ``1`` for the batch script to turn it on. After a successful run,
+it will output additional memory information. An example of this (for
+``L`` equal to 2.0 and ``ppc`` equal to 47) on El Capitan is provided
+below that shows approximately 82.2 GB of memory allocated on each
+GPU.
+
+.. code-block::
+
+   KOKKOS HIP SPACE:
+   ===================
+   MAX MEMORY ALLOCATED: 82222221.9 kB
 
 
 .. _SPARTAResults:
 
 Verification of Results
 =======================
+
+Additional information:
+
+* The sub-section :ref:`SPARTAComputeFOM` describes how to compute the
+  FOM
 
 Single-node results from SPARTA are provided on the following systems:
 
@@ -526,6 +555,33 @@ Multi-node results from SPARTA are provided on the following system(s):
   :ref:`ResultsScaleATS4`)
 
 
+.. _SPARTAComputeFOM:
+
+Compute Figure of Merit
+-----------------------
+
+A script (``sparta_fom.py``) is provided to compute the figure of
+merit (FOM). A single-node example of it is below on El Capitan
+showcasing 2,408 Mega particle steps per second per node. Its default
+values are to always run ``--all``, to set 4 MPI ranks per node, and
+to look for a file named "log.sparta" meaning the argments in the
+example were unnecessary.
+
+.. code-block::
+   :emphasize-lines: 2
+
+   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
+   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
+   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
+   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
+   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
+   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
+   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
+   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
+   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
+   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
+
+
 .. _ResultsATS4:
 
 El Capitan - Single Node
@@ -534,6 +590,24 @@ El Capitan - Single Node
 .. note::
 
    This section will be updated with some more content soon.
+
+A single-node example is below that showcases 2,408 Mega particle
+steps per second per node. The other relevant parameters are displayed
+as part of the output.
+
+.. code-block::
+   :emphasize-lines: 2
+
+   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
+   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
+   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
+   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
+   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
+   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
+   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
+   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
+   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
+   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
 
 
 .. _ResultsScaleATS4:
@@ -553,21 +627,21 @@ Timing Breakdown
 
    This section will be updated with some more content soon.
 
-Timing breakdown information directly from SPARTA is provided for
-various node counts. SPARTA writes out a timer block that resembles
-the following.
+Timing breakdown information directly from SPARTA on El Capitan is
+provided for various node counts. SPARTA writes out a timer block that
+resembles the following.
 
 .. code-block::
-   
+
    Section |  min time  |  avg time  |  max time  |%varavg| %total
    ---------------------------------------------------------------
-   Move    | 110.5      | 361.59     | 410.76     | 217.4 | 52.41
-   Coll    | 22.174     | 69.358     | 105.6      |  95.0 | 10.05
-   Sort    | 48.822     | 156.12     | 198.1      | 146.5 | 22.63
-   Comm    | 0.57662    | 0.74641    | 1.2112     |  15.3 |  0.11
-   Modify  | 0.044491   | 0.14381    | 0.67954    |  40.0 |  0.02
-   Output  | 0.19404    | 1.0017     | 7.2883     | 105.4 |  0.15
-   Other   |            | 101        |            |       | 14.64
+   Move    | 159.2      | 161.74     | 165.21     |  18.7 | 23.66
+   Coll    | 186.02     | 325.5      | 476.79     | 771.3 | 47.61
+   Sort    | 26.944     | 29.01      | 31.18      |  35.9 |  4.24
+   Comm    | 1.7542     | 1.762      | 1.7726     |   0.5 |  0.26
+   Modify  | 2.502      | 2.9416     | 3.3764     |  24.7 |  0.43
+   Output  | 0.049965   | 1.7761     | 3.441      | 124.6 |  0.26
+   Other   |            | 160.9      |            |       | 23.54
 
 A description of the work performed for each of the sections is
 provided below.
