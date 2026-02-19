@@ -26,7 +26,7 @@ assert sys.version_info >= (3, 5), "Please use Python version 3.5 or later."
 VERSION = "2.71"
 TIMEOUT = 30
 IS_ALL = True
-NUM_RANKS_PER_NODE = 112
+NUM_RANKS_PER_NODE = 4
 EXIT_CODES = {"success": 0, "no file": 1, "bad loop time block": 2}
 
 
@@ -220,12 +220,12 @@ class SpartaFom(object):
         """Extract L."""
         # variable L equal 8
         l_line = line.split()
-        bool_1 = "variable" in line and "L" in line and "equal" in line
-        bool_2 = len(l_line) == 4
+        bool_1 = "The value of L is "
+        bool_2 = len(l_line) == 6
         bool_3 = True
         if bool_2:
             try:
-                m_l = float(l_line[3])
+                m_l = float(l_line[5])
                 if m_l > 1:
                     bool_3 = True
             except:
@@ -283,7 +283,7 @@ class SpartaFom(object):
                     if self._check_l(line):
                         l_line = line.split()
                         self.metrics_cache["Length Scaling Factor [L]"] = float(
-                            l_line[3]
+                            l_line[5]
                         )
                 if self.metrics_cache["No. Ranks"] is None:
                     if self._check_ranks(line):
