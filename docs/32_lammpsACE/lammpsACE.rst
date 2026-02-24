@@ -373,6 +373,122 @@ reference.
 Running
 =======
 
+Instructions are provided on how to run LAMMPS for the following
+systems:
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`LAMMPSRunATS4`)
+  * Profiling with Kokkos Tools on El Capitan (see
+    :ref:`LAMMPSProfileKokkosToolsElCapitan`)
+
+
+.. _LAMMPSRunATS4:
+
+El Capitan
+----------
+
+.. note::
+
+   This section will be updated with some more content soon.
+
+An example for performing simulations on El Capitan is
+provided below.
+
+.. code-block:: bash
+
+   # first, copy templatedir into something useful
+   cp -a templatedir useful
+
+   # next, go into the run folder
+   cd useful
+
+   # submit job and set parameters on command line if desired
+   #   this example sets L (aka lammps_len) to 64
+   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
+   #   this example runs on 1 node (aka --nodes=1)
+   lammps_len=64 is_kokkos_tools=1 flux batch --nodes=1 lammps_batch_elcapitan.sh
+
+
+.. _SPARTAProfileKokkosTools:
+
+Profiling with Kokkos Tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scripts are provided to clone and build Kokkos Tools. The steps to do
+both are provided below.
+
+.. code-block:: bash
+
+   # go into the LAMMPS documentation folder
+   cd docs/32_lammpsACE
+
+   # clone Kokkos Tools
+   ./kokkos_tools_clone.sh
+
+   # build Kokkos Tools' Space Time
+   ./kokkos_tools_build_elcapitan.sh
+
+Once built, the command line variable ``is_kokkos_tools`` can be set
+to ``1`` for the batch script to turn it on. After a successful run,
+it will output additional memory information. An example of this (for
+``L`` equal to 64) on El Capitan is provided below that shows
+approximately 99.6 GB of memory allocated on each GPU.
+
+.. code-block::
+
+   KOKKOS HIP SPACE:
+   ===================
+   MAX MEMORY ALLOCATED: 99615719.6 kB
+
+
+.. _SPARTAResults:
+
+Verification of Results
+=======================
+
+Additional information:
+
+* The sub-section :ref:`LAMMPSComputeFOM` describes how to compute the
+  FOM
+
+Single-node results from LAMMPS are provided on the following systems:
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsLammpsATS4`)
+
+Multi-node results from SPARTA are provided on the following system(s):
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsLammpsScaleATS4`)
+
+
+.. _LAMMPSComputeFOM:
+
+Compute Figure of Merit
+-----------------------
+
+The figure of merit (FOM) is automatically computed by LAMMPS. The
+benchmark run is broken into two phases; extract the FOM from the last
+phase. The relevant excerpt from the "log.lammps" output is below.
+
+.. code-block::
+   :emphasize-lines: 11
+
+   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
+    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
+    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
+    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
+   <snip>
+   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
+   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
+   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
+   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+
+   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
+   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+
+The FOM is the quantity ``Matom-step/s``, which in this example is 2.010. 
+
 
 Validation
 ==========
