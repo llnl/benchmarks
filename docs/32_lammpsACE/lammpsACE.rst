@@ -125,7 +125,7 @@ An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 2
+   :emphasize-lines: 2,7
 
    <snip>
    variable        L index 64.0
@@ -133,6 +133,7 @@ provided below.
    <snip>
    pair_style      pace product chunksize 49152
    <snip>
+   thermo          10
    thermo_style    custom step cpu temp epair etotal press v_delenergy v_delpress
    <snip>
    ##################################
@@ -167,6 +168,11 @@ These parameters are described below.
 ``L``
    This corresponds to the **l**\ ength scale factor. This will scale
    the dimensions of the problem.
+
+``thermo``
+   Compute and print thermodynamic info (e.g., temperature, energy,
+   pressure) on timesteps that are a multiple of this parameter and at
+   the beginning and end of a simulation.
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -206,6 +212,102 @@ It is desired to capture the FOM for varying problem sizes that
 encompass utilizing 50% to 80% of available memory (when all PEs are
 utilized). The ultimate goal is to maximize this throughput FOM while
 utilizing at least 50% of available memory.
+
+
+.. _LAMMPSCorrectness:
+
+Correctness
+-----------
+
+The aforementioned relevant block of output within "log.lammps" is
+replicated below.
+
+.. code-block::
+   :emphasize-lines: 2,3,4,6,7,8
+
+   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
+    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
+    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
+    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
+   <snip>
+   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
+   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
+   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
+   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+
+   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
+   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+
+There are several columns of interest regarding correctness; these are
+listed below.
+
+``Step``
+   This is the step number and is the first column.
+
+``Temp``
+   This tracks the temperature aspect of the simulation.
+
+``Press``
+   This tracks the pressure aspect of the simulation.
+
+Assessing the correctness will involve comparing these quantities
+across modified (henceforth denoted with "mod" subscript) and
+unmodified ("unmod" subscript) LAMMPS subject to the methodology
+below.
+
+The **first** step is to adjust the ``thermo`` parameter
+to a value of 1 so fine-grained output is generated; if this is
+significantly slowing down computation, then it can be increased to a
+value of 10. Then, produce output from LAMMPS\ :sub:`unmod` with the
+same settings.
+
+The **second** step is to compute the absolute differences between
+modified and unmodified LAMMPS for ``Temp`` and ``Press`` for each
+row, *i*, whose ``Step`` is relevant for the FOM for LAMMPS\
+:sub:`mod`,
+
+.. math::
+   \Delta \texttt{Temp}_i &= | \texttt{Temp}_{\textrm{mod},i}-\texttt{Temp}_{\textrm{unmod},i} | \\
+   \Delta \texttt{Press}_i &= | \texttt{Press}_{\textrm{mod},i}-\texttt{Press}_{\textrm{unmod},i} | \\
+
+where
+
+* *i* is each line whose ``CPU`` time is part of the second phase for LAMMPS\ :sub:`mod`
+
+The **third** step is to compute the arithmetic mean of each of the
+aforementioned quantities over the *n* rows,
+
+.. math::
+   \mu _{\Delta \texttt{Temp}} &= \frac{\sum_{i} \Delta \texttt{Temp}_i}{n} \\
+   \mu _{\Delta \texttt{Press}} &= \frac{\sum_{i} \Delta \texttt{Press}_i}{n} \\
+
+where
+
+.. math::
+   n = \sum_{i} 1
+
+The **fourth** step is to compute the arithmetic mean of the *n*
+matching rows of the unmodified LAMMPS,
+
+.. math::
+   \mu _{\texttt{Temp},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Temp}_{\textrm{unmod},i}}{n} \\
+   \mu _{\texttt{Press},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Press}_{\textrm{unmod},i}}{n} \\
+
+The **fifth** step is to normalize the differences with the baseline
+values to create the error ratios,
+
+.. math::
+   \varepsilon _{\texttt{Temp}} &= \frac{\mu _{\Delta \texttt{Temp}}}{\mu _{\texttt{Temp},\textrm{unmod}}} \\
+   \varepsilon _{\texttt{Press}} &= \frac{\mu _{\Delta \texttt{Press}}}{\mu _{\texttt{Press},\textrm{unmod}}} \\
+
+The **sixth** and final step is to check over all of the error ratios
+and if any of them exceed 5%, then the modifications are not approved
+without discussing them with this benchmark's authors. The success
+criteria are:
+
+.. math::
+   \varepsilon _{\texttt{Temp}} &\le 5\% \\
+   \varepsilon _{\texttt{Press}} &\le 5\%
 
 Source code modifications
 =========================
