@@ -22,15 +22,21 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Mini-Applications
+   :caption: Priority 1 Mini-Applications
 
-   10_amg/amg
    11_kripke/kripke
    12_laghos/laghos
    13_rajaperf/rajaperf
    14_scaffold/scaffold
    20_branson/branson
    31_sparta/sparta
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: Priority 2 Mini-Applications
+
+   10_amg/amg
    32_lammpsACE/lammpsACE
    40_remhos/remhos
    50_miniem/miniem
