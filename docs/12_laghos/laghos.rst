@@ -52,6 +52,8 @@ For Laghos we define the following restrictions on source code modifications:
   * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
     
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
+* `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get accurate an accurate FOM.
+* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
 
 Building
 ========
@@ -67,8 +69,6 @@ These instructions install all dependencies to a user-defined ``$INSTALLDIR`` us
 
 Metis (required)
 ----------------
-
-TODO: only if not doing cartesian partitioning, need to decide on problem size configurations.
 
 .. code-block:: console
                 
@@ -224,11 +224,11 @@ Running
 .. code-block:: console
                 
                 # 3D Q1Q0
-                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000
+                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
                 # 3D Q2Q1
-                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000
+                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
                 # 3D Q3Q2
-                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000
+                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
 
 TODO: problem sizes and partitioning options
 
@@ -237,7 +237,26 @@ TODO: problem sizes and partitioning options
 Validation
 ==========
 
-TODO
+Code correctness is validated by using the following tests and comparing the outputted **Energy diff**, and **Density L2 error**. These quantities must be less than or equal to the following values on CPU and GPU:
+
+.. code-block:: console
+                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+                Energy  diff: 7.61e-05
+                Density L2 error: 1.95e-01
+                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+                Energy  diff: 3.46e-06
+                Density L2 error: 1.28e-01
+                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+                Energy  diff: 8.82e-06
+                Density L2 error: 1.03e-01
+
+The **Density L2 error** for other resolutions is shown in the following plot.
+                
+.. figure:: plots/rho_err_3d.png
+   :alt: **Density L2 error** for an ``NxNxN`` zone domain
+   :align: center
+
+   **Density L2 error** for an ``NxNxN`` zone domain
 
 Example Scalability Results
 ===========================
@@ -247,7 +266,30 @@ TODO
 Memory Usage
 ============
 
-TODO
+Total memory usage scales roughly proportional to the total number of DOFs.
+Both CPU and GPU memory usage can be outputted using the ``--mem`` option.
+
+This will output the memory usage as ``(max rank CPU mem)/(total CPU mem) MB, (max rank GPU mem)/(total GPU mem) MB``, where ``max rank CPU mem`` and ``max rank GPU mem`` are the maximum CPU and GPU memory usage of any single MPI rank respectively, while ``total CPU mem`` and ``total GPU mem`` are the total amount of CPU and GPU memory used by all ranks.
+
+Sample CPU and GPU memory usage on a single El Capitan node are shown below.
+
+.. figure:: plots/cpu_mem.png
+   :alt: CPU memory use on El Capitan with 4 ranks on a single node
+   :align: center
+
+   CPU memory use on El Capitan with 4 ranks on a single node
+
+.. figure:: plots/gpu_mem.png
+   :alt: GPU memory use on El Capitan with 4 ranks on a single node
+   :align: center
+
+   GPU memory use on El Capitan with 4 ranks on a single node
+
+.. figure:: plots/gpu_mem_per_dof.png
+   :alt: GPU memory use on El Capitan with 4 ranks on a single node per DOF
+   :align: center
+
+   GPU memory use on El Capitan with 4 ranks on a single node per DOF
 
 Strong Scaling on El Capitan
 ============================
