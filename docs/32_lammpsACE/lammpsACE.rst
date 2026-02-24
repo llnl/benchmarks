@@ -84,6 +84,90 @@ potential for a copper crystal using a face-entered cubic (fcc)
 lattice at 300 K. Please refer to [pace-site]_ and [pace-article]_ for
 more information.
 
+This problem is *mostly* present within the upstream LAMMPS
+repository. The components of this problem are listed below (paths
+given are within LAMMPS repository). Each of these files will need to
+be copied into a run directory for the simulation.
+
+``examples/PACKAGES/pace/Cu-PBE-core-rep.ace``
+   This is an input needed for the simulation.
+
+``examples/PACKAGES/pace/in.pace.product`` This is the default input
+   file that controls the simulation. Some parameters within this file
+   may need to be changed depending upon what is being run (i.e.,
+   these parameters control how much memory it uses). The modified
+   version of this within the template directory should be preferred;
+   more on this below.
+
+A template run directory was created to help ease performing a
+simulation; this directory is ``templatedir``. There are some key
+files within it.
+
+``templatedir/in.pace.product``
+   This is a modified version of the input file with some key
+   parameters changed to be more appropriate as a benchmark. It is
+   designed to run for approximately 11 minutes in 2 phases of 5.5
+   minutes each. SPARTA already directly computes the FOM and outputs
+   it for each of the phases. This second phase of 5.5 minutes is the
+   FOM that is to be tracked.
+
+``templatedir/lammps_ln.sh``
+   This file creates symbolic links to files and folders needed for
+   the simulation.
+
+``templatedir/lammps_batch_elcapitan.sh``
+   This is a batch script compatible with El Capitan. It has
+   capabilities for setting key job parameters from the command line;
+   more on that below.
+
+
+An excerpt from this input file that has its key parameters is
+provided below.
+
+.. code-block::
+   :emphasize-lines: 2
+
+   <snip>
+   variable        L index 64.0
+   region          box block 0 ${L} 0 ${L} 0 ${L}
+   <snip>
+   pair_style      pace product chunksize 49152
+   <snip>
+   thermo_style    custom step cpu temp epair etotal press v_delenergy v_delpress
+   <snip>
+   ##################################
+   ### Benchmarking modifications ###
+   ##################################
+   
+   # Add a thermostat to keep temperature from falling
+   variable        tdamp equal $(dt)
+   fix             mynvt all nvt temp 300.0 300.0 ${tdamp}
+   
+   # Some systems buffer extensively
+   thermo_modify   flush yes
+   
+   # Print out the value of L for parsing ease
+   print "The value of L is $L" 
+   
+   ### Throw out first 5 minutes for hardware equilibrium
+   
+   # Stop after 5.5 minutes
+   fix             2 all halt 10 tlimit > 330.0 message no error continue
+   run             10000000
+   
+   ### Run another 5 minutes for final FOM
+   unfix           2
+   
+   # Stop after 5.5 minutes
+   fix             3 all halt 10 tlimit > 330.0 message no
+   run             10000000
+
+These parameters are described below.
+
+``L``
+   This corresponds to the **l**\ ength scale factor. This will scale
+   the dimensions of the problem.
+
 
 Figure of Merit
 ---------------
