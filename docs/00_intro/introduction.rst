@@ -84,6 +84,12 @@ Benchmark Overview
    - NCCL+CUDA
    - NVIDIA NeMo
 
+.. _GlobalPriorities:
+
+Priorities
+==========
+
+Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Priority 1, or Priority 2.
 
 .. _GlobalRunRules:
 
