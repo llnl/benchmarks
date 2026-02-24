@@ -23,15 +23,16 @@ Linear, quadratic, and cubic orders are of interest with the following prioritie
 
 Priority 1 problems
 ^^^^^^^^^^^^^^^^^^^
-   #. **3D Linear**
-   #. **3D Quadratic**
+   #. **3D Linear** This uses a kinematic order of 1 and thermodynamic order of 0 (Q1Q0).
+   #. **3D Quadratic** This uses a kinematic order of 2 and thermodynamic order of 1 (Q2Q1).
 
 Priority 2 problems
 ^^^^^^^^^^^^^^^^^^^
-   3. **3D Cubic**
+   3. **3D Cubic** This uses a kinematic order of 3 and thermodynamics order of 2 (Q3Q2).
 
 
-The problem sizes and partitioning scheme for both problems can be set by the user from the command line.
+The problem sizes and partitioning scheme for both problems can be set by the user from the command line. The kinematic order is set using the `-ok` command-line option while the thermodynamic order is set using `-ot`. In all cases the default quadrature integration order should be used.
+See :ref:`RunningLaghos` for how to run each of the different problems.
 
 Figure of Merit
 ---------------
