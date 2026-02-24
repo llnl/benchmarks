@@ -168,6 +168,13 @@ These parameters are described below.
    This corresponds to the **l**\ ength scale factor. This will scale
    the dimensions of the problem.
 
+This problem exhibits different runtime characteristics whether or not
+Kokkos is enabled. Specifically, there is some work that is performed
+within Kokkos that helps to keep this problem as well behaved from a
+throughput perspective as possible. Ergo, Kokkos must be enabled for
+the simulations regardless of the hardware being used (the cases
+herein have configurations that enable it for reference).
+
 
 Figure of Merit
 ---------------
