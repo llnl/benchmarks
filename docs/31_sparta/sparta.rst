@@ -547,12 +547,12 @@ Additional information:
 Single-node results from SPARTA are provided on the following systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`ResultsATS4`)
+  :ref:`ResultsSpartaATS4`)
 
 Multi-node results from SPARTA are provided on the following system(s):
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`ResultsScaleATS4`)
+  :ref:`ResultsSpartaScaleATS4`)
 
 
 .. _SPARTAComputeFOM:
@@ -582,7 +582,7 @@ example were unnecessary.
    INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
 
 
-.. _ResultsATS4:
+.. _ResultsSpartaATS4:
 
 El Capitan - Single Node
 ------------------------
@@ -610,7 +610,7 @@ as part of the output.
    INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
 
 
-.. _ResultsScaleATS4:
+.. _ResultsSpartaScaleATS4:
 
 El Capitan - Many Nodes
 -----------------------
