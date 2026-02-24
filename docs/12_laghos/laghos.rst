@@ -19,6 +19,17 @@ Problems
 
 The test problems to be run are the Sedov shock (problem 1) in 3D.
 These are to be run with a conforming mesh.
+Linear, quadratic, and cubic orders are of interest with the following priorities:
+
+Priority 1 problems
+^^^^^^^^^^^^^^^^^^^
+   #. **3D Linear**
+   #. **3D Quadratic**
+
+Priority 2 problems
+^^^^^^^^^^^^^^^^^^^
+   3. **3D Cubic**
+
 
 The problem sizes and partitioning scheme for both problems can be set by the user from the command line.
 
