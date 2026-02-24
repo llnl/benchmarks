@@ -548,7 +548,7 @@ References
                [Online]. Available: https://docs.lammps.org/pair_pace.html#description
 .. [pace-article] Lysogorskiy, Y., Oord, C.v.d., Bochkarev, A. et al.,
                   Performant implementation of the atomic cluster expansion (PACE)
-                  and application to copper and silicon. NPJ Comput. Mater. 7, 97 (2021).
+                  and application to copper and silicon. NPJ Comput. Mater. 7, 97 (2021). # codespell:ignore
                   https://doi.org/10.1038/s41524-021-00559-9
 .. [KOKKOS-LAMMPS] Anders Johansson, Evan Weinberg, Christian Trott, Megan McCarthy, and Stan Moore.
                    2025. LAMMPS-KOKKOS: Performance Portable Molecular Dynamics Across Exascale Architectures.
