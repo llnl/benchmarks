@@ -179,6 +179,33 @@ herein have configurations that enable it for reference).
 Figure of Merit
 ---------------
 
+Each LAMMPS simulation writes out a file named "log.lammps". At the
+end of this simulation is a block that resembles the following
+example.
+
+.. code-block::
+   :emphasize-lines: 11
+
+   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
+    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
+    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
+    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
+   <snip>
+   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
+   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
+   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
+   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+
+   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
+   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+
+The quantity of interest (QOI) is "Mega atom steps per second," which
+is directly computed as ``Matom-step/s`` in the example above.
+
+It is desired to capture the FOM for varying problem sizes that
+encompass utilizing 50% to 80% of available memory (when all PEs are
+utilized). The ultimate goal is to maximize this throughput FOM while
+utilizing at least 50% of available memory.
 
 Source code modifications
 =========================
