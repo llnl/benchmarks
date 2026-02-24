@@ -426,12 +426,12 @@ A script (``sparta_clone.sh``) is provided to clone the SPARTA
 repository within the "sparta" folder. Instructions are provided on
 how to build SPARTA for the following systems:
 
-* Generic (see :ref:`BuildGeneric`)
+* Generic (see :ref:`BuildSpartaGeneric`)
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`BuildATS4`)
+  :ref:`BuildSpartaATS4`)
 
 
-.. _BuildGeneric:
+.. _BuildSpartaGeneric:
 
 Generic
 -------
@@ -440,7 +440,7 @@ Refer to SPARTA's [sparta-build]_ documentation for generic
 instructions.
 
 
-.. _BuildATS4:
+.. _BuildSpartaATS4:
 
 El Capitan
 ----------

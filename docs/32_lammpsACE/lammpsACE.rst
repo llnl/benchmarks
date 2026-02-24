@@ -309,13 +309,65 @@ criteria are:
    \varepsilon _{\texttt{Temp}} &\le 5\% \\
    \varepsilon _{\texttt{Press}} &\le 5\%
 
-Source code modifications
+ 
+Source Code Modifications
 =========================
 
-Please see :ref:`GlobalRunRules` for general guidance on allowed modifications. 
+Please see :ref:`GlobalRunRules` for general guidance on allowed
+modifications.
+
+
+System Information
+==================
+
+The platforms utilized for benchmarking activities are listed and
+described below.
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ElCapitanSystemDescription`)
+
 
 Building
 ========
+
+A script (``lammps_clone.sh``) is provided to clone the LAMMPS
+repository within the "lammps" folder. Instructions are provided on
+how to build LAMMPS for the following systems:
+
+* Generic (see :ref:`BuildLammpsGeneric`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`BuildLammpsATS4`)
+
+
+.. _BuildLammpsGeneric:
+
+Generic
+-------
+
+Refer to LAMMP's [lammps-build]_ documentation for generic
+instructions.
+
+
+.. _BuildLammpsATS4:
+
+El Capitan
+----------
+
+Instructions for building on El Capitan are provided below. These
+instructions assume this repository has been cloned and that the
+current working directory is at the top level of this repository. 
+
+.. code-block:: bash
+
+   cd docs/32_lammpsACE
+   ./lammps_build_elcapitan.sh
+
+The script discussed above is :download:`lammps_build_elcapitan.sh
+<lammps_build_elcapitan.sh>` and is produced below for convenience and
+reference.
+
+.. literalinclude:: lammps_build_elcapitan.sh
+   :language: bash
 
 
 Running
@@ -353,6 +405,9 @@ References
             C. Trott, S. J. Plimpton, Comp Phys Comm, 271 (2022) 10817.
 .. [lammps-site] LAMMPS Developers, 'LAMMPS Molecular Dynamics Simulator', 2026.
                  [Online]. Available: https://lammps.org. [Accessed: 15- Feb- 2026]
+.. [lammps-build] LAMMPS Developers, 'LAMMPS Documentation', 2026.
+                 [Online]. Available: https://dics.lammps.org/Manual.html.
+                 [Accessed: 15- Feb- 2026]
 .. [pace-site] LAMMPS Developers, 'pair_style pace command - LAMMPS Documentation', 2026.
                [Online]. Available: https://docs.lammps.org/pair_pace.html#description
 .. [pace-article] Lysogorskiy, Y., Oord, C.v.d., Bochkarev, A. et al.,
