@@ -43,6 +43,17 @@ output.log
 
 lisp
 
+# LAMMPS
+docs/32_lammpsACE/lammps
+docs/32_lammpsACE/kokkos-tools
+docs/32_lammpsACE/lammps_build.log
+docs/32_lammpsACE/kokkos_tools_build.log
+docs/32_lammpsACE/templatedir/kokkos_tools_env_elcapitan.sh
+docs/32_lammpsACE/templatedir/Cu-PBE-core-rep.ace
+docs/32_lammpsACE/templatedir/lammps_env_elcapitan.sh
+docs/32_lammpsACE/templatedir/lammps
+docs/32_lammpsACE/check*
+
 \#*#
 .[#]*[#]
 
