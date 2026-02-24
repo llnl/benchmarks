@@ -10,6 +10,11 @@ and Computing (ASC) **Future Computing Resource (FCR)**.
 Benchmark Overview 
 ==================
 
+Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Priority 1, or Priority 2.
+
+Priority 1 Mini Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. list-table::
 
  * - **Benchmark**
@@ -17,12 +22,6 @@ Benchmark Overview
    - **Language**
    - **Parallelism** 
    - **Libraries**
- * - AMG2023
-   - AMG solver of sparse matrices  
-   - C 
-   - | MPI+CUDA/HIP/SYCL
-     | OpenMP on CPU
-   - Hypre
  * - Kripke
    - | Scalable 3D Sn deterministic 
      | particle transport code 
@@ -35,7 +34,7 @@ Benchmark Overview
      | element compressible gas dynamics
    - C++
    - MPI+RAJA/CUDA/HIP
-   - MFEM, Hypre
+   - RAJA, MFEM, Hypre
  * - RAJA Performance Suite
    - | Collection of loop-based computational 
      | kernels found in HPC applications
@@ -61,6 +60,24 @@ Benchmark Overview
    - C++
    - MPI+Kokkos
    - Kokkos
+
+
+Priority 2 Mini Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+
+ * - **Benchmark**
+   - **Description**
+   - **Language**
+   - **Parallelism** 
+   - **Libraries**
+ * - AMG2023
+   - AMG solver of sparse matrices  
+   - C 
+   - | MPI+CUDA/HIP/SYCL
+     | OpenMP on CPU
+   - Hypre
  * - LAMMPS ACE
    - | Molecular dynamics using
      | Atomic Cluster Expansion (ACE)
@@ -72,24 +89,20 @@ Benchmark Overview
      | high-order finite element advection
    - C++
    - MPI+RAJA/CUDA/HIP
-   - MFEM, Hypre
+   - RAJA, MFEM, Hypre
  * - MiniEM
    - Electro-Magnetics solver
    - C++
    - MPI+Kokkos
-   - Kokkos
+   - Kokkos, Trillinos
  * - MLPerf
    - Llama 3.1 405B training 
    - Python
    - NCCL+CUDA
    - NVIDIA NeMo
 
-.. _GlobalPriorities:
+Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
 
-Priorities
-==========
-
-Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Priority 1, or Priority 2.
 
 .. _GlobalRunRules:
 
