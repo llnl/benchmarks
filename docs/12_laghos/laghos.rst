@@ -17,21 +17,23 @@ Characteristics
 Problems
 --------
 
-The test problems to be run are the Sedov shock (problem 1) in 3D.
-These are to be run with a conforming mesh.
+The test problems are the Sedov shock (problem 1 in Laghos) in 3D.
+The test problems should be run with a conforming mesh.
 Linear, quadratic, and cubic orders are of interest with the following priorities:
 
 Priority 1 problems
 ^^^^^^^^^^^^^^^^^^^
-   #. **3D Linear** This uses a kinematic order of 1 and thermodynamic order of 0 (Q1Q0).
-   #. **3D Quadratic** This uses a kinematic order of 2 and thermodynamic order of 1 (Q2Q1).
+   #. **3D Linear** This problem uses a kinematic order of 1, and a thermodynamic order of 0 (Q1Q0).
+   #. **3D Quadratic** This problem uses a kinematic order of 2, and a thermodynamic order of 1 (Q2Q1).
 
 Priority 2 problems
 ^^^^^^^^^^^^^^^^^^^
-   3. **3D Cubic** This uses a kinematic order of 3 and thermodynamics order of 2 (Q3Q2).
+   3. **3D Cubic** This problem uses a kinematic order of 3, and a thermodynamics order of 2 (Q3Q2).
 
 
-The problem sizes and partitioning scheme for both problems can be set by the user from the command line. The kinematic order is set using the `-ok` command-line option while the thermodynamic order is set using `-ot`. In all cases the default quadrature integration order should be used.
+The problem sizes and partitioning scheme for both problems can be set by the user from the command line. 
+The kinematic order is set using the `-ok` command-line option while the thermodynamic order is set using `-ot`. 
+In all cases the default quadrature integration order should be used.
 See :ref:`RunningLaghos` for how to run each of the different problems.
 
 Figure of Merit
