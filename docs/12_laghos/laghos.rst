@@ -252,6 +252,7 @@ Validation
 Code correctness is validated by using the following tests and comparing the outputted **Energy diff**, and **Density L2 error**. These quantities must be less than or equal to the following values on CPU and GPU:
 
 .. code-block:: console
+                
                 laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
                 Energy  diff: 7.61e-05
                 Density L2 error: 1.95e-01
