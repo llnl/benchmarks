@@ -13,7 +13,7 @@ developers of C++ applications to write portable, single-source code. The RAJA
 Performance Suite enables performance experiments and comparisons for kernel
 variants that use RAJA and those that do not.
 
-Source code and documentation for RAJA and the RAJA Performance Suite is 
+Source code and documentation for he RAJA Performance Suite and RAJA is 
 available at:
 
   * `RAJA Performance Suite GitHub project <https://github.com/LLNL/RAJAPerf>`_ 
@@ -39,7 +39,7 @@ as reductions, atomics, scans, and sorts.
 Each kernel in the Suite appears in RAJA and non-RAJA variants that exercise
 common programming models, such as OpenMP, CUDA, HIP, and SYCL. Performance
 comparisons between RAJA and non-RAJA variants are helpful to improve RAJA
-implementation and to identify impacts that C++ abstractions have on compilers'
+implementations and to identify impacts that C++ abstractions have on compilers'
 abilities to optimize. Often, kernels in the Suite serve as collaboration tools
 between the RAJA team and vendors to resolve performance issues observed in
 production applications that use RAJA.
@@ -53,14 +53,15 @@ contains the code for all the Suite kernels and all essential external software
 dependencies in Git submodules. Thus, dependency versions are pinned to each
 version of the Suite. Building the Suite requires an installation of CMake for
 configuring a build, a C++17 compliant compiler to build the code, and an MPI
-library installation when MPI is to be used. 
+library installation when MPI is to be used.
 
 The Suite can be run in a myriad of ways by specifying parameters and options
 as command-line arguments. The intent is that one can build the code and
 use scripts to execute multiple Suite runs to generate data for a desired
 performance experiment. In particular, variants, problem sizes, etc. for the
-kernels can be set by users via command line options. Instructions for running the
-RAJA Performance Suite benchmark are described in :ref:`rajaperf_run-label`.
+kernels can be set by users via command line options. Instructions for geting
+the code for the RAJA Performance Suite benchmark, building it, and running it 
+are described in :ref:`rajaperf_run-label`.
 
 
 .. _rajaperf_problems-label:
@@ -76,7 +77,7 @@ kernel features and RAJA contructs used (in parentheses).
 Priority 1 kernels
 ^^^^^^^^^^^^^^^^^^^
 
- * *Apps* group (directory src/apps)
+ * All in the repo directory src/apps
 
    #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
@@ -86,7 +87,6 @@ Priority 1 kernels
    #. **MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
    #. **NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a contribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
    #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
 
@@ -94,23 +94,18 @@ Priority 1 kernels
 Priority 2 kernels
 ^^^^^^^^^^^^^^^^^^^
 
- * *Apps* group (directory src/apps)
+ * Repo directory indicated in kernel name
 
-   #. **CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
-   #. **INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
-   #. **LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
-   #. **MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-
- * *Basic* group (directory src/basic)
-
-   #. **MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
-   #. **REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
-   #. **INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
-
- * *Comm* group (directory src/comm)
-
-   #. **HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
+   #. **src/apps/CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **src/apps/DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **src/apps/INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
+   #. **src/apps/LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
+   #. **src/apps/MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **src/apps/MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **src/basic/MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
+   #. **src/basic/REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
+   #. **src/basic/INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
+   #. **src/basic/comm/HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
 
 .. note:: In the RAJA Performance Suite repository, each kernel contains a
           detailed reference description located in the header file for the kernel
@@ -118,18 +113,18 @@ Priority 2 kernels
           reference description appears as a C-style sequential implementation of
           the kernel in a comment section near the top of the header file.
 
-To align execution of kernels in the Suite with how they would perform in the
-context of a full application, **benchmark runs must be done using multiple MPI
-ranks** to ensure that all resources on a compute node are being exercised so that
-kernel and node performance is not misrepresented. RAJA is an *X* in the often
-referred to *MPI + X* parallel application paradigm, where MPI is used for
-coarse-grained, distributed memory parallelism and X (e.g., RAJA) supports
-fine-grained parallelism within an MPI rank. The RAJA Performance Suite can be
-configured with MPI so that execution of kernels in the Suite follows the *MPI + X*
-application paradigm. When the RAJA Performance Suite is run using multiple MPI
-ranks, the same kernel code executes on each MPI rank. Synchronization and
-communication across ranks involves sending execution only timing information
-from each rank to rank zero for reporting purposes.
+To align execution of kernels in the Suite with the execution environment of 
+a full application, **benchmark runs must be done using multiple MPI ranks** to ensure that all resources on a compute node are being exercised so that
+kernel and node performance is not misrepresented.
+
+RAJA is an *X* in the often referred to *MPI + X* parallel application paradigm,
+where MPI is used for coarse-grained, distributed memory parallelism and X
+(e.g., RAJA) supports fine-grained parallelism within each MPI rank. The RAJA
+Performance Suite can be configured with MPI so that execution of kernels in
+the Suite follows the *MPI + X* application paradigm. When the RAJA Performance
+Suite is run using multiple MPI ranks, the same kernel code executes on each
+MPI rank. Synchronization and communication across ranks only involves sending
+execution timing information from each rank to rank zero for reporting purposes.
 
 .. important:: For RAJA Performance Suite benchmark execution, MPI must be used
                to run to ensure that all resources on a compute node are being 
@@ -143,22 +138,27 @@ from each rank to rank zero for reporting purposes.
 Figure of Merit
 ---------------
 
-The figure of merit (FOM) for each benchmark kernel is determined by the problem
-size at which the kernel *saturates* the resources on a compute node. That is, the
-problem size at which a computational throughput curve becomes flat, with zero
-derivative, and beyond which running larger problem sizes does not yield an
-increase in compute rate. The FOM is the saturation problem size (GB), and the
-compute rate (GFLOP/s) and memory bandwidth (BG/s) at the saturation problem size.
+The figure of merit (FOM) for each benchmark kernel is determined by the
+problem size at which the kernel *saturates* the resources on a compute node.
+That is, the problem size at which a computational throughput curve becomes
+flat, with zero derivative, and beyond which running larger problem sizes does
+not yield an increase in compute rate. The FOM involves 3 numerical values:
+
+  * the saturation problem size (GB)
+  * the compute rate (GFLOP/s) at the saturation problem size 
+  * the memory bandwidth (BG/s) at the saturation problem size
 
 We determine computational throughput using a plot where compute rate (GFLOP/s
 along the vertical axis) is a function of problem size (GB along the horizontal
-axis). Ideally, such a curve is monotonically increasing and asymptotes to a flat,
-horizontal line. Then, the saturation point is the problem size at which the
-derivative of the throughput curve becomes zero.
+axis). Ideally, such a curve is monotonically increasing and asymptotes to a
+flat, horizontal line. Then, the saturation point is the problem size at which
+the derivative of the throughput curve becomes zero.
 
-In reality, such throughput curves can be non-monotonic and/or not have a zero 
-deritive for all points beyond some problem size. Therefore, apply a simple 
-algorithm to estimate the saturation point described in :ref:`rajaperf_throughput-smooth`.
+In reality, throughput curves are often non-monotonic or do not have a 
+strictly zero deritive for all points beyond some problem size. Therefore, we
+apply a simple median based smoothing algorithm of the throughput curve and
+estimate the saturation point based on the smoothed throughput curve. The
+interested reader can read the algorithm for :ref:`rajaperf_throughput-smooth`
 
 
 .. _rajaperf_throughput-smooth:
@@ -167,8 +167,7 @@ Smoothing a throughput curve to estimate saturation
 ---------------------------------------------------
 
 To estimate the saturation point of a throughput curve as described earlier, we
-apply a simple algorithm to the actual throughput data points from a run as 
-follows.
+apply a simple algorithm to the computed throughput data points as follows.
 
 After running a kernel, we have a throughput data set consisting of a set of
 *x* and *y* values:
@@ -193,9 +192,17 @@ outliers and a few extrema do not affect the result too much:
         window_values = x[ window_indices ]
         y^{smooth}[i] = median( window_values )
 
-   #. Compute the global max of the :math:`y^{smooth}_{i}`: :math:`y_{max} = max( y^{smooth}_{i} for i = 0..N`
+Then, we estimate the saturation point from the smoothed curve points using one of the two approaches below. In either case, we we use :math:`eps = 0.1`and :math:`w = 3`.
+  
+   #. Define ::math:`y_{end} = y^{smooth}_{N-1}`
 
-   #. Find the approximate saturation point, we which we define as the minimum :math:`x_{i}` value where :math:`y^{smooth}_{i} >= (1 - eps) * y_{max}` for *w* consecutive *i* values. In our analyses, we use :math:`eps = 0.1` and :math:`w = 3`.
+   #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{end}) / y_{end} ) <= eps` for *w* consecutive *i* values.
+
+or 
+
+   #. Compute the global max of the :math:`y^{smooth}_{i}` :math:`y_{max} = max( y^{smooth}_{i} for i = 0..N`
+
+   #. Define the approximate saturation point as the minimum :math:`x_{i}` value where :math:`y^{smooth}_{i} >= (1 - eps) * y_{max}` for *w* consecutive *i* values.
 
 
 .. _rajaperf_codemod-label:
