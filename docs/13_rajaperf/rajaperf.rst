@@ -74,10 +74,16 @@ full Suite to focus on some of the more important computational patterns found
 in LLNL applications. The subset of kernels is described below, including key
 kernel features and RAJA contructs used (in parentheses). 
 
+.. note:: In the RAJA Performance Suite repository, each kernel contains a
+          detailed reference description located in the header file for the kernel
+          object; i.e., C++ header file named ``<kernel-name>.hpp``. The 
+          reference description appears as a C-style sequential implementation of
+          the kernel in a comment section near the top of the header file.
+
 Priority 1 kernels
 ^^^^^^^^^^^^^^^^^^^
 
- * All in the repo directory src/apps
+*Apps* group (directory src/apps)
 
    #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
@@ -94,43 +100,16 @@ Priority 1 kernels
 Priority 2 kernels
 ^^^^^^^^^^^^^^^^^^^
 
- * Repo directory indicated in kernel name
-
-   #. **src/apps/CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **src/apps/DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
-   #. **src/apps/INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
-   #. **src/apps/LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
-   #. **src/apps/MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **src/apps/MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
-   #. **src/basic/MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
-   #. **src/basic/REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
-   #. **src/basic/INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
-   #. **src/basic/comm/HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
-
-.. note:: In the RAJA Performance Suite repository, each kernel contains a
-          detailed reference description located in the header file for the kernel
-          object; i.e., a C++ header file named ``<kernel-name>.hpp``. The 
-          reference description appears as a C-style sequential implementation of
-          the kernel in a comment section near the top of the header file.
-
-To align execution of kernels in the Suite with the execution environment of 
-a full application, **benchmark runs must be done using multiple MPI ranks** to ensure that all resources on a compute node are being exercised so that
-kernel and node performance is not misrepresented.
-
-RAJA is an *X* in the often referred to *MPI + X* parallel application paradigm,
-where MPI is used for coarse-grained, distributed memory parallelism and X
-(e.g., RAJA) supports fine-grained parallelism within each MPI rank. The RAJA
-Performance Suite can be configured with MPI so that execution of kernels in
-the Suite follows the *MPI + X* application paradigm. When the RAJA Performance
-Suite is run using multiple MPI ranks, the same kernel code executes on each
-MPI rank. Synchronization and communication across ranks only involves sending
-execution timing information from each rank to rank zero for reporting purposes.
-
-.. important:: For RAJA Performance Suite benchmark execution, MPI must be used
-               to run to ensure that all resources on a compute node are being 
-               exercised and avoid misrepresentation of kernel and node
-               performance. This is described in the instructions provided in
-               :ref:`rajaperf_run-label`.
+   #. **Apps/CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **Apps/DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **Apps/INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
+   #. **Apps/LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
+   #. **Apps/MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **Apps/MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **Basic/MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
+   #. **Basic/REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
+   #. **Basic/INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
+   #. **Comm/HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
 
 
 .. _rajaperf_fom-label:
@@ -159,6 +138,25 @@ strictly zero deritive for all points beyond some problem size. Therefore, we
 apply a simple median based smoothing algorithm of the throughput curve and
 estimate the saturation point based on the smoothed throughput curve. The
 interested reader can read the algorithm for :ref:`rajaperf_throughput-smooth`
+
+To align execution of kernels in the Suite with the execution environment of 
+a full application, **benchmark runs must be done using multiple MPI ranks** to ensure that all resources on a compute node are being exercised so that
+kernel and node performance is not misrepresented.
+
+RAJA is an *X* in the often referred to *MPI + X* parallel application paradigm,
+where MPI is used for coarse-grained, distributed memory parallelism and X
+(e.g., RAJA) supports fine-grained parallelism within each MPI rank. The RAJA
+Performance Suite can be configured with MPI so that execution of kernels in
+the Suite follows the *MPI + X* application paradigm. When the RAJA Performance
+Suite is run using multiple MPI ranks, the same kernel code executes on each
+MPI rank. Synchronization and communication across ranks only involves sending
+execution timing information from each rank to rank zero for reporting purposes.
+
+.. important:: For RAJA Performance Suite benchmark execution, MPI must be used
+               to run to ensure that all resources on a compute node are being 
+               exercised and avoid misrepresentation of kernel and node
+               performance. This is described in the instructions provided in
+               :ref:`rajaperf_run-label`.
 
 
 .. _rajaperf_throughput-smooth:
@@ -192,17 +190,28 @@ outliers and a few extrema do not affect the result too much:
         window_values = x[ window_indices ]
         y^{smooth}[i] = median( window_values )
 
-Then, we estimate the saturation point from the smoothed curve points using one of the two approaches below. In either case, we we use :math:`eps = 0.1`and :math:`w = 3`.
+Then, we estimate the saturation point from the smoothed curve points the three methods below. Specifically, we apply each method to see if it finds a potential
+saturation point. Then, we define the saturation point as the the minimum
+saturation point over all methods that find one. In each case, we use
+:math:`eps = 0.1, w = 3`.
+
+**Method 1**
   
    #. Define ::math:`y_{end} = y^{smooth}_{N-1}`
 
    #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{end}) / y_{end} ) <= eps` for *w* consecutive *i* values.
 
-or 
+**Method 2**
 
    #. Compute the global max of the :math:`y^{smooth}_{i}` :math:`y_{max} = max( y^{smooth}_{i} for i = 0..N`
 
    #. Define the approximate saturation point as the minimum :math:`x_{i}` value where :math:`y^{smooth}_{i} >= (1 - eps) * y_{max}` for *w* consecutive *i* values.
+
+**Method 3**
+ 
+   #. Define ::math:`y_{end} = y^{smooth}_{N-1}`
+
+   #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{end}) / y_{end} ) <= eps`.
 
 
 .. _rajaperf_codemod-label:

@@ -2,9 +2,12 @@
 SPARTA
 ******
 
-This is the documentation for the ATS-5 Benchmark [SPARTA]_. The
-content herein was created by the following authors (in alphabetical
-order).
+.. note::
+   The documentation herein needs to be updated for current
+   performance.
+
+This is the documentation for the benchmark [SPARTA]_. The content
+herein was created by the following authors (in alphabetical order).
 
 - `Anthony M. Agelastos <mailto:amagela@sandia.gov>`_
 - `Michael A. Gallis <mailto:magalli@sandia.gov>`_
@@ -47,9 +50,7 @@ Characteristics
 The goal is to utilize the specified version of SPARTA (see
 :ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
 :ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
-changes are made to SPARTA) for the SSI and SSNI problems (see
-:ref:`SPARTASSNISSI`) and other single-node strong scaling
-benchmarking (see :ref:`SPARTAResults`).
+changes are made to SPARTA).
 
 
 .. _SPARTAApplicationVersion:
@@ -57,9 +58,23 @@ benchmarking (see :ref:`SPARTAResults`).
 Application Version
 -------------------
 
-The target application version corresponds to the Git SHA that the
-SPARTA git submodule at the root of this repository is set to, i.e.,
-within ``sparta``.
+The command to clone is provided below.
+
+.. literalinclude:: sparta_clone.sh
+   :language: sh
+   :lines: 2-
+
+.. note::
+   The Git SHA will be updated with a tag soon.
+
+The script to clone can be downloaded from :download:`sparta_clone.sh
+<sparta_clone.sh>`. It can also be executed in place to clone into
+``docs/31_sparta/sparta``.
+ 
+.. code-block:: bash
+
+   cd docs/31_sparta
+   ./sparta_clone.sh
 
 
 .. _SPARTAProblem:
@@ -77,16 +92,18 @@ circle. The memory array used to hold particles is reordered by grid
 cell every 100 timesteps to improve data locality and cache access
 patterns.
 
-This problem is present within the upstream SPARTA repository. The
-components of this problem are listed below (paths given are within
-SPARTA repository). Each of these files will need to be copied into a
-run directory for the simulation.
+This problem is *mostly* present within the upstream SPARTA
+repository. The components of this problem are listed below (paths
+given are within SPARTA repository). Each of these files will need to
+be copied into a run directory for the simulation.
 
 ``examples/cylinder/in.cylinder``
-   This is the primary input file that controls the simulation. Some
+   This is the default input file that controls the simulation. Some
    parameters within this file may need to be changed depending upon
    what is being run (i.e., these parameters control how long this
-   simulation runs for and how much memory it uses).
+   simulation runs for and how much memory it uses). The modified
+   version of this within the template directory should be preferred;
+   more on this below.
 
 ``examples/cylinder/circle_R0.5_P10000.surf``
    This is the mesh file and will remain unchanged.
@@ -96,23 +113,41 @@ run directory for the simulation.
    ``air.vss``) contain the composition and reactions inherent with
    the air. These files, like the mesh file, are not to be edited.
 
+A template run directory was created to help ease performing a
+simulation; this directory is ``templatedir``. There are some key
+files within it.
+
+``templatedir/in.cylinder``
+   This is a modified version of the input file with some key parameters
+   changed to be more appropriate as a benchmark.
+
+``templatedir/sparta_ln.sh``
+   This file creates symbolic links to files and folders needed for
+   the simulation.
+
+``templatedir/sparta_batch_elcapitan.sh``
+   This is a batch script compatible with El Capitan. It has
+   capabilities for setting key job parameters from the command line;
+   more on that below.
+
+
 An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 6,11,17,23,25
+   :emphasize-lines: 6,11,17,23,26,29,32,34
 
    <snip>
    ###################################
    # Trajectory inputs
    ###################################
    <snip>
-   variable            L equal 1.
+   variable            L index 1.
    <snip>
    ###################################
    # Simulation initialization standards
    ###################################
-   variable            ppc equal 55
+   variable            ppc equal 47
    <snip>
    #####################################
    # Gas/Collision Model Specification #
@@ -124,9 +159,18 @@ provided below.
    # Output
    ###################################
    <snip>
-   stats                100
+   stats               100
    <snip>
-   run                 4346
+   # Some systems buffer extensively
+   stats_modify        flush yes
+   <snip>
+   # Stop after 11 minutes
+   fix 1 halt 10 tlimit > 660.0 message no
+   <snip>
+   # Print out the value of L for parsing ease
+   print "The value of L is $L" 
+   <snip>
+   run                 10000000
 
 These parameters are described below.
 
@@ -140,7 +184,8 @@ These parameters are described below.
 ``ppc``
    This sets the **p**\ articles **p**\ er **c**\ ell variable. This
    variable controls the size of the problem and, accordingly, the
-   amount of memory it uses.
+   amount of memory it uses. Adjust this if the initial memory size is
+   too high and a value of ``L`` would need to be less than 1.0.
 
 ``collide_modify``
    The official documentation for this value is `here
@@ -156,9 +201,22 @@ These parameters are described below.
    slow down the simulaton.  If it produces too little, then it may
    adversely impact the FOM calculations.
 
+``stats_modify flush yes``
+   This enables the log output to buffer continuously on El Capitan.
+
+``fix 1 halt 10 tlimit > 660.0 message no``
+   This sets job termination to 660.0 seconds of wall time by checking
+   on progress every 10 steps.
+
+``print "The value of L is $L"``
+   This line outputs the value of ``L`` in a way that is easy to parse
+   since it can be set external to the input file.
+
 ``run``
    This sets how many iterations it will run for, which also controls
-   the wall time required for termination.
+   the wall time required for termination. If the ``fix 1 halt ...``
+   is used, then set this to a large number so it allows the ``halt``
+   to stop at the appropriate time.
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -171,12 +229,13 @@ enabled, the following excerpts should be found within the log file.
 .. code-block::
    :emphasize-lines: 2,6
    
-   SPARTA (13 Apr 2023)
-   KOKKOS mode is enabled (../kokkos.cpp:40)
-     requested 0 GPU(s) per node
+   SPARTA (dd mmm yyyy)
+   KOKKOS mode is enabled (/path/to/kokkos.cpp:40)
+     requested 1 GPU(s) per node
      requested 1 thread(s) per MPI task
-   Running on 32 MPI task(s)
+   Running on 4 MPI task(s)
    package kokkos
+
 
 .. _SPARTAFigureOfMerit:
 
@@ -188,38 +247,23 @@ end of this simulation is a block that resembles the following
 example.
 
 .. code-block::
-   :emphasize-lines: 8-25
+   :emphasize-lines: 8-12
 
-       Step          CPU        Np     Natt    Ncoll Maxlevel
-          0            0 392868378        0        0        6
-        100    18.246846 392868906       33       30        6
-        200    35.395156 392868743      166      145        6
-   <snip>
-       1700    282.11911 392884637     3925     3295        6
-       1800    298.63468 392886025     4177     3577        6
-       1900    315.12601 392887614     4431     3799        6
-       2000    331.67258 392888822     4700     4055        6
-       2100    348.07854 392888778     4939     4268        6
-       2200    364.41121 392890325     5191     4430        6
-       2300    380.85177 392890502     5398     4619        6
-       2400    397.32636 392891138     5625     4777        6
-       2500    413.76181 392891420     5857     4979        6
-       2600    430.15228 392892709     6077     5165        6
-       2700    446.56604 392895923     6307     5396        6
-       2800    463.05626 392897395     6564     5613        6
-       2900    479.60999 392897644     6786     5777        6
-       3000    495.90306 392899444     6942     5968        6
-       3100    512.24813 392901339     7092     6034        6
-       3200    528.69194 392903824     7322     6258        6
-       3300    545.07902 392904150     7547     6427        6
-       3400    561.46527 392905692     7758     6643        6
-       3500    577.82469 392905983     8002     6826        6
-       3600    594.21442 392906621     8142     6971        6
-       3700    610.75031 392907947     8298     7110        6
-       3800    627.17841 392909478     8541     7317        6
-   <snip>
-       4346    716.89228 392914687  1445860  1069859        6
-   Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
+       Step          CPU         Np     Natt    Ncoll Maxlevel
+          0            0 1342895588        0        0        3 
+        100    55.100981 1342896690 30660997 24422279        3 
+        200    108.04593 1342894859 30715618 24465908        3 
+        300    162.82546 1342894246 30765809 24505854        3 
+        400    217.92144 1342895598 30812328 24539812        3 
+        500    274.18419 1342897827 30854579 24573110        3 
+        600    330.94615 1342897254 30902088 24612675        3 
+        700    387.95385 1342893864 30939073 24640919        3 
+        800    445.66487 1342885429 30978764 24674696        3 
+        900    505.13571 1342886863 31014395 24701985        3 
+       1000    564.62459 1342883798 31050409 24731144        3 
+       1100    624.14498 1342885848 31083875 24756941        3 
+       1200    683.65841 1342884461 31116135 24780002        3 
+   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
 
 The quantity of interest (QOI) is "Mega particle steps per second,"
 which can be computed from the above table by multiplying the third
@@ -252,38 +296,23 @@ The aforementioned relevant block of output within "log.sparta" is
 replicated below.
 
 .. code-block::
-   :emphasize-lines: 8-25
+   :emphasize-lines: 8-12
 
-       Step          CPU        Np     Natt    Ncoll Maxlevel
-          0            0 392868378        0        0        6
-        100    18.246846 392868906       33       30        6
-        200    35.395156 392868743      166      145        6
-   <snip>
-       1700    282.11911 392884637     3925     3295        6
-       1800    298.63468 392886025     4177     3577        6
-       1900    315.12601 392887614     4431     3799        6
-       2000    331.67258 392888822     4700     4055        6
-       2100    348.07854 392888778     4939     4268        6
-       2200    364.41121 392890325     5191     4430        6
-       2300    380.85177 392890502     5398     4619        6
-       2400    397.32636 392891138     5625     4777        6
-       2500    413.76181 392891420     5857     4979        6
-       2600    430.15228 392892709     6077     5165        6
-       2700    446.56604 392895923     6307     5396        6
-       2800    463.05626 392897395     6564     5613        6
-       2900    479.60999 392897644     6786     5777        6
-       3000    495.90306 392899444     6942     5968        6
-       3100    512.24813 392901339     7092     6034        6
-       3200    528.69194 392903824     7322     6258        6
-       3300    545.07902 392904150     7547     6427        6
-       3400    561.46527 392905692     7758     6643        6
-       3500    577.82469 392905983     8002     6826        6
-       3600    594.21442 392906621     8142     6971        6
-       3700    610.75031 392907947     8298     7110        6
-       3800    627.17841 392909478     8541     7317        6
-   <snip>
-       4346    716.89228 392914687  1445860  1069859        6
-   Loop time of 716.906 on 112 procs for 4346 steps with 392914687 particles
+       Step          CPU         Np     Natt    Ncoll Maxlevel
+          0            0 1342895588        0        0        3 
+        100    55.100981 1342896690 30660997 24422279        3 
+        200    108.04593 1342894859 30715618 24465908        3 
+        300    162.82546 1342894246 30765809 24505854        3 
+        400    217.92144 1342895598 30812328 24539812        3 
+        500    274.18419 1342897827 30854579 24573110        3 
+        600    330.94615 1342897254 30902088 24612675        3 
+        700    387.95385 1342893864 30939073 24640919        3 
+        800    445.66487 1342885429 30978764 24674696        3 
+        900    505.13571 1342886863 31014395 24701985        3 
+       1000    564.62459 1342883798 31050409 24731144        3 
+       1100    624.14498 1342885848 31083875 24756941        3 
+       1200    683.65841 1342884461 31116135 24780002        3 
+   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
 
 There are several columns of interest regarding correctness; these are
 listed below.
@@ -380,92 +409,57 @@ criteria are:
    \varepsilon _{\texttt{Ncoll}} &\le 25\%
 
 
-.. _SPARTASSNISSI:
-
-SSNI & SSI
-----------
-
-The SSNI requires the vendor to choose any problem size to maximize
-throughput. The only caveat is that the problem size must be large
-enough so that the high-water memory mark of the simulation uses at
-least 50% of the available memory available to the processing
-elements.
-
-The SSI problem requires applying the methodology of the SSNI and weak
-scaling it up to at least 1/3 of the system. Specifically, any problem
-size can be arbitrarily selected provided the high-water memory mark
-of the simulation is greater than 50% on the processing elements
-across the nodes.
-
-
 System Information
 ==================
 
 The platforms utilized for benchmarking activities are listed and
 described below.
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`GlobalSystemATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`GlobalSystemATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ElCapitanSystemDescription`)
 
 
 Building
 ========
 
-If Git Submodules were cloned within this repository, then the source
-code to build the appropriate version of SPARTA is already present at
-the top level within the "sparta" folder. Instructions are provided on
+A script (``sparta_clone.sh``) is provided to clone the SPARTA
+repository within the "sparta" folder. Instructions are provided on
 how to build SPARTA for the following systems:
 
-* Generic (see :ref:`BuildGeneric`)
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`BuildATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`BuildATS2`)
+* Generic (see :ref:`BuildSpartaGeneric`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`BuildSpartaATS4`)
 
 
-.. _BuildGeneric:
+.. _BuildSpartaGeneric:
 
 Generic
 -------
 
-Refer to SPARTA's [build]_ documentation for generic instructions.
+Refer to SPARTA's [sparta-build]_ documentation for generic
+instructions.
 
 
-.. _BuildATS3:
+.. _BuildSpartaATS4:
 
-Crossroads
+El Capitan
 ----------
 
-Instructions for building on Crossroads are provided below. These
+Instructions for building on El Capitan are provided below. These
 instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. This
-is tested with Intel's 2023 developer tools release. The script
-discussed below is :download:`build-crossroads.sh
-<build-crossroads.sh>`.
+current working directory is at the top level of this repository. 
 
 .. code-block:: bash
 
-   cd doc/sphinx/08_sparta
-   ./build-crossroads.sh
+   cd docs/31_sparta
+   ./sparta_build_elcapitan.sh
 
+The script discussed above is :download:`sparta_build_elcapitan.sh
+<sparta_build_elcapitan.sh>` and is produced below for convenience and
+reference.
 
-.. _BuildATS2:
-
-Sierra
-------
-
-Instructions for building on Sierra are provided below. These
-instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. The
-script discussed below is :download:`build-vortex.sh
-<build-vortex.sh>`.
-
-.. code-block:: bash
-
-   cd doc/sphinx/08_sparta
-   ./build-vortex.sh
+.. literalinclude:: sparta_build_elcapitan.sh
+   :language: bash
 
 
 Running
@@ -474,59 +468,70 @@ Running
 Instructions are provided on how to run SPARTA for the following
 systems:
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`RunATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`RunATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`SPARTARunATS4`)
+  * Profiling with Kokkos Tools on El Capitan (see
+    :ref:`SPARTAProfileKokkosToolsElCapitan`)
 
 
-.. _RunATS3:
+.. _SPARTARunATS4:
 
-Crossroads
+El Capitan
 ----------
 
-Instructions for performing the simulations on Crossroads are provided
-below.  There are two scripts that facilitate running several
-single-node strong-scaling ensembles.
+.. note::
 
-:download:`run-crossroads-mapcpu.sh <run-crossroads-mapcpu.sh>`
-   This script successively executes SPARTA on a single node for the
-   same set of input parameters; there are many environment variables
-   that can be set to control what it runs.
+   This section will be updated with some more content soon.
 
-:download:`sbatch-crossroads-mapcpu.sh <sbatch-crossroads-mapcpu.sh>`
-   This script runs the previous script for different numbers of MPI
-   ranks, problem size, problem duration, and other parameters to
-   yield several strong scaling trends.
+An example for performing simulations on El Capitan is
+provided below.
 
-:download:`scale-crossroads-mapcpu.sh <scale-crossroads-mapcpu.sh>`
-   This script successively executes SPARTA on a specified number of
-   nodes for the same set of input parameters; there are many
-   environment variables that can be set to control what it runs.
+.. code-block:: bash
 
-:download:`sbatch-crossroads-mapcpu-scale.sh <sbatch-crossroads-mapcpu-scale.sh>`
-   This script runs the previous script for different numbers of
-   nodes.
+   # first, copy templatedir into something useful
+   cp -a templatedir useful
+
+   # next, go into the run folder
+   cd useful
+
+   # submit job and set parameters on command line if desired
+   #   this example sets L (aka sparta_len) to 2.5
+   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
+   #   this example runs on 1 node (aka --nodes=1)
+   sparta_len=2.5 is_kokkos_tools=1 flux batch --nodes=1 sparta_batch_elcapitan.s
 
 
-.. _RunATS2:
+.. _SPARTAProfileKokkosTools:
 
-Sierra
-------
+Profiling with Kokkos Tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for performing the simulations on Sierra are provided
-below. There are two scripts that facilitate running several
-single-node strong-scaling ensembles.
+Scripts are provided to clone and build Kokkos Tools. The steps to do
+both are provided below.
 
-:download:`run-vortex.sh <run-vortex.sh>`
-   This script successively executes SPARTA on a single node for the same set of
-   input parameters; there are many environment variables that can be set to
-   control what it runs.
+.. code-block:: bash
 
-:download:`bsub-vortex.sh <bsub-vortex.sh>`
-   This script runs the previous script for differing problem size,
-   problem duration, and other parameters to yield several strong
-   scaling trends.
+   # go into the SPARTA documentation folder
+   cd docs/31_sparta
+
+   # clone Kokkos Tools
+   ./kokkos_tools_clone.sh
+
+   # build Kokkos Tools' Space Time
+   ./kokkos_tools_build_elcapitan.sh
+
+Once built, the command line variable ``is_kokkos_tools`` can be set
+to ``1`` for the batch script to turn it on. After a successful run,
+it will output additional memory information. An example of this (for
+``L`` equal to 2.0 and ``ppc`` equal to 47) on El Capitan is provided
+below that shows approximately 82.2 GB of memory allocated on each
+GPU.
+
+.. code-block::
+
+   KOKKOS HIP SPACE:
+   ===================
+   MAX MEMORY ALLOCATED: 82222221.9 kB
 
 
 .. _SPARTAResults:
@@ -534,173 +539,109 @@ single-node strong-scaling ensembles.
 Verification of Results
 =======================
 
+Additional information:
+
+* The sub-section :ref:`SPARTAComputeFOM` describes how to compute the
+  FOM
+
 Single-node results from SPARTA are provided on the following systems:
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`ResultsATS3`)
-* Advanced Technology System 2 (ATS-2), also known as Sierra (see
-  :ref:`ResultsATS2`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsSpartaATS4`)
 
 Multi-node results from SPARTA are provided on the following system(s):
 
-* Advanced Technology System 3 (ATS-3), also known as Crossroads (see
-  :ref:`ResultsScaleATS3`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ResultsSpartaScaleATS4`)
 
 
-.. _ResultsATS3:
+.. _SPARTAComputeFOM:
 
-Crossroads - Single Node
-------------------------
-
-Strong single-node scaling throughput (i.e., fixed problem size being
-run on different MPI rank counts on a single node) plots of SPARTA on
-Crossroads are provided within the following subsections. The
-throughput corresponds to Mega particle steps per second per node.
-
-15 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=15
-   :file: ats3--15.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--15.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=15
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=15
-
-.. figure:: ats3mem--15.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=15
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=15
-
-35 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=35
-   :file: ats3--35.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--35.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=35
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=35
-
-.. figure:: ats3mem--35.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=35
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=35
-
-55 Particles per Cell
-^^^^^^^^^^^^^^^^^^^^^
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Crossroads with ppc=55
-   :file: ats3--55.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats3--55.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=55
-
-   SPARTA Single Node Strong Scaling Throughput on Crossroads with ppc=55
-
-.. figure:: ats3mem--55.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=55
-
-   SPARTA Single Node Strong Scaling Memory on Crossroads with ppc=55
-
-
-.. _ResultsATS2:
-
-Sierra - Single Node
---------------------
-
-Strong single-node scaling throughput for varying problem sizes (i.e.,
-changing ``ppc`` and running on a single Nvidia V100) of SPARTA on
-Sierra are provided below. The throughput corresponds to Mega particle
-steps per second per node.
-
-.. csv-table:: SPARTA Single Node Strong Scaling Throughput and Memory on Sierra Utilizing a Single Nvidia V100
-   :file: ats2.csv
-   :align: center
-   :widths: 10, 10, 10, 10, 10
-   :header-rows: 1
-
-.. figure:: ats2.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Single Node Strong Scaling Throughput on Sierra Utilizing a Single Nvidia V100
-
-   SPARTA Single Node Strong Scaling Throughput on Sierra Utilizing a Single Nvidia V100
-
-
-.. _ResultsScaleATS3:
-
-Crossroads - Many Nodes
+Compute Figure of Merit
 -----------------------
 
-Multi-node weak scaling throughput (i.e., fixed problem size being run
-on different node counts) plots of SPARTA on Crossroads are provided
-below. The throughput corresponds to Mega particle steps per second
-per node.
+A script (``sparta_fom.py``) is provided to compute the figure of
+merit (FOM). A single-node example of it is below on El Capitan
+showcasing 2,408 Mega particle steps per second per node. Its default
+values are to always run ``--all``, to set 4 MPI ranks per node, and
+to look for a file named "log.sparta" meaning the arguments in the
+example were unnecessary.
+
+.. code-block::
+   :emphasize-lines: 2
+
+   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
+   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
+   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
+   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
+   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
+   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
+   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
+   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
+   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
+   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
+
+
+.. _ResultsSpartaATS4:
+
+El Capitan - Single Node
+------------------------
 
 .. note::
-   Weak-scaled data with nodes increasing by powers of 2 have been
-   gathered. The single-node data for this particular weak-scaling
-   bundle is more performant than the data gathered for the
-   single-node benchmarks (see :ref:`ResultsATS3` above). The
-   single-node data within that section will not be updated at this
-   time to avoid churn.
 
-.. csv-table:: SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35
-   :file: ats3--scale--main.csv
-   :align: center
-   :widths: 10, 10, 10, 10
-   :header-rows: 1
+   This section will be updated with some more content soon.
 
-.. figure:: ats3--scale--main.png
-   :align: center
-   :scale: 50%
-   :alt: SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35 
+A single-node example is below that showcases 2,408 Mega particle
+steps per second per node. The other relevant parameters are displayed
+as part of the output.
 
-   SPARTA Multi-Node Weak Scaling Throughput on Crossroads with ppc=35
+.. code-block::
+   :emphasize-lines: 2
+
+   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
+   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
+   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
+   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
+   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
+   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
+   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
+   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
+   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
+   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
+
+
+.. _ResultsSpartaScaleATS4:
+
+El Capitan - Many Nodes
+-----------------------
+
+.. note::
+
+   This section will be updated with some more content soon.
 
 
 Timing Breakdown
 ^^^^^^^^^^^^^^^^
 
-Timing breakdown information directly from SPARTA is provided for
-various node counts. SPARTA writes out a timer block that resembles
-the following.
+.. note::
+
+   This section will be updated with some more content soon.
+
+Timing breakdown information directly from SPARTA on El Capitan is
+provided for various node counts. SPARTA writes out a timer block that
+resembles the following.
 
 .. code-block::
-   
+
    Section |  min time  |  avg time  |  max time  |%varavg| %total
    ---------------------------------------------------------------
-   Move    | 110.5      | 361.59     | 410.76     | 217.4 | 52.41
-   Coll    | 22.174     | 69.358     | 105.6      |  95.0 | 10.05
-   Sort    | 48.822     | 156.12     | 198.1      | 146.5 | 22.63
-   Comm    | 0.57662    | 0.74641    | 1.2112     |  15.3 |  0.11
-   Modify  | 0.044491   | 0.14381    | 0.67954    |  40.0 |  0.02
-   Output  | 0.19404    | 1.0017     | 7.2883     | 105.4 |  0.15
-   Other   |            | 101        |            |       | 14.64
+   Move    | 159.2      | 161.74     | 165.21     |  18.7 | 23.66
+   Coll    | 186.02     | 325.5      | 476.79     | 771.3 | 47.61
+   Sort    | 26.944     | 29.01      | 31.18      |  35.9 |  4.24
+   Comm    | 1.7542     | 1.762      | 1.7726     |   0.5 |  0.26
+   Modify  | 2.502      | 2.9416     | 3.3764     |  24.7 |  0.43
+   Output  | 0.049965   | 1.7761     | 3.441      | 124.6 |  0.26
+   Other   |            | 160.9      |            |       | 23.54
 
 A description of the work performed for each of the sections is
 provided below.
@@ -729,81 +670,6 @@ provided below.
    include load imbalance (i.e., ranks waiting at a collective
    operation)
 
-These tables are provided below for the various rank counts for
-reference.
-
-
-1 Node
-""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0001.log
-
-
-2 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0002.log
-
-
-4 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0004.log
-
-
-8 Nodes
-"""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0008.log
-
-
-16 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0016.log
-
-
-32 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0032.log
-
-
-64 Nodes
-""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0064.log
-
-
-128 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0128.log
-
-
-256 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0256.log
-
-
-512 Nodes
-"""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-0512.log
-
-
-1024 Nodes
-""""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-1024.log
-
-
-2048 Nodes
-""""""""""
-
-.. literalinclude:: ats3--scale--breakdown--nodes-2048.log
-
 
 References
 ==========
@@ -815,7 +681,7 @@ References
 .. [site] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Direct Simulation
           Monte Carlo Simulator', 2023. [Online]. Available:
           https://sparta.github.io. [Accessed: 22- Feb- 2023]
-.. [build] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Documentation Getting
-           Started', 2023. [Online]. Available:
-           https://sparta.github.io/doc/Section_start.html#start_2. [Accessed:
-           26- Mar- 2023]
+.. [sparta-build] M. Gallis and S. Plimpton and S. Moore, 'SPARTA Documentation Getting
+                  Started', 2023. [Online]. Available:
+                  https://sparta.github.io/doc/Section_start.html#start_2. [Accessed:
+                  26- Mar- 2023]
