@@ -13,16 +13,23 @@ developers of C++ applications to write portable, single-source code. The RAJA
 Performance Suite enables performance experiments and comparisons for kernel
 variants that use RAJA and those that do not.
 
-Source code and documentation for he RAJA Performance Suite and RAJA is 
-available at:
+.. important:: The RAJA Performance Suite benchmark is limited to a subset of
+               kernels in the RAJA Performance Suite described in
+               :ref:`rajaperf_problems-label`.
+
+The source code, performance baseline data files, run scripts, and data
+processing scripts are maintained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_. That project includes the 
+RAJA Performance Suite repo as a submodule, which, in turn, contains RAJA as
+a submodule. When the benchmark project is properly cloned recursively,
+eveything necessary to run the benchmark is included. Detailed instructions
+are include in :ref:`rajaperf_build-label`.
+
+The source code repos and documentation for the RAJA Performance Suite and RAJA
+are available at:
 
   * `RAJA Performance Suite GitHub project <https://github.com/LLNL/RAJAPerf>`_ 
 
   * `RAJA GitHub project <https://github.com/LLNL/RAJAPerf>`_
-
-.. important:: The RAJA Performance Suite benchmark is limited to a subset of
-               kernels in the RAJA Performance Suite described in
-               :ref:`rajaperf_problems-label`.
 
 
 Purpose
@@ -37,7 +44,7 @@ Kernels exercise various loop structures as well as parallel operations such
 as reductions, atomics, scans, and sorts.
 
 Each kernel in the Suite appears in RAJA and non-RAJA variants that exercise
-common programming models, such as OpenMP, CUDA, HIP, and SYCL. Performance
+common programming models, such as OpenMP, CUDA, and HIP. Performance
 comparisons between RAJA and non-RAJA variants are helpful to improve RAJA
 implementations and to identify impacts that C++ abstractions have on compilers'
 abilities to optimize. Often, kernels in the Suite serve as collaboration tools
@@ -137,7 +144,7 @@ In reality, throughput curves are often non-monotonic or do not have a
 strictly zero deritive for all points beyond some problem size. Therefore, we
 apply a simple median based smoothing algorithm of the throughput curve and
 estimate the saturation point based on the smoothed throughput curve. The
-interested reader can read the algorithm for :ref:`rajaperf_throughput-smooth`
+interested reader can read the algorithm we use for :ref:`rajaperf_throughput-smooth`
 
 To align execution of kernels in the Suite with the execution environment of 
 a full application, **benchmark runs must be done using multiple MPI ranks** to ensure that all resources on a compute node are being exercised so that
@@ -191,8 +198,8 @@ outliers and a few extrema do not affect the result too much:
         y^{smooth}[i] = median( window_values )
 
 Then, we estimate the saturation point from the smoothed curve points the three methods below. Specifically, we apply each method to see if it finds a potential
-saturation point. Then, we define the saturation point as the the minimum
-saturation point over all methods that find one. In each case, we use
+saturation point. Then, **we define the saturation point as the minimum
+saturation point over all methods that find one**. In each case, we use
 :math:`eps = 0.1, w = 3`.
 
 **Method 1**
@@ -224,12 +231,13 @@ For the RAJA Performance Suite, we define the following restrictions on source
 code modifications:
 
 * While source code changes to the RAJA Performance Suite kernels and to RAJA
-  can be proposed, RAJA may not be removed from *RAJA kernel variants* in the 
-  Suite or replaced with any other library. The *Base kernel variants* in the
-  Suite are provided to show how each kernel could be implemented directly
-  in the corresponding programming model back-end without the RAJA abstraction
-  layer. Apart from some special cases, the RAJA and Base variants for each
-  kernel should perform the same computation.
+  can be proposed for improved performance, for example, RAJA may not be
+  removed from *RAJA kernel variants* in the Suite or replaced with any other
+  library. The *Base kernel variants* in the Suite are provided to show how
+  each kernel can be implemented directly in the corresponding programming
+  model back-end without the RAJA abstraction layer. Apart from some special
+  cases, the RAJA and Base variants for each kernel should execute the same
+  operations.
 
 
 .. _rajaperf_build-label:
