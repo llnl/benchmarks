@@ -22,7 +22,7 @@ The `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchma
 and data processing scripts for the RAJA Performance Suite Benchmark. The
 project includes the RAJA Performance Suite repo as a submodule, which, in
 turn, contains RAJA as a submodule. When the benchmark project repo is cloned
-recursively, eveything necessary to run the benchmark is included. Detailed
+recursively, everything necessary to run the benchmark is included. Detailed
 instructions are include in :ref:`rajaperf_build-label`.
 
 Additional information about the RAJA Performance Suite and RAJA is available
@@ -66,7 +66,7 @@ library installation to link against.
 The Suite can be run in a myriad of ways via as command-line options and their
 arguments. The intent is that once the code is compiled, scripts can be used
 to execute necessary Suite runs to generate data for a desired performance
-experiment. Instructions for geting the code for the RAJA Performance Suite
+experiment. Instructions for getting the code for the RAJA Performance Suite
 Benchmark, building it, and running it are described
 in :ref:`rajaperf_run-label`.
 
@@ -79,7 +79,7 @@ Problems
 The RAJA Performance Suite Benchmark consists of a subset of kernels in the
 full Suite that focus on some key computational patterns found in LLNL
 applications. The subset of kernels is described below, including key
-kernel features and RAJA contructs used (in parentheses). 
+kernel features and RAJA constructs used (in parentheses). 
 
 .. note:: In the RAJA Performance Suite repository, each kernel contains a
           detailed reference description near the top of the header file for
@@ -141,7 +141,7 @@ values:
 
   * the saturation problem size (GB)
   * the compute rate (GFLOP/s) at the saturation problem size 
-  * the memory bandwidth (BG/s) at the saturation problem size
+  * the memory bandwidth (GB/s) at the saturation problem size
 
 When the Suite is run, problem size, compute rate, and memory bandwidth, among
 other data are reported in output files. We provide a Python script, whose
@@ -154,11 +154,12 @@ on the horizontal axis. Ideally, such a curve will be monotonically increasing
 and asymptote to a flat, horizontal line. Then, the saturation point is the
 problem size at which the derivative of the throughput curve becomes zero.
 In reality, throughput curves are often non-monotonic or do not have a 
-strictly zero deritive for all points beyond some problem size. Therefore, we
+strictly zero derivative for all points beyond some problem size. Therefore, we
 apply a simple median based smoothing algorithm to the throughput curve data
 and heuristically estimate the saturation point based on the smoothed
-throughput curve. For completeness, these details are described in
-:ref:`rajaperf_throughput-smooth`
+throughput curve. The details of our approach are documented in the
+``process_data.py`` script in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository, which we use in 
+:ref:`rajaperf_run-label`
 
 Lastly, we emphasize that we want the kernels to be run in an execution
 environment that aligns with how they would run if used in a real application.
@@ -181,64 +182,6 @@ purposes.
                exercised and avoid misrepresentation of kernel and node
                performance. This is described in the instructions provided in
                :ref:`rajaperf_run-label`.
-
-
-.. _rajaperf_throughput-smooth:
-
-Smoothing a throughput curve to estimate saturation point
-----------------------------------------------------------
-
-To estimate the saturation point of a throughput curve as described above, we
-apply a simple algorithm to the computed throughput data points as follows.
-
-After running a kernel, we have a throughput data set consisting of a set of
-*x* and *y* values:
-
-.. math::
-   {x_{0}, x_{1}, ... , x_{N}}
-   {y_{0}, y_{1}, ... , y_{N}}
-
-where the :math:`x_{i}` values are problem sizes (GB) and the :math:`y_{i}`
-values are compute rates (GFLOP/s).
-
-First, we smooth the :math:`y(x)` curve using a *moving median method*, which
-is a simple transformation of the :math:`y_{i}` points that is robust to
-outliers and a few extrema do not affect the result too much:
-
-   #. Choose a window size *k* and define :math:`m = (k - 1) / 2`. The value of *k*
-      is an odd integer such as 3, 5, or 7. In our analyses, we use :math:`k = 5`.
-   
-   #. Define a *smoothed curve* using the same :math:`x_{i}` values as above, but with :math:`y^{smooth}_{i}` values defined as:
-
-.. math::
-      for i in 0..N:
-        window_indices = { max(0, i - m), ..., min(N, i + m) }
-        window_values = x[ window_indices ]
-        y^{smooth}[i] = median( window_values )
-
-Then, we estimate the saturation point from the smoothed curve points by using
-the three methods below. Specifically, we apply each method to see if it finds
-a potential saturation point. Then, **we define the saturation point as the
-minimum saturation point over all methods that find one**. In each case, we use
-:math:`eps = 0.1, w = 3`.
-
-**Method 1**
-  
-   #. Define ::math:`y_{end} = y^{smooth}_{N-1}`
-
-   #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{end}) / y_{end} ) <= eps` for *w* consecutive *i* values.
-
-**Method 2**
-
-   #. Define :math:`y_{max} = max( y^{smooth}_{i}) for i = 0..N`
-
-   #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{max}) / y_{max} ) <= eps` for *w* consecutive *i* values.
-
-**Method 3**
- 
-   #. Define ::math:`y_{end} = y^{smooth}_{N-1}`
-
-   #. Define the saturation point as the minimum :math:`x_{i}` value where :math:`abs( (y^{smooth}_{i} - y_{end}) / y_{end} ) <= eps`.
 
 
 .. _rajaperf_codemod-label:
@@ -265,23 +208,34 @@ code modifications:
 Building
 ========
 
-The RAJA Performance Suite uses a CMake-based system to configure the code for
-compilation. As noted earlier, all non-system related software dependencies are
-included in the RAJA Performance Suite repository as Git submodules.
+Getting the code
+----------------
 
-The current RAJA Performance Suite benchmark uses the ``v2025.12.0`` version of
-the code. When the git repository is cloned, you will be on the ``develop``
-branch, which is the default RAJA Performance Suite branch. To get a local copy
-of this version of the code and the correct versions of submodules::
+All non-system related software dependencies needed to compile and run the
+benchmark are contained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository as Git submodules.
+The ``v2025.12.0`` version of the repo is the current version and was used to
+generate the baseline data described in this document.
 
-  $ git clone --recursive https://github.com/LLNL/RAJAPerf.git
+Clone the GitHub repo::
+
+  $ git clone --recursive git@github.com:llnl/RAJAPerf-Benchmark.git
+
+When you do that, you will be on the ``main`` branch of the benchmark repo,
+which is the default branch. To get a local copy of the version used to
+generate the baselines, execute the following commands::
+
   $ git checkout v2025.12.0
   $ git submodule update --init --recursive 
 
-When building the RAJA Performance Suite, RAJA and the RAJA Performance Suite
-are built together using the same CMake configuration. The basic process for
-specifying a configuration and generating a build space is to create a build
-directory and run CMake in it with the proper options. For example::
+Configuration and compilation
+------------------------------
+
+The RAJA Performance Suite uses a CMake-based system to configure the code for
+compilation. When building the RAJA Performance Suite, RAJA and the RAJA
+Performance Suite are built together with the same CMake configuration.
+The general process for specifying a configuration and generating a build space
+is to create a build directory and run CMake in it with the proper options.
+For example::
 
   $ pwd
   path/to/RAJAPerf
@@ -291,30 +245,48 @@ directory and run CMake in it with the proper options. For example::
   $ make -j (or make -j <N> to build with a specified number of cores)
 
 For convenience and informational purposes, configuration scripts are maintained
-in the ``RAJAPerf/scripts`` subdirectories for various build configurations.
+in ``RAJAPerf/scripts`` subdirectories for various build configurations.
 For example, the ``RAJAPerf/scripts/lc-builds`` directory contains scripts that
 can be used to generate build configurations for machines in the Livermore
 Computing (LC) Center at Lawrence Livermore National Laboratory. These scripts
 are to be run in the top-level RAJAPerf directory. Each script creates a
 descriptively-named build space directory and runs CMake with a configuration
 appropriate for the platform and specified compiler(s) indicated by the build
-script name. For example, to build the code to generate baseline data on the
-El Capitan system::
+script name. 
+
+MI300A architecture
+--------------------
+
+To configure and build the code to generate baseline data on a system with 
+AMD MI300A processors (i.e., El Capitan architecture) discussed in
+:ref:`rajaperf_results-label`, we ran the following commands::
 
   $ pwd
   path/to/RAJAPerf
   $ ./scripts/lc-builds/toss4_cray-mpich_amdclang.sh 9.0.1 6.4.3 gfx942
-  $ build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
+  $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
   $ make -j
 
-This will build the code for CPU-GPU execution using the system-installed
-version 9.0.1 of the Cray MPICH MPI library with the version 6.4.3 of the AMD
-clang compiler (ROCm version 6.4.3) targeting GPU compute architecture gfx942,
-which is appropriate for the AMD MI300A APU hardware on El Capitan. Please
-consult the build script files in the ``RAJAPerf/scripts/lc-builds`` directory
-for hints at building the code for other architectures and compilers. 
-Additional information on build configurations is described in the 
-`RAJA Performance Suite User Guide <https://app.readthedocs.org/projects/rajaperf/>`_ for the version of the code in which you are interested.
+Specifically, we configured and compiled the code for execution using version
+9.0.1 of the Cray MPICH MPI library and version 6.4.3 of the AMD clang compiler
+(ROCm version 6.4.3) targeting GPU compute architecture gfx942.
+
+H100 architecture
+--------------------
+
+To configure and build the code to generate baseline data on a system with
+NVIDIA H100 processors discussed in :ref:`rajaperf_results-label`, we ran the
+following commands::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ ./scripts/lc-builds/toss4_mvapich2_nvcc_gcc.sh 2.3.7 12.9.1 90 10.3.1
+  $ build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1
+  $ make -j
+
+Specifically, we configured and compiled the code for execution using version
+2.3.7 of the MVAPICH2 MPI library, version 12.9.1 of the nvcc compiler targeting
+GPU compute architecture sm_90, and version 10.3.1 of the GNU compiler.
 
 
 .. _rajaperf_run-label:
