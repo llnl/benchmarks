@@ -19,11 +19,13 @@ including ones that use RAJA and ones that do not.
                :ref:`rajaperf_problems-label`.
 
 The `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ contains the source code, performance baseline data files, run scripts,
-and data processing scripts for the RAJA Performance Suite Benchmark. The
-project includes the RAJA Performance Suite repo as a submodule, which, in
-turn, contains RAJA as a submodule. When the benchmark project repo is cloned
-recursively, everything necessary to run the benchmark is included. Detailed
-instructions are include in :ref:`rajaperf_build-label`.
+and data processing scripts for the RAJA Performance Suite Benchmark.
+
+The RAJAPerf-Benchmark GitHub project includes the RAJA Performance Suite repo
+as a submodule, which, in turn, contains RAJA as a submodule. When the
+benchmark project repo is cloned recursively, everything necessary to run the
+benchmark is included. Detailed instructions are included
+in :ref:`rajaperf_build-label`.
 
 Additional information about the RAJA Performance Suite and RAJA is available
 at these links:
@@ -100,7 +102,7 @@ Priority 1 kernels
    #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
    #. **ENERGY** internal energy calculation from an explicit hydrodynamics algorithm; *(multiple single-loop operations in sequence, conditional logic for correctness checks and cutoffs, RAJA::forall API)*
-   #. **FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport *(nested loops, RAJA::launch API)*
+   #. **FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport, with a register-heavy LU solver *(nested loops, RAJA::launch API)*
    #. **INTSC_HEXRECT** intersection between a 24-sided hexahedron and a rectangular solid, including volume and moment calculations *(single loop, RAJA::forall API)*
    #. **MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
@@ -143,6 +145,13 @@ values:
   * the compute rate (GFLOP/s) at the saturation problem size 
   * the memory bandwidth (GB/s) at the saturation problem size
 
+.. important:: In the results presented in :ref:`rajaperf_results-label`,
+               problem size is computed individually for each kernel based on
+               a requested memory allocation size. The concept of size is
+               subjective and depends on what one is looking for. We discuss
+               how we determine problem sizes for the kernels in the RAJA
+               Performance Suite in `<https://rajaperf.readthedocs.io/en/develop/sphinx/user_guide/output.html#notes-about-problem-size>`_
+
 When the Suite is run, problem size, compute rate, and memory bandwidth, among
 other data are reported in output files. We provide a Python script, whose
 usage is described below, to generate throughput plots and a FOM file for the
@@ -159,7 +168,7 @@ apply a simple median based smoothing algorithm to the throughput curve data
 and heuristically estimate the saturation point based on the smoothed
 throughput curve. The details of our approach are documented in the
 ``process_data.py`` script in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository, which we use in 
-:ref:`rajaperf_run-label`
+:ref:`rajaperf_results-label`
 
 Lastly, we emphasize that we want the kernels to be run in an execution
 environment that aligns with how they would run if used in a real application.
@@ -233,7 +242,7 @@ Configuration and compilation
 The RAJA Performance Suite uses a CMake-based system to configure the code for
 compilation. When building the RAJA Performance Suite, RAJA and the RAJA
 Performance Suite are built together with the same CMake configuration.
-The general process for specifying a configuration and generating a build space
+The generic process for specifying a configuration and generating a build space
 is to create a build directory and run CMake in it with the proper options.
 For example::
 
@@ -244,21 +253,24 @@ For example::
   $ cmake <cmake args> ..
   $ make -j (or make -j <N> to build with a specified number of cores)
 
-For convenience and informational purposes, configuration scripts are maintained
-in ``RAJAPerf/scripts`` subdirectories for various build configurations.
-For example, the ``RAJAPerf/scripts/lc-builds`` directory contains scripts that
-can be used to generate build configurations for machines in the Livermore
-Computing (LC) Center at Lawrence Livermore National Laboratory. These scripts
-are to be run in the top-level RAJAPerf directory. Each script creates a
-descriptively-named build space directory and runs CMake with a configuration
-appropriate for the platform and specified compiler(s) indicated by the build
-script name. 
+For convenience and informational purposes, we maintain configuration scripts
+in ``RAJAPerf/scripts`` subdirectories for various builds. For example, the
+``RAJAPerf/scripts/lc-builds`` directory contains scripts that we use to
+generate build configurations for machines in the Livermore Computing (LC)
+Center at Lawrence Livermore National Laboratory. These scripts are run in the
+top-level RAJAPerf directory. Each script creates a descriptively-named build
+space directory and runs CMake to generate a build space appropriate for the
+platform and compiler(s) indicated by the script name and arguments passed to
+it. Executing a script with no arguments will print a message describing
+required arguments to the screen. 
+
+.. _rajaperf_build_mi300a-label:
 
 MI300A architecture
 --------------------
 
 To configure and build the code to generate baseline data on a system with 
-AMD MI300A processors (i.e., El Capitan architecture) discussed in
+AMD MI300A processors (i.e., El Capitan (ATS-4) architecture) discussed in
 :ref:`rajaperf_results-label`, we ran the following commands::
 
   $ pwd
@@ -268,8 +280,10 @@ AMD MI300A processors (i.e., El Capitan architecture) discussed in
   $ make -j
 
 Specifically, we configured and compiled the code for execution using version
-9.0.1 of the Cray MPICH MPI library and version 6.4.3 of the AMD clang compiler
-(ROCm version 6.4.3) targeting GPU compute architecture gfx942.
+9.0.1 of the Cray MPICH MPI library and the AMD clang compiler with ROCm
+version 6.4.3 targeting GPU compute architecture gfx942.
+
+.. _rajaperf_build_h100-label:
 
 H100 architecture
 --------------------
@@ -286,7 +300,8 @@ following commands::
 
 Specifically, we configured and compiled the code for execution using version
 2.3.7 of the MVAPICH2 MPI library, version 12.9.1 of the nvcc compiler targeting
-GPU compute architecture sm_90, and version 10.3.1 of the GNU compiler.
+GPU compute architecture sm_90, and version 10.3.1 of the GNU compile for
+compiling code for host execution
 
 
 .. _rajaperf_run-label:
@@ -294,30 +309,27 @@ GPU compute architecture sm_90, and version 10.3.1 of the GNU compiler.
 Running
 =======
 
-After the code is built, the executable will located in the ``bin`` directory
-of the build space. Continuing the El Capitan example above::
+After the RAJA Performance Suite code is built, the executable will located in
+the ``bin`` subdirectory of the build space.
+
+To get information about how to run the code, use the *help option*::
 
   $ pwd
-  path/to/build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
+  path/to/RAJAPerf
+  $ cd my-build
   $ ls bin
   rajaperf.exe
+  $ .bin/rajaperf.exe --help (or -h)
 
-To get usage information::
-
-  $ path/to/rajaperf.exe --help (or -h)
-
-This command will print all available command-line options along with potential
-arguments and defaults. Options are avail to print information about the Suite,
-to select output directory and file details, to select kernels and variants to
-run, and how they are run (problem sizes, # times each kernel is run, data
+This will print all available command-line options along with potential
+arguments and defaults. Available options allow one to print information about
+the kernels in the Suite, to select output directory and file details, to
+select kernels and variants to run, to define how kernels are run (problem
+sizes, # times each kernel is run to collect min/max/avg timing data, data
 spaces to use for array allocation, etc.). All arguments are optional. If no
 arguments are specified, the suite will run all kernels in their default 
-configurations for the variants that are available for the way the code
-is configured to build.
-
-The script to run the benchmark for generating baselines for EL Capitan is
-described in :ref:`rajaperf_results-label`. A similar recipe should be followed
-for benchmarking other systems.
+configurations for the variants that are available based on the way the code
+was compiled.
 
 
 .. _rajaperf_validation-label:
@@ -328,28 +340,158 @@ Validation
 Each kernel and variant run generates a checksum value based on kernel execution
 output, such as an output data array computed by the kernel. The checksum
 depends on the problem size run for the kernel; thus, each checksum is 
-computed at run time. Validation criteria is defined in terms of the checksum
+computed at run time. Validation criteria are defined in terms of the checksum
 difference between each kernel variant and problem size run and a corresponding
-reference variant. The ``Base_Seq`` variant is used to define the
-reference checksum and so that variant should be run for each kernel as part of
-a performance study. Each kernel is annotated in the source code as to whether
-the checksum for each variant is expected to match the reference checksum
-exactly, or to be within some tolerance due to order of operation differences
-when run in parallel.
+reference variant, which, by default, is the first variant of a kernel that is
+run. 
 
-Whether the checksum for each kernel is considered to be within its expected
-tolerance is reported as checksum ``PASSED`` or ``FAILED`` in the output files.
+Each kernel is annotated in the source code as to whether the checksum for
+each variant is expected to match the reference checksum exactly, or to be
+within some tolerance due to order of operation differences when run in
+parallel. Whether the checksum for a kernel is within its expected tolerance
+is reported as checksum ``PASSED`` or ``FAILED`` in the output files.
 
-**Show an example of this for the EL Capitan baseline runs!!**
-
-**Reminder: add more accurate Base_Seq summation tunings (left fold is inaccurate for large problem sizes).**
 
 .. _rajaperf_results-label:
 
 Example Benchmark Results
 ===========================
 
-**Include tables of results of El Capitan baseline results**
+As stated earlier, we are mainly interested in single-node computational
+throughput with this benchmark. To generate throughput curves and estimate
+saturations points, we used bash shell scripts for each platform we ran on.
+These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository.  **Specifically, we used the
+``v2025.12.0`` version of that repo. The scripts and results discussed here
+are located in the ``scripts/2026-FCR`` directory.**
+
+AMD MI300A throughput results
+-------------------------------
+
+For the MI300A architecture, we present two sets of throughput results. One is
+run in ``SPX mode``, meaning we run with 4 MPI ranks on a node -- one for each
+MI300A APU -- and treat each APU as a single GPU. The other is run in 
+``CPX mode``, where we run with 24 MPI ranks on a node -- six for each MI300A
+APU -- and treat each APU as 6 GPUs (one GPU = 1 XCD). In each case, we run
+each ``Priority 1`` kernel over a sequence of problem sizes such that the
+saturation point is evident on its associated throughput curve.
+
+SPX mode
+^^^^^^^^^
+
+For SPX mode (run with 1 MPI rank per APU on a node), we choose the smallest
+problem to use ~100,000 bytes of allocated memory and the largest problem
+to use ~400MB of allocated memory, which is about 1.5 times MALL size on
+the MI300A. The MALL is 256 MB (256 * 1024 * 1024 = 268435456 bytes).
+
+After building the code as described in :ref:`rajaperf_build_mi300a-label`, we
+run the ``Priority 1`` kernels in **SPX mode** as follows::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
+  $ ./run_tier_mi300a.sh spx tier1
+
+This generates a directory named ``RPBenchmark_tier1-SPX``, which contains
+all the results files for each kernel run over its range of problem sizes.
+Then, we process the data for reporting the results here in a concise form
+by running a Python script we provide::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-SPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-SPX/Output
+
+This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
+variants of each kernel and summarizes the FOM (described in
+:ref:`rajaperf_fom-label`) in a CSV file all located in the directory
+specified by via the ``--output-dir`` option above.
+
+.. table:: FOM results for Priority 1 kernels run in SPX mode on MI300A
+   :align: center
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Kernel                                                   | Sat Problem Size | Sat GFLOP/s | Sat B/W (GiB per sec.) |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_DIFFUSION3DPA-Base_HIP-block_64                     |           197262 |    2756.480 |               1836.880 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_DIFFUSION3DPA-RAJA_HIP-block_64                     |           197262 |    2824.150 |               1881.980 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_EDGE3D-Base_HIP-block_256                           |           166375 |   21986.700 |                 57.150 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_EDGE3D-RAJA_HIP-block_256                           |           343000 |   25349.300 |                 65.707 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_ENERGY-Base_HIP-block_256                           |          1250000 |     835.821 |               3057.060 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_ENERGY-RAJA_HIP-block_256                           |          1250000 |     832.221 |               3043.900 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_FEMSWEEP-Base_HIP-block_64                          |            73728 |      78.364 |                 13.262 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_FEMSWEEP-RAJA_HIP-block_64                          |            73728 |      87.668 |                 14.836 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_INTSC_HEXRECT-Base_HIP-block_64                     |           287496 |     852.453 |                 10.427 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_INTSC_HEXRECT-RAJA_HIP-block_64                     |           287496 |     852.959 |                 10.433 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASS3DEA-Base_HIP-compile_time_block_stride_loop_64 |         24842240 |     173.004 |                189.760 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASS3DEA-RAJA_HIP-cached_block_stride_loop_64       |         36392960 |     224.003 |                245.698 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASS3DEA-RAJA_HIP-compile_time_block_stride_loop_64 |          6213632 |      36.392 |                 39.917 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASS3DPA_ATOMIC-Base_HIP-block_64                   |           132651 |    2332.960 |               1084.340 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASS3DPA_ATOMIC-RAJA_HIP-block_64                   |           132651 |    2333.070 |               1084.390 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASSVEC3DPA-Base_HIP-direct_64                      |          2718720 |    3132.220 |                955.463 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASSVEC3DPA-Base_HIP-runtime_block_stride_loop_64   |          2718720 |    2368.470 |                722.484 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASSVEC3DPA-RAJA_HIP-cached_block_stride_loop_64    |          2718720 |    2477.190 |                755.649 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASSVEC3DPA-RAJA_HIP-direct_64                      |          2718720 |    3123.460 |                952.790 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_MASSVEC3DPA-RAJA_HIP-runtime_block_stride_loop_64   |          1359360 |    1536.390 |                468.666 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_NODAL_ACCUMULATION_3D-Base_HIP-block_256            |          2048383 |     210.617 |                705.734 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_NODAL_ACCUMULATION_3D-RAJA_HIP-block_256            |          1000000 |     207.494 |                697.499 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_VOL3D-Base_HIP-block_256                            |           343000 |    2958.270 |               1237.430 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+| Apps_VOL3D-RAJA_HIP-block_256                            |           343000 |    2949.850 |               1233.900 |
++----------------------------------------------------------+------------------+-------------+------------------------+
+
+CPX mode
+^^^^^^^^^
+
+For CPX mode (run with 6 MPI ranks per APU on a node), we choose the
+smallest problem to use ~50,000 bytes of allocated memory and the largest
+problem to use ~75MB of allocated memory, which is slightly less than 1/3
+the MALL size.
+
+Similar to the SPX mode description above, we run the ``Priority 1`` kernels in
+**CPX mode** as follows::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
+  $ ./run_tier_mi300a.sh cpx tier1
+
+This generates a directory named ``RPBenchmark_tier1-SPX``, which contains
+all the results files for each kernel run over its range of problem sizes.
+Then, we process the data for reporting the results here in a concise form
+by running a Python script we provide::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-CPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-CPX/Output
+
+This generates throughput curves for ``Base_HIP`` and ``RAJA_HIP`` variants of
+each kernel and summarizes the FOM (described in :ref:`rajaperf_fom-label`)
+in a CSV file. These files are located in the directory specified by via the
+``--output-dir`` option above.
+
+
+NVIDIA H100 throughput results
+-------------------------------
 
 
 .. _rajaperf_memory-label:
