@@ -1,0 +1,6 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GB per sec.)
+Apps_MASSVEC3DPA-Base_HIP-runtime_block_stride_loop_64,2718720.0,2368.47,N/A
+Apps_MASSVEC3DPA-Base_HIP-direct_64,2718720.0,3132.22,N/A
+Apps_MASSVEC3DPA-RAJA_HIP-runtime_block_stride_loop_64,1359360.0,1536.39,N/A
+Apps_MASSVEC3DPA-RAJA_HIP-direct_64,2718720.0,3123.46,N/A
+Apps_MASSVEC3DPA-RAJA_HIP-cached_block_stride_loop_64,2718720.0,2477.19,N/A
