@@ -406,6 +406,12 @@ variants of each kernel and summarizes the FOM (described in
 :ref:`rajaperf_fom-label`) in a CSV file all located in the directory
 specified by via the ``--output-dir`` option above.
 
+.. csv-table:: FOM results for Priority 1 kernels run on MI300A in SPX mode
+   :file: ./baseline_data/MI300A/RPBenchmark_tier1-SPX/FOM/combined_fom.csv
+   :align: center
+   :widths: auto
+   :header-rows: 1
+
 .. table:: FOM results for Priority 1 kernels run in SPX mode on MI300A
    :align: center
 +----------------------------------------------------------+------------------+-------------+------------------------+
@@ -551,7 +557,7 @@ AMD MI300A throughput plots
 | SPX mode               | CPX mode               |
 +------------------------+------------------------+
 | .. figure:: baseline_data/MI300A/RPBenchmark_tier1-SPX/figures/Apps_DIFFUSION3DPA_flops.png | .. figure:: baseline_data/MI300A/RPBenchmark_tier1-CPX/figures/Apps_DIFFUSION3DPA_flops.png |
-|    :width: 75 %        |    :width: 75 %        |
+|    :width: 50 %        |    :width: 50 %        |
 |    :align: center      |    :align: center      |
 |                        |                        |
 |    DIFFUSION3DPA (SPX) |    DIFFUSION3DPA (CPX) |
