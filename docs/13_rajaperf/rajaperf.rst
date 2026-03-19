@@ -114,8 +114,9 @@ Priority 1 kernels
 Priority 2 kernels
 ^^^^^^^^^^^^^^^^^^^
 
-*Priority 1* kernels important, but less than the kernels listed above. They
-are listed below and are located in the ``RAJAPerf/src`` sub-directories noted:
+*Priority 2* kernels are also important, but less so than the *Priority 1*
+kernels listed above. *Priority 2* kernels are listed below and are located in
+the ``RAJAPerf/src`` sub-directories noted:
 
    #. **apps/CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **apps/DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
