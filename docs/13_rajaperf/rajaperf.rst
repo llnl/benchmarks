@@ -223,7 +223,7 @@ Getting the code
 
 All non-system related software dependencies needed to compile and run the
 benchmark are contained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository as Git submodules.
-The ``v2025.12.0`` version of the repo is the current version and was used to
+The ``v2026.0.0`` version of the repo is the current version and was used to
 generate the baseline data described in this document.
 
 Clone the GitHub repo::
@@ -234,7 +234,7 @@ When you do that, you will be on the ``main`` branch of the benchmark repo,
 which is the default branch. To get a local copy of the version used to
 generate the baselines, execute the following commands::
 
-  $ git checkout v2025.12.0
+  $ git checkout v2026.0.0
   $ git submodule update --init --recursive 
 
 Configuration and compilation
@@ -362,7 +362,7 @@ As stated earlier, we are mainly interested in single-node computational
 throughput with this benchmark. To generate throughput curves and estimate
 saturations points, we used bash shell scripts for each platform we ran on.
 These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository.  **Specifically, we used the
-``v2025.12.0`` version of that repo. The scripts and results discussed here
+``v2026.0.0`` version of that repo. The scripts and results discussed here
 are located in the ``scripts/2026-FCR`` directory.**
 
 AMD MI300A throughput results
@@ -544,6 +544,18 @@ in a CSV file. These files are located in the directory specified by via the
 | Apps_VOL3D-RAJA_HIP-block_256                            |            35937 |     616.966 |                261.008 |
 +----------------------------------------------------------+------------------+-------------+------------------------+
 
+AMD MI300A throughput plots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------------+------------------------+
+| SPX mode               | CPX mode               |
++------------------------+------------------------+
+| .. figure:: baseline_data/MI300A/RPBenchmark_tier1-SPX/figures/Apps_DIFFUSION3DPA_flops.png | .. figure:: baseline_data/MI300A/RPBenchmark_tier1-CPX/figures/Apps_DIFFUSION3DPA_flops.png |
+|    :width: 75 %        |    :width: 75 %        |
+|    :align: center      |    :align: center      |
+|                        |                        |
+|    DIFFUSION3DPA (SPX) |    DIFFUSION3DPA (CPX) |
++------------------------+------------------------+
 
 NVIDIA H100 throughput results
 -------------------------------
