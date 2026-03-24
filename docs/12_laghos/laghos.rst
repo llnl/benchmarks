@@ -53,15 +53,19 @@ Laghos also reports the total rate for these major kernels, which is the **Figur
 Source code modifications
 =========================
 
+.. _LaghosModifications
+
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 For Laghos we define the following restrictions on source code modifications:
 
 * Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
+* Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built in "CPU Serial" (one thread per MPI rank), "CPU OpenMP", "CUDA", or "HIP" device backends.
 * The listed command line options shown in :ref:`RunningLaghos` must be used without modification. A few additional command line options may be added:
-  
-  * ``-d gpu`` or ``-d raja-gpu`` for GPU acceleration (note: the latter requires MFEM to be built with RAJA).
-  * ``-dev`` for specifying which GPU to run on for a multi-GPU system
+
+  * ``-d raja-omp`` for CPU OpenMP acceleration.
+  * ``-d raja-gpu`` for GPU acceleration.
+  * ``-dev`` for specifying which GPU to run on for a multi-GPU system (if not restricted by the job scheduler first).
   * ``-gam`` for GPU-aware MPI
   * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
     
@@ -120,16 +124,72 @@ HIP:
                 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_HIP_ARCHITECTURES=native -DENABLE_HIP=ON -DUMPIRE_ENABLE_C=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC
                 make -j install
 
+RAJA (required)
+----------------
+
+Serial CPU:
+
+.. code-block:: console
+                
+                git clone https://github.com/LLNL/RAJA.git
+                cd RAJA
+                mkdir build
+                cd build
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
+                make -j install
+
+CPU OpenMP:
+
+.. code-block:: console
+                
+                git clone https://github.com/LLNL/RAJA.git
+                cd RAJA
+                mkdir build
+                cd build
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DENABLE_OPENMP=ON
+                make -j install
+
+CUDA:
+
+.. code-block:: console
+                
+                git clone https://github.com/LLNL/RAJA.git
+                cd RAJA
+                mkdir build
+                cd build
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native
+                make -j install
+
+HIP:
+
+.. code-block:: console
+                
+                git clone https://github.com/LLNL/RAJA.git
+                cd RAJA
+                mkdir build
+                cd build
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DROCPRIM_DIR=$ROCM_PATH
+                make -j install
+
 Hypre (required)
 ----------------
 
-CPU-only:
+Serial CPU:
 
 .. code-block:: console
                 
                 git clone https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
+                make -j install
+
+CPU OpenMP:
+
+.. code-block:: console
+                
+                git clone https://github.com/hypre-space/hypre.git
+                cd hypre/build
+                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_OPENMP=ON -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
                 make -j install
 
 CUDA:
@@ -157,7 +217,7 @@ HIP:
 MFEM (required)
 ---------------
 
-CPU-only:
+Serial CPU:
 
 .. code-block:: console
                 
@@ -165,9 +225,20 @@ CPU-only:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DCMAKE_CXX_COMPILER=$CXX
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DCMAKE_CXX_COMPILER=$CXX
                 make -j install
 
+CPU OpenMP:
+
+.. code-block:: console
+                
+                git clone https://github.com/mfem/mfem.git
+                cd mfem
+                mkdir build
+                cd build
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DMFEM_USE_OPENMP -DCMAKE_CXX_COMPILER=$CXX
+                make -j install
+                
 CUDA:
 
 .. code-block:: console
@@ -176,7 +247,7 @@ CUDA:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -189,7 +260,7 @@ HIP:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -197,7 +268,7 @@ HIP:
 Laghos (required)
 -----------------
 
-CPU-only:
+Serial CPU:
 
 .. code-block:: console
                 
@@ -208,6 +279,8 @@ CPU-only:
                 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX
                 make -j
 
+CPU OpenMP:
+                
 CUDA:
 
 .. code-block:: console
@@ -234,6 +307,8 @@ HIP:
 
 Running
 =======
+
+Note: these run commands do not include any compute device/MPI configurations. See :ref:`LaghosModifications` for available options for configuring OpenMP/GPU compute.
 
 .. code-block:: console
                 
