@@ -360,7 +360,9 @@ Example Benchmark Results
 
 As stated earlier, we are mainly interested in single-node computational
 throughput with this benchmark. To generate throughput curves and estimate
-saturations points, we used bash shell scripts for each platform we ran on.
+saturation points, we used a bash shell script to run the code on each
+platform and a Python script to process the data to construct throughput
+plots, estimate saturation points, and make CSV files for tables of results.
 These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository.  **Specifically, we used the
 ``v2026.0.0`` version of that repo. The scripts and results discussed here
 are located in the ``scripts/2026-FCR`` directory.**
@@ -382,7 +384,13 @@ SPX mode
 For SPX mode (run with 1 MPI rank per APU on a node), we choose the smallest
 problem to use ~100,000 bytes of allocated memory and the largest problem
 to use ~400MB of allocated memory, which is about 1.5 times MALL size on
-the MI300A. The MALL is 256 MB (256 * 1024 * 1024 = 268435456 bytes).
+the MI300A. The MALL is 256 MB (256 * 1024 * 1024 = 268435456 bytes). 
+
+Note that for two of the kernels ``FEMSWEEP`` and ``MASS3DEA``, we ran a
+different problem size range because these kernels don't clearly saturate.
+For them, we chose the smallest problem to use ~3.2MB of allocated
+memory and the largest problem to use ~600MB memory, which is over 2 times
+the MALL size.
 
 After building the code as described in :ref:`rajaperf_build_mi300a-label`, we
 run the ``Priority 1`` kernels in **SPX mode** as follows::
@@ -392,19 +400,21 @@ run the ``Priority 1`` kernels in **SPX mode** as follows::
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
   $ ./run_tier_mi300a.sh spx tier1
 
-This generates a directory named ``RPBenchmark_tier1-SPX``, which contains
-all the results files for each kernel run over its range of problem sizes.
+This generates a directory named ``RPBenchmark_MI300A_tier1-SPX``, which
+contains the results files for each kernel run over its range of problem sizes.
+
 Then, we process the data for reporting the results here in a concise form
 by running a Python script we provide::
 
   $ pwd
   path/to/RAJAPerf
-  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-SPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-SPX/Output
+  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX/Output
 
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
-:ref:`rajaperf_fom-label`) in a CSV file all located in the directory
-specified by via the ``--output-dir`` option above.
+:ref:`rajaperf_fom-label`) in a CSV file. These files will be located in the
+directory specified by via the ``--output-dir`` option above. We've included
+a selected set of the files in this repo. 
 
 .. csv-table:: FOM results for Priority 1 kernels run on MI300A in SPX mode
    :file: ./baseline_data/MI300A/RPBenchmark_tier1-SPX/FOM/combined_fom.csv
@@ -420,6 +430,12 @@ smallest problem to use ~50,000 bytes of allocated memory and the largest
 problem to use ~75MB of allocated memory, which is slightly less than 1/3
 the MALL size.
 
+Note that for two of the kernels ``FEMSWEEP`` and ``MASS3DEA``, we ran a 
+different problem size range because these kernels don't clearly saturate.
+For them, we chose the smallest problem to use ~1.6MB of allocated
+memory and the largest problem to use ~200MB memory, which is a little less
+than the MALL size.
+
 Similar to the SPX mode description above, we run the ``Priority 1`` kernels in
 **CPX mode** as follows::
 
@@ -428,36 +444,84 @@ Similar to the SPX mode description above, we run the ``Priority 1`` kernels in
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
   $ ./run_tier_mi300a.sh cpx tier1
 
-This generates a directory named ``RPBenchmark_tier1-SPX``, which contains
-all the results files for each kernel run over its range of problem sizes.
-Then, we process the data for reporting the results here in a concise form
-by running a Python script we provide::
+This generates a directory named ``RPBenchmark_MI300A_tier1-CPX``, which
+contains all the results files for each kernel run over its range of problem
+sizes.  Then, we process the data for reporting the results here in a concise
+form by running a Python script we provide::
 
   $ pwd
   path/to/RAJAPerf
-  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-CPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_tier1-CPX/Output
+  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX/Output
 
-This generates throughput curves for ``Base_HIP`` and ``RAJA_HIP`` variants of
-each kernel and summarizes the FOM (described in :ref:`rajaperf_fom-label`)
-in a CSV file. These files are located in the directory specified by via the
-``--output-dir`` option above.
+This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
+variants of each kernel and summarizes the FOM (described in
+:ref:`rajaperf_fom-label`) in a CSV file. These files will be located in the
+directory specified by via the ``--output-dir`` option above. We've included
+a selected set of the files in this repo.
+
+.. csv-table:: FOM results for Priority 1 kernels run on MI300A in CPX mode
+   :file: ./baseline_data/MI300A/RPBenchmark_tier1-CPX/FOM/combined_fom.csv
+   :align: center
+   :widths: auto
+   :header-rows: 1
 
 
 AMD MI300A throughput plots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-+------------------------+------------------------+
-| SPX mode               | CPX mode               |
-+------------------------+------------------------+
-| .. figure:: baseline_data/MI300A/RPBenchmark_tier1-SPX/figures/Apps_DIFFUSION3DPA_flops.png | .. figure:: baseline_data/MI300A/RPBenchmark_tier1-CPX/figures/Apps_DIFFUSION3DPA_flops.png |
-|    :width: 50 %        |    :width: 50 %        |
-|    :align: center      |    :align: center      |
-|                        |                        |
-|    DIFFUSION3DPA (SPX) |    DIFFUSION3DPA (CPX) |
-+------------------------+------------------------+
 
 NVIDIA H100 throughput results
 -------------------------------
+
+For the H100 architecture, we present throughput results, where we run with
+4 MPI ranks on a node -- one for each H100 GPU. We run each ``Priority 1``
+kernel over a sequence of problem sizes such that the saturation point is
+evident on its associated throughput curve.
+
+We choose the smallest problem to use ~50,000 bytes of allocated memory and
+the largest problem to use ~150MB of allocated memory, which is about 3 times
+the L2-cache size on the H100 GPU.  The L2-cache is 50 MB
+(50 * 1024 * 1024 = 52428800 bytes).
+
+Note that for two of the kernels ``FEMSWEEP`` and ``MASS3DEA``, we ran a
+different problem size range because these kernels don't clearly saturate.
+For them, we chose the smallest problem to use ~1.6MB of allocated memory
+and the largest problem to use ~300MB memory, which is about 6 times the 
+L-2 cache size.
+
+After building the code as described in :ref:`rajaperf_build_h100-label`, we
+run the ``Priority 1`` kernels as follows::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ cd build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1
+  $ ./run_tier_h100.sh spx tier1
+
+This generates a directory named ``RPBenchmark_H100_tier1``, which contains
+the results files for each kernel run over its range of problem sizes.
+
+Then, we process the data for reporting the results here in a concise form
+by running a Python script we provide::
+
+  $ pwd
+  path/to/RAJAPerf
+  $ python3 process_data.py --root-dir build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1 --output-dir build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1/Output
+
+This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
+variants of each kernel and summarizes the FOM (described in
+:ref:`rajaperf_fom-label`) in a CSV file. These files will be located in the
+directory specified by via the ``--output-dir`` option above. We've included
+a selected set of the files in this repo.
+
+.. csv-table:: FOM results for Priority 1 kernels run on H100
+   :file: ./baseline_data/H100/RPBenchmark_tier1/FOM/combined_fom.csv
+   :align: center
+   :widths: auto
+   :header-rows: 1
+
+
+NVIDIA H100 throughput plots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 .. _rajaperf_memory-label:
