@@ -1,0 +1,3 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_DIFFUSION3DPA-Base_HIP-block_64,394524.0,3352.01,2233.73
+Apps_DIFFUSION3DPA-RAJA_HIP-block_64,394524.0,3514.89,2342.26

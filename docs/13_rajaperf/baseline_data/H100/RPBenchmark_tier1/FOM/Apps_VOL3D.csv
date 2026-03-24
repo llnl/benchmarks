@@ -1,0 +1,5 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_VOL3D-Base_OpenMP-default,166375.0,192.959,80.9395
+Apps_VOL3D-RAJA_OpenMP-default,166375.0,189.502,79.4893
+Apps_VOL3D-Base_CUDA-block_256,704969.0,4974.7,2076.29
+Apps_VOL3D-RAJA_CUDA-block_256,343000.0,4677.68,1956.64

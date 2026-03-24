@@ -1,0 +1,5 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_ENERGY-Base_OpenMP-default,213334.0,242.351,886.414
+Apps_ENERGY-RAJA_OpenMP-default,213334.0,238.31,871.633
+Apps_ENERGY-Base_CUDA-block_256,625000.0,806.728,2950.65
+Apps_ENERGY-RAJA_CUDA-block_256,625000.0,804.516,2942.57

@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_MASS3DEA-Base_HIP-compile_time_block_stride_loop_64,48521216.0,181.913,199.532
+Apps_MASS3DEA-RAJA_HIP-compile_time_block_stride_loop_64,18198528.0,40.4703,44.3899
+Apps_MASS3DEA-RAJA_HIP-cached_block_stride_loop_64,36392960.0,239.424,262.612
