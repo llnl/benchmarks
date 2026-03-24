@@ -363,9 +363,9 @@ throughput with this benchmark. To generate throughput curves and estimate
 saturation points, we used a bash shell script to run the code on each
 platform and a Python script to process the data to construct throughput
 plots, estimate saturation points, and make CSV files for tables of results.
-These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository.  **Specifically, we used the
+These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository. Specifically, we used the
 ``v2026.0.0`` version of that repo. The scripts and results discussed here
-are located in the ``scripts/2026-FCR`` directory.**
+are located in the ``scripts/2026-FCR`` directory.
 
 AMD MI300A throughput results
 -------------------------------
