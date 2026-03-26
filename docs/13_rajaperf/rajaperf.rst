@@ -408,7 +408,7 @@ by running a Python script we provide::
 
   $ pwd
   path/to/RAJAPerf
-  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX/Output
+  $ python3 path/to/process_data.py --root-dir path/to/build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX --output-dir path/to/build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-SPX/Output
 
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
@@ -451,7 +451,7 @@ form by running a Python script we provide::
 
   $ pwd
   path/to/RAJAPerf
-  $ python3 process_data.py --root-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX --output-dir build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX/Output
+  $ python3 path/to/process_data.py --root-dir path/to/build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX --output-dir path/to/build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942/RPBenchmark_MI300A_tier1-CPX/Output
 
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
@@ -468,6 +468,63 @@ a selected set of the files in this repo.
 
 AMD MI300A throughput plots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following table contains throughput plots for each kernel run as described
+above. The left column shows SPX mode. The right column shows CPX mode.
+
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| MI300A SPX Node Throughput (SPX Mode)                                                               | MI300A Node Throughput (CPX Mode)                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_DIFFUSION3DPA_flops.png         | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_DIFFUSION3DPA_flops.png         |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_EDGE3D_flops.png                | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_EDGE3D_flops.png                |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_ENERGY_flops.png                | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_ENERGY_flops.png                |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_FEMSWEEP_flops.png              | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_FEMSWEEP_flops.png              |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_INTSC_HEXRECT_flops.png         | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_INTSC_HEXRECT_flops.png         |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_MASS3DEA_flops.png              | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_MASS3DEA_flops.png              |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_MASS3DPA_ATOMIC_flops.png       | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_MASS3DPA_ATOMIC_flops.png       |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_MASSVEC3DPA_flops.png           | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_MASSVEC3DPA_flops.png           |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_NODAL_ACCUMULATION_3D_flops.png | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_NODAL_ACCUMULATION_3D_flops.png |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_VOL3D_flops.png                 | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_VOL3D_flops.png                 |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
 
 
 NVIDIA H100 throughput results
@@ -505,7 +562,7 @@ by running a Python script we provide::
 
   $ pwd
   path/to/RAJAPerf
-  $ python3 process_data.py --root-dir build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1 --output-dir build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1/Output
+  $ python3 path/to/process_data.py --root-dir path/to/build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1 --output-dir path/to/build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1/RPBenchmark_H100_tier1/Output
 
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
