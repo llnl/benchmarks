@@ -1,6 +1,4 @@
 Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
-Apps_MASS3DEA-Base_OpenMP-default,3108864.0,1.88502,2.0676
-Apps_MASS3DEA-RAJA_OpenMP-default,389120.0,3.12702,3.43004
-Apps_MASS3DEA-Base_CUDA-compile_time_block_stride_loop_64,18198528.0,198.53,217.758
-Apps_MASS3DEA-RAJA_CUDA-compile_time_block_stride_loop_64,9101312.0,183.124,200.861
-Apps_MASS3DEA-RAJA_CUDA-cached_block_stride_loop_64,18198528.0,184.403,202.263
+Apps_MASS3DEA-Base_CUDA-compile_time_block_stride_loop_64,18198528.0,201.229,220.719
+Apps_MASS3DEA-RAJA_CUDA-compile_time_block_stride_loop_64,18198528.0,207.041,227.093
+Apps_MASS3DEA-RAJA_CUDA-cached_block_stride_loop_64,18198528.0,185.879,203.881

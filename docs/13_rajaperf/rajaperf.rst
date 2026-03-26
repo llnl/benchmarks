@@ -18,7 +18,8 @@ including ones that use RAJA and ones that do not.
                kernels in the RAJA Performance Suite described in
                :ref:`rajaperf_problems-label`.
 
-The `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ contains the source code, performance baseline data files, run scripts,
+The `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_
+contains the source code, performance baseline data files, run scripts,
 and data processing scripts for the RAJA Performance Suite Benchmark.
 
 The RAJAPerf-Benchmark GitHub project includes the RAJA Performance Suite repo
@@ -168,8 +169,8 @@ strictly zero derivative for all points beyond some problem size. Therefore, we
 apply a simple median based smoothing algorithm to the throughput curve data
 and heuristically estimate the saturation point based on the smoothed
 throughput curve. The details of our approach are documented in the
-``process_data.py`` script in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository, which we use in 
-:ref:`rajaperf_results-label`
+``process_data.py`` script in the `RAJAPerf-Benchmark GitHub project<https://github.com/llnl/RAJAPerf-Benchmark>`_
+repository, which we use in :ref:`rajaperf_results-label`
 
 Lastly, we emphasize that we want the kernels to be run in an execution
 environment that aligns with how they would run if used in a real application.
@@ -222,9 +223,10 @@ Getting the code
 ----------------
 
 All non-system related software dependencies needed to compile and run the
-benchmark are contained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository as Git submodules.
-The ``v2026.0.0`` version of the repo is the current version and was used to
-generate the baseline data described in this document.
+benchmark are contained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_
+repository as Git submodules. The ``v2026.0.0`` version of the repo is the
+current version and was used to generate the baseline data described in this
+document.
 
 Clone the GitHub repo::
 
@@ -363,9 +365,11 @@ throughput with this benchmark. To generate throughput curves and estimate
 saturation points, we used a bash shell script to run the code on each
 platform and a Python script to process the data to construct throughput
 plots, estimate saturation points, and make CSV files for tables of results.
-These are available in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_ repository. Specifically, we used the
-``v2026.0.0`` version of that repo. The scripts and results discussed here
-are located in the ``scripts/2026-FCR`` directory.
+These are available in the
+`RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_
+repository. Specifically, we used the ``v2026.0.0`` version of that repo.
+The scripts and results discussed here are located in the ``scripts/2026-FCR``
+directory there.
 
 AMD MI300A throughput results
 -------------------------------
@@ -470,7 +474,28 @@ AMD MI300A throughput plots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following table contains throughput plots for each kernel run as described
-above. The left column shows SPX mode. The right column shows CPX mode.
+above on the MI300A architecture in SPX mode and CPX mode. Each plot has multiple
+curves where GFLOP/sec (compute rate) is plotted as a function of problem size
+(allocated bytes). The left column shows SPX mode. The right column shows CPX
+mode. The legend in each plot indicates the curves shown. Each plot includes:
+
+  * Throuput curves for Base and RAJA variant(s) of the kernel (solid line
+    segments connecting the dots, where the dots are actual GFLOP rates
+    determined from the kernel being run at a given problem size).
+  * Smoothed versions of the throughput curves (dashed lines), which are 
+    constructed from the dots. 
+  * Stars that indicate approximate saturation points based on the smoothed
+    curves and computed using simple heuristics.
+
+The legend contains the (x, y) values for the saturation points.
+
+Most plots contain two variants, with the Base variant in blue and RAJA
+variant in orange. In these cases, the throughput and saturation are close,
+which indicates that the RAJA variants perform as well as the Base variants
+that are written directly in HIP with no RAJA abstractions. Two kernels
+(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
+These additional curves were included to show how kernel execution choices,
+RAJA execution policies specifically, can have a large impact on performance.
 
 +-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | MI300A SPX Node Throughput (SPX Mode)                                                               | MI300A Node Throughput (CPX Mode)                                                                   |
@@ -579,6 +604,83 @@ a selected set of the files in this repo.
 
 NVIDIA H100 throughput plots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following table contains throughput plots for each kernel run as described
+above for the H100 architecture. Each plot has multiple curves where GFLOP/sec
+(compute rate) is plotted as a function of problem size (allocated bytes). 
+The legend in each plot indicates the curves shown. Each plot includes:
+
+  * Throuput curves for Base and RAJA variant(s) of the kernel (solid line
+    segments connecting the dots, where the dots are actual GFLOP rates
+    determined from the kernel being run at a given problem size).
+  * Smoothed versions of the throughput curves (dashed lines), which are
+    constructed from the dots.
+  * Stars that indicate approximate saturation points based on the smoothed
+    curves and computed using simple heuristics.
+
+The legend contains the (x, y) values for the saturation points.
+
+Most plots contain two variants, with the Base variant in blue and RAJA
+variant in orange. In these cases, the throughput and saturation are close,
+which indicates that the RAJA variants perform as well as the Base variants
+that are written directly in CUDA with no RAJA abstractions. Two kernels
+(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
+These additional curves were included to show how kernel execution choices,
+RAJA execution policies specifically, can have a large impact on performance.
+
++-----------------------------------------------------------------------------------------------------+
+| H100 Node Throughput                                                                                |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_DIFFUSION3DPA_flops.png               |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_EDGE3D_flops.png                      |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_ENERGY_flops.png                      |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_FEMSWEEP_flops.png                    |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_INTSC_HEXRECT_flops.png               |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_MASS3DEA_flops.png                    |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_MASS3DPA_ATOMIC_flops.png             |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_MASSVEC3DPA_flops.png                 |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_NODAL_ACCUMULATION_3D_flops.png       |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_VOL3D_flops.png                       |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+
 
 
 .. _rajaperf_memory-label:
