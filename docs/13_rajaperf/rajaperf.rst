@@ -352,7 +352,7 @@ Each kernel is annotated in the source code as to whether the checksum for
 each variant is expected to match the reference checksum exactly, or to be
 within some tolerance due to order of operation differences when run in
 parallel. Whether the checksum for a kernel is within its expected tolerance
-is reported as checksum ``PASSED`` or ``FAILED`` in the output files.
+is reported as checksum ``PASSED`` or ``FAILED`` in the checksum output files.
 
 
 .. _rajaperf_results-label:
@@ -712,3 +712,16 @@ tool. Thus, weak scaling is not part of the benchmark.
 
 References
 ==========
+
+The GitHub repositories are the primary references for RAJA and the RAJA 
+Performance Suite:
+
+  * `RAJA Performance Suite GitHub project <https://github.com/LLNL/RAJAPerf>`_
+
+  * `RAJA GitHub project <https://github.com/LLNL/RAJAPerf>`_
+
+Other helpful references include:
+
+  * Olga Pearce, Jason Burmark, Rich Hornung, Befikir Bogale, Ian Lumsden, Michael McKinsey, Dewi Yokelson, David Boehme, Stephanie Brink, Michela Taufer, Tom Scogland, "RAJA Performance Suite: Performance Portability Analysis with Caliper and Thicket", in 2024 IEEE/ACM International Workshop on Performance, Portability and Productivity in HPC (P3HPC) at the International Conference on High Performance Computing, Network, Storage, and Analysis (SC-W 2024). [Download here](https://dl.acm.org/doi/pdf/10.1109/SCW63240.2024.00162)
+
+  * D. A. Beckingsale, J. Burmark, R. Hornung, H. Jones, W. Killian, A. J. Kunen, O. Pearce, P. Robinson, B. S. Ryujin, T. R. W. Scogland, "RAJA: Portable Performance for Large-Scale Scientific Applications", 2019 IEEE/ACM International Workshop on Performance, Portability and Productivity in HPC (P3HPC). [Download here](https://conferences.computer.org/sc19w/2019/#!/toc/14) 
