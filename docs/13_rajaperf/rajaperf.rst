@@ -224,7 +224,7 @@ Getting the code
 
 All non-system related software dependencies needed to compile and run the
 benchmark are contained in the `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_
-repository as Git submodules. The ``v2026.0.0`` version of the repo is the
+repository as Git submodules. The ``v2026.04.0`` version of the repo is the
 current version and was used to generate the baseline data described in this
 document.
 
@@ -236,7 +236,7 @@ When you do that, you will be on the ``main`` branch of the benchmark repo,
 which is the default branch. To get a local copy of the version used to
 generate the baselines, execute the following commands::
 
-  $ git checkout v2026.0.0
+  $ git checkout v2026.04.0
   $ git submodule update --init --recursive 
 
 Configuration and compilation
@@ -367,7 +367,7 @@ platform and a Python script to process the data to construct throughput
 plots, estimate saturation points, and make CSV files for tables of results.
 These are available in the
 `RAJAPerf-Benchmark GitHub project <https://github.com/llnl/RAJAPerf-Benchmark>`_
-repository. Specifically, we used the ``v2026.0.0`` version of that repo.
+repository. Specifically, we used the ``v2026.04.0`` version of that repo.
 The scripts and results discussed here are located in the ``scripts/2026-FCR``
 directory there.
 
