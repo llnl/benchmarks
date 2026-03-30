@@ -66,7 +66,7 @@ version of the Suite. Building the Suite requires an installation of CMake for
 configuring a build, a C++17 compliant compiler to build the code, and an MPI
 library installation to link against.
 
-The Suite can be run in a myriad of ways via as command-line options and their
+The Suite can be run in a myriad of ways via command-line options and their
 arguments. The intent is that once the code is compiled, scripts can be used
 to execute necessary Suite runs to generate data for a desired performance
 experiment. Instructions for getting the code for the RAJA Performance Suite
@@ -139,7 +139,7 @@ Figure of Merit
 The figure of merit (FOM) for each kernel is determined by the problem size at
 which the kernel *saturates* resources on a *single* compute node. That is,
 the problem size at which a computational throughput curve becomes flat, with
-zero derivative, and beyond which a running larger problem sizes does not yield
+zero derivative, and beyond which running larger problem sizes does not yield
 an increase in compute rate. The FOM for each kernel includes 3 numerical
 values:
 
@@ -178,7 +178,7 @@ Thus, the Suite should be run **using multiple MPI ranks** so that all
 resources on a compute node are being exercised in a way that is
 representative of how an application would run.
 
-All applications that use RAJA use it in an the *MPI + X* parallel application
+All applications that use RAJA use it in the *MPI + X* parallel application
 paradigm, where MPI is used for coarse-grained, distributed memory parallelism
 and X (RAJA in this case) supports fine-grained parallelism within each MPI
 rank. The RAJA Performance Suite can be configured with MPI so that execution
@@ -298,12 +298,12 @@ following commands::
   $ pwd
   path/to/RAJAPerf
   $ ./scripts/lc-builds/toss4_mvapich2_nvcc_gcc.sh 2.3.7 12.9.1 90 10.3.1
-  $ build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1
+  $ cd build_lc_toss4-mvapich2-2.3.7-nvcc-12.9.1-90-gcc-10.3.1
   $ make -j
 
 Specifically, we configured and compiled the code for execution using version
 2.3.7 of the MVAPICH2 MPI library, version 12.9.1 of the nvcc compiler targeting
-GPU compute architecture sm_90, and version 10.3.1 of the GNU compile for
+GPU compute architecture sm_90, and version 10.3.1 of the GNU compiler for
 compiling code for host execution
 
 
@@ -312,8 +312,8 @@ compiling code for host execution
 Running
 =======
 
-After the RAJA Performance Suite code is built, the executable will located in
-the ``bin`` subdirectory of the build space.
+After the RAJA Performance Suite code is built, the executable will be located
+in the ``bin`` subdirectory of the build space.
 
 To get information about how to run the code, use the *help option*::
 
@@ -322,7 +322,7 @@ To get information about how to run the code, use the *help option*::
   $ cd my-build
   $ ls bin
   rajaperf.exe
-  $ .bin/rajaperf.exe --help (or -h)
+  $ ./bin/rajaperf.exe --help (or -h)
 
 This will print all available command-line options along with potential
 arguments and defaults. Available options allow one to print information about
@@ -479,7 +479,7 @@ curves where GFLOP/sec (compute rate) is plotted as a function of problem size
 (allocated bytes). The left column shows SPX mode. The right column shows CPX
 mode. The legend in each plot indicates the curves shown. Each plot includes:
 
-  * Throuput curves for Base and RAJA variant(s) of the kernel (solid line
+  * Throughput curves for Base and RAJA variant(s) of the kernel (solid line
     segments connecting the dots, where the dots are actual GFLOP rates
     determined from the kernel being run at a given problem size).
   * Smoothed versions of the throughput curves (dashed lines), which are 
@@ -569,7 +569,7 @@ Note that for two of the kernels ``FEMSWEEP`` and ``MASS3DEA``, we ran a
 different problem size range because these kernels don't clearly saturate.
 For them, we chose the smallest problem to use ~1.6MB of allocated memory
 and the largest problem to use ~300MB memory, which is about 6 times the 
-L-2 cache size.
+L2 cache size.
 
 After building the code as described in :ref:`rajaperf_build_h100-label`, we
 run the ``Priority 1`` kernels as follows::
@@ -610,7 +610,7 @@ above for the H100 architecture. Each plot has multiple curves where GFLOP/sec
 (compute rate) is plotted as a function of problem size (allocated bytes). 
 The legend in each plot indicates the curves shown. Each plot includes:
 
-  * Throuput curves for Base and RAJA variant(s) of the kernel (solid line
+  * Throughput curves for Base and RAJA variant(s) of the kernel (solid line
     segments connecting the dots, where the dots are actual GFLOP rates
     determined from the kernel being run at a given problem size).
   * Smoothed versions of the throughput curves (dashed lines), which are
