@@ -1,0 +1,3 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_INTSC_HEXRECT-Base_HIP-block_64,1124864.0,883.584,10.7838
+Apps_INTSC_HEXRECT-RAJA_HIP-block_64,551368.0,825.348,10.0834

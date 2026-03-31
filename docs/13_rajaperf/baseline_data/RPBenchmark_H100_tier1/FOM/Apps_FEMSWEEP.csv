@@ -1,0 +1,3 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_FEMSWEEP-Base_CUDA-block_128,1533312.0,319.717,61.9286
+Apps_FEMSWEEP-RAJA_CUDA-block_128,1533312.0,270.733,52.4405

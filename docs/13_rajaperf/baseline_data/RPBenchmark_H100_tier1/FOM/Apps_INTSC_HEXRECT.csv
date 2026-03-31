@@ -1,0 +1,3 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_INTSC_HEXRECT-Base_CUDA-block_64,551368.0,1558.36,19.0387
+Apps_INTSC_HEXRECT-RAJA_CUDA-block_64,551368.0,1303.18,15.9211

@@ -1,0 +1,6 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_MASSVEC3DPA-Base_CUDA-runtime_block_stride_loop_64,2718720.0,1663.48,507.434
+Apps_MASSVEC3DPA-Base_CUDA-direct_64,2718720.0,2429.38,741.065
+Apps_MASSVEC3DPA-RAJA_CUDA-runtime_block_stride_loop_64,1359360.0,1501.09,457.897
+Apps_MASSVEC3DPA-RAJA_CUDA-direct_64,2718720.0,2419.59,738.079
+Apps_MASSVEC3DPA-RAJA_CUDA-cached_block_stride_loop_64,1359360.0,1502.65,458.376
