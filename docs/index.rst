@@ -41,6 +41,7 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    40_remhos/remhos
    50_miniem/miniem
    60_mlperf/mlperf
+   :ref:`rajaperf2`
    
 .. toctree::
    :maxdepth: 3
