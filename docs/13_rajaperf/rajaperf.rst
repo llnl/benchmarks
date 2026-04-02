@@ -94,8 +94,8 @@ The RAJA Performance Suite Benchmark kernels are partitioned into two
 priority levels described below.
 
 
-Priority 1 kernels
-^^^^^^^^^^^^^^^^^^^
+RAJA Perf Priority 1 kernels
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 *Priority 1* kernels are most important to us. They are located in the
 ``RAJAPerf/src/apps`` sub-directory:
@@ -112,8 +112,10 @@ Priority 1 kernels
    #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
 
 
-Priority 2 kernels
-^^^^^^^^^^^^^^^^^^^
+.. _rajaperf2:
+
+RAJA Perf Priority 2 kernels
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 *Priority 2* kernels are also important, but less so than the *Priority 1*
 kernels listed above. *Priority 2* kernels are listed below and are located in
