@@ -1,0 +1,5 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_LTIMES-Base_Seq-default,2496.0,6.38293,8.93438
+Apps_LTIMES-Base_HIP-block_256,619392.0,638.563,888.12
+Apps_LTIMES-RAJA_HIP-kernel_256,619392.0,534.613,743.546
+Apps_LTIMES-RAJA_HIP-launch_256,619392.0,631.91,878.867
