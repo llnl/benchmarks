@@ -66,7 +66,7 @@ installation to link against.
 The Suite can be run in a myriad of ways via command-line options and their
 arguments. The intent is that after compiling the code, simple scripts can be 
 written to execute necessary Suite runs to generate data for desired performance
-experimenta. Instructions for getting the code for the RAJA Performance Suite
+experiments. Instructions for getting the code for the RAJA Performance Suite
 Benchmark, building it, and running it are described in
 :ref:`rajaperf_build-label` and :ref:`rajaperf_run-label`.
 
