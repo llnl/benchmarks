@@ -7,7 +7,8 @@ represent important computational patterns found in HPC applications. It is a
 companion project to RAJA, which is a library of software abstractions used by
 developers of C++ applications to write portable, *single-source* code. Each
 kernel in the Suite has multiple implementations using common parallel
-programming models, such as OpenMP and CUDA, including RAJA and non-RAJA variants.
+programming models, such as OpenMP and CUDA, including RAJA and non-RAJA
+(often referred to as Base) variants.
 The RAJA Performance Suite enables a wide range of performance experiments and
 comparisons for kernel variants, compilers, etc.
 
@@ -55,11 +56,11 @@ Characteristics
 ===============
 
 `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
-contains everything needed to build and run the benchmark. This includes the
+contains everything needed to build and run the benchmark. This includes
 the RAJA Performance Suite and RAJA software dependencies in Git submodules and 
-build, run, and data processing scripts for analyzing the run data. Thus, all
+scripts to build, run, and analyze output data. Thus, all
 dependency versions are pinned to each version of the benchmark. Building
-the RAJA Performance Suite code requires CMake to configuring a build, a C++17
+the RAJA Performance Suite code requires CMake to configure a build, a C++17
 (soon to require C++20) compliant compiler to build the code, and an MPI library
 installation to link against.
 
@@ -142,8 +143,8 @@ an increase in compute rate. The FOM for each kernel includes 3 numerical
 values:
 
   * the saturation problem size (GB)
-  * the compute rate (GFLOP/s) at the saturation problem size 
-  * the memory bandwidth (GB/s) at the saturation problem size
+  * the compute rate (GFLOP/sec) at the saturation problem size 
+  * the memory bandwidth (GB/sec) at the saturation problem size
 
 .. important:: In the results presented in :ref:`rajaperf_results-label`,
                problem size is computed individually for each kernel based on
@@ -155,12 +156,12 @@ values:
 When the Suite is run, problem size, compute rate, and memory bandwidth, among
 other data are reported in output files. We provide a Python script that can
 traverse the contents of an output directory and generate condensed summary
-files, throughput plots, and a FOM information. Usage of the script is 
+files, throughput plots, and FOM information. Usage of the script is 
 detailed below.
 
-One can visualize computational throughput using a plot where compute rate,
-such as GFLOP/s, plotted on the vertical axis, is plotted as a function of
-problem size on the horizontal axis. Ideally, such a curve will be monotonically
+Computational throughput may be visualized using a plot where compute rate,
+such as GFLOP/sec (vertical axis), is plotted as a function of problem size on
+the horizontal axis. Ideally, such a curve will be monotonically
 increasing and transition to a flat, horizontal line. Then, the saturation point
 is the problem size at which the derivative of the throughput curve becomes zero.
 In reality, throughput curves are often non-monotonic or do not have a 
@@ -207,11 +208,11 @@ code modifications:
 * While source code changes to the RAJA Performance Suite kernels and to RAJA
   can be proposed for improved performance, for example, RAJA may not be
   removed from *RAJA kernel variants* in the Suite or replaced with any other
-  library. The *Base kernel variants* in the Suite are provided to show how
+  library. The *non-RAJA kernel variants* in the Suite are provided to show how
   each kernel can be implemented directly in the corresponding programming
   model back-end without the RAJA abstraction layer. Apart from some special
-  cases, the RAJA and Base variants for each kernel should execute the same
-  operations.
+  cases, the RAJA and non-RAJA variants for each kernel should execute the
+  same operations.
 
 
 .. _rajaperf_build-label:
@@ -371,8 +372,8 @@ is reported as checksum ``PASSED`` or ``FAILED`` in the checksum output files.
 Example Benchmark Results
 ===========================
 
-As stated earlier, we are mainly interested in single-node computational
-throughput with this benchmark. To generate throughput curves and estimate
+As stated earlier, we are mainly interested in single-node performance
+with this benchmark. To generate throughput curves and estimate
 saturation points, we use a bash shell script to run the code on each
 platform and a Python script to process the data to construct throughput
 plots, estimate saturation points, and make CSV files for tables of results.
@@ -392,10 +393,10 @@ AMD MI300A throughput results (Priority 1 kernels)
 ----------------------------------------------------
 
 For the MI300A architecture, we present two sets of throughput results. One is
-run in ``SPX mode``, meaning that we run with 4 MPI ranks on a node -- one for
-each MI300A APU -- and treat each APU as a single GPU. The other is run in 
-``CPX mode``, where we run with 24 MPI ranks on a node -- six for each MI300A
-APU -- and treat each APU as 6 GPUs (one GPU = 1 XCD). In each case, we run
+run in ``SPX mode`` where we use 4 MPI ranks on a node, one for each MI300A APU,
+and treat each APU as a single GPU. The other is run in 
+``CPX mode`` where we run with 24 MPI ranks on a node, six for each MI300A
+APU, and treat each APU as 6 GPUs (one GPU = 1 XCD). In each case, we run
 each kernel over a sequence of problem sizes such that the saturation point is
 evident on its associated throughput curve.
 
@@ -435,7 +436,7 @@ by running a Python script we provide::
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
 :ref:`rajaperf_fom-label`) in a CSV file. These files will be located in the
-directory specified by via the ``--output-dir`` option above. We include
+directory specified via the ``--output-dir`` option above. We include
 the files generated by the ``process_data.py`` script ` here <https://github.com/llnl/benchmarks/tree/develop/docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier1-SPX`_.
 
 .. csv-table:: FOM results for Priority 1 kernels run on MI300A in SPX mode
@@ -452,7 +453,7 @@ the same as for the Priority 1 kernels just described. Note that two of the
 kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not perform any 
 floating point operations. They represent recurring computational patterns
 in our application that are important rather than key numerical kernels.
-Thus, the two kernels have zero GFLOP/s rates. So, we consider the bandwidth
+Thus, the two kernels have zero GFLOP/sec rates. So, we consider the bandwidth
 as the appropriate metric to consider.
 
 .. csv-table:: FOM results for Priority 2 kernels run on MI300A in SPX mode
@@ -514,7 +515,7 @@ the same as for the Priority 1 kernels just described. Note that two of the
 kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not perform any
 floating point operations. They represent recurring computational patterns
 in our application that are important rather than key numerical kernels.
-Thus, the two kernels have zero GFLOP/s rates. So, we consider the bandwidth
+Thus, the two kernels have zero GFLOP/sec rates. So, we consider the bandwidth
 as the appropriate metric to consider.
 
 .. csv-table:: FOM results for Priority 2 kernels run on MI300A in CPX mode
@@ -541,9 +542,9 @@ mode. The legend in each plot indicates the curves shown. Each plot includes:
     curves and computed using simple heuristics. The legend contains the (x, y)
     values for the saturation points.
 
-Most plots contain two variants, with the Base variant in blue and RAJA
+Most plots contain two variants, with the non-RAJA variant in blue and RAJA
 variant in orange. In these cases, the throughput and saturation are close,
-which indicates that the RAJA variants perform as well as the Base variants
+which indicates that the RAJA variants perform as well as the non-RAJA variants
 that are written directly in HIP with no RAJA abstractions. Two kernels
 (MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
 These additional curves are included to show how kernel execution choices,
@@ -615,7 +616,7 @@ evident on its associated throughput curve.
 
 We choose the smallest problem to use ~50,000 bytes of allocated memory and
 the largest problem to use ~150MB of allocated memory, which is about 3 times
-the L2-cache size on the H100 GPU.  The L2-cache is 50 MB
+the L2 cache size on the H100 GPU.  The L2 cache is 50 MB
 (50 * 1024 * 1024 = 52428800 bytes).
 
 Note that for two of the kernels ``FEMSWEEP`` and ``MASS3DEA``, we ran a
@@ -662,7 +663,7 @@ the same as for the Priority 1 kernels just described. Note that two of the
 kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not perform any
 floating point operations. They represent recurring computational patterns
 in our application that are important rather than key numerical kernels.
-Thus, the two kernels have zero GFLOP/s rates. So, we consider the bandwidth
+Thus, the two kernels have zero GFLOP/sec rates. So, we consider the bandwidth
 as the appropriate metric to consider.
 
 .. csv-table:: FOM results for Priority 2 kernels run on H100
@@ -688,9 +689,9 @@ The legend in each plot indicates the curves shown. Each plot includes:
     curves and computed using simple heuristics. The legend contains the
     (x, y) values for the saturation points.
 
-Most plots contain two variants, with the Base variant in blue and RAJA
+Most plots contain two variants, with the non-RAJA variant in blue and RAJA
 variant in orange. In these cases, the throughput and saturation are close,
-which indicates that the RAJA variants perform as well as the Base variants
+which indicates that the RAJA variants perform as well as the non-RAJA variants
 that are written directly in CUDA with no RAJA abstractions. Two kernels
 (MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
 These additional curves were included to show how kernel execution choices,
