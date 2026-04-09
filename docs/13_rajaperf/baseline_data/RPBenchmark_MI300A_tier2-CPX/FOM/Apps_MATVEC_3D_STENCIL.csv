@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_MATVEC_3D_STENCIL-Base_Seq-default,64.0,4.36214,15.3687
+Apps_MATVEC_3D_STENCIL-Base_HIP-block_256,17576.0,172.721,443.39
+Apps_MATVEC_3D_STENCIL-RAJA_HIP-block_256,17576.0,183.707,471.59

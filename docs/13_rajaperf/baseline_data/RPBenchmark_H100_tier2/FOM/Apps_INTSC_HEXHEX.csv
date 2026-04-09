@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_INTSC_HEXHEX-Base_Seq-default,27.0,4.59175,0.0989909
+Apps_INTSC_HEXHEX-Base_CUDA-block_64,1728.0,1055.5,22.7549
+Apps_INTSC_HEXHEX-RAJA_CUDA-block_64,1728.0,1054.95,22.7431

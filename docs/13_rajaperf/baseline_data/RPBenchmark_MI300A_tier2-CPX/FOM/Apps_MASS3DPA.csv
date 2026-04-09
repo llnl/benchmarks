@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_MASS3DPA-Base_Seq-default,1600.0,11.1064,5.201
+Apps_MASS3DPA-Base_HIP-block_25,101184.0,404.545,188.507
+Apps_MASS3DPA-RAJA_HIP-block_25,101184.0,403.019,187.797
