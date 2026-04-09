@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Basic_INDEXLIST_3LOOP-Base_Seq-default,80000.0,0.0,14.1788
+Basic_INDEXLIST_3LOOP-Base_HIP-block_256,80000.0,0.0,146.085
+Basic_INDEXLIST_3LOOP-RAJA_HIP-block_256,80000.0,0.0,143.168

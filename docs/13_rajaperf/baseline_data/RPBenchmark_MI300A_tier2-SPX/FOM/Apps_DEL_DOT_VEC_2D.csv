@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Apps_DEL_DOT_VEC_2D-Base_Seq-default,1849.0,8.22078,7.01899
+Apps_DEL_DOT_VEC_2D-Base_HIP-block_256,264196.0,2080.76,1727.01
+Apps_DEL_DOT_VEC_2D-RAJA_HIP-block_256,528529.0,2020.53,1675.75

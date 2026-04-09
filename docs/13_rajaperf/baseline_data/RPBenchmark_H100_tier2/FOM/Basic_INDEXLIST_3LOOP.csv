@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Basic_INDEXLIST_3LOOP-Base_Seq-default,80000.0,0.0,6.21439
+Basic_INDEXLIST_3LOOP-Base_CUDA-block_256,80000.0,0.0,185.245
+Basic_INDEXLIST_3LOOP-RAJA_CUDA-block_256,80000.0,0.0,182.04

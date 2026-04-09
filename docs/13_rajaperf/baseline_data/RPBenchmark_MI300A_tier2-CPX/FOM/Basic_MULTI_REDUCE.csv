@@ -1,0 +1,6 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Basic_MULTI_REDUCE-Base_Seq-default,3120.0,0.319886,4.78196
+Basic_MULTI_REDUCE-Base_HIP-atomic_direct_256,1599995.0,33.2328,495.21
+Basic_MULTI_REDUCE-Base_HIP-atomic_occgs_256,1599995.0,33.4117,497.876
+Basic_MULTI_REDUCE-RAJA_HIP-atomic_direct_256,799995.0,25.9727,387.028
+Basic_MULTI_REDUCE-RAJA_HIP-atomic_occgs_256,1599995.0,33.0008,491.753

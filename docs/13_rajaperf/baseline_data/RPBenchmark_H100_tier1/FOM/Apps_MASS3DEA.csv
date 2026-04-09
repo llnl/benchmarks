@@ -1,4 +1,5 @@
 Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
-Apps_MASS3DEA-Base_CUDA-compile_time_block_stride_loop_64,18198528.0,201.042,220.513
-Apps_MASS3DEA-RAJA_CUDA-compile_time_block_stride_loop_64,18198528.0,207.164,227.228
-Apps_MASS3DEA-RAJA_CUDA-cached_block_stride_loop_64,9101312.0,166.997,183.171
+Apps_MASS3DEA-Base_Seq-default,196608.0,0.172475,0.189198
+Apps_MASS3DEA-Base_CUDA-compile_time_block_stride_loop_64,18198528.0,199.437,218.752
+Apps_MASS3DEA-RAJA_CUDA-compile_time_block_stride_loop_64,18198528.0,204.956,224.806
+Apps_MASS3DEA-RAJA_CUDA-cached_block_stride_loop_64,18198528.0,183.938,201.752

@@ -1,3 +1,4 @@
 Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
-Apps_VOL3D-Base_CUDA-block_256,704969.0,5051.5,2108.35
-Apps_VOL3D-RAJA_CUDA-block_256,343000.0,4699.8,1965.9
+Apps_VOL3D-Base_Seq-default,512.0,10.589,4.748
+Apps_VOL3D-Base_CUDA-block_256,704969.0,4930.32,2057.77
+Apps_VOL3D-RAJA_CUDA-block_256,343000.0,4652.4,1946.07
