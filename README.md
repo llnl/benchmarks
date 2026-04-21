@@ -10,7 +10,7 @@ of Energy (DOE) National Nuclear Security Administration (NNSA).
 ### Sphinx
 
 Sample Sphinx documentation for consideration is provided within the
-`doc/sphinx` folder. More information can be read [here](doc/sphinx/README.md).
+`doc/sphinx` folder. More information can be read [here](docs/sphinx/README.md).
 
 ## License
 
