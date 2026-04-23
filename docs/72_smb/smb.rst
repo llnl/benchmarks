@@ -74,7 +74,7 @@ Testing the build:
 
 .. 
 
-You should see output similar to the following (note, because you're presumably testing on a single node at this point, the -n parameter need to be set to 1. While this is erroneus from a performance standpoint, the SMB tries to ensure all communication is done across the network, and thus can't be run on a single node. 
+You should see output similar to the following (note, because you're presumably testing on a single node at this point, the -n parameter need to be set to 1. While this is erroneous from a performance standpoint, the SMB tries to ensure all communication is done across the network, and thus can't be run on a single node. 
 
 .. code-block:: bash
 
