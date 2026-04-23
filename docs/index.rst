@@ -50,7 +50,7 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    70_phloem/phloem
    71_omb/omb
    72_smb/smb
-   72_gpcnet/gpcnet
+   73_gpcnet/gpcnet
    80_ior/ior
    81_mdtest/mdtest
    82_dlio/dlio
