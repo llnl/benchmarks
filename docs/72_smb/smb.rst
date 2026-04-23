@@ -26,7 +26,7 @@ The SMB implements four different communication patterns; single direction, pair
 
 Figure of Merit
 ---------------
-As this is meant to represent a variety of applicaiton behaviors there isn't a single figure of merrit we can identify. However, we can identify a subset of input parameters to test. 
+As this is meant to represent a variety of application behaviors there isn't a single figure of merrit we can identify. However, we can identify a subset of input parameters to test. 
 For the purposes of this test the figure of merit is the message rate of pre-posted across different message sizes, and a number of peer count.
 
 
@@ -74,7 +74,7 @@ Testing the build:
 
 .. 
 
-You should see output simlar to the following (note, because you're presumably testing on a single node at this point, the -n parameter need to be set to 1. While this is erronous from a performance standpoint, the SMB tries to ensure all communication is done across the network, and thus can't be run on a single node. 
+You should see output similar to the following (note, because you're presumably testing on a single node at this point, the -n parameter need to be set to 1. While this is erroneus from a performance standpoint, the SMB tries to ensure all communication is done across the network, and thus can't be run on a single node. 
 
 .. code-block:: bash
 
@@ -102,9 +102,9 @@ Each of these needs to be run for various message sizes and scales to test the p
 We define some system specific variables for these tests.
 
 * PPN - the number of processes per node.
-* CACHE - 2x the size of the largest cache size (note: we use 2x here to be thourough)
+* CACHE - 2x the size of the largest cache size (note: we use 2x here to be thorough)
 
-Note: these tests can be memory intensive, with memory usage growing as $O(message\_size*number\_of\_messages*number\_of\_peers*processes\_per\_node)$. If memory issues occur, use the -m flag to reduce the number of messages per itteration at higher message sizes. 
+Note: these tests can be memory intensive, with memory usage growing as $O(message\_size*number\_of\_messages*number\_of\_peers*processes\_per\_node)$. If memory issues occur, use the -m flag to reduce the number of messages per iteration at higher message sizes. 
 
 * 9 point stencil
 
