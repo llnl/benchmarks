@@ -2,6 +2,10 @@
 MiniEM
 ******
 
+.. note::
+   The documentation herein needs to be updated for current
+   performance.
+
 This is the documentation for the Future Computing Resource (FCR) FY30
 Benchmark MiniEM. The content herein was created by the following
 authors (in alphabetical order).
@@ -31,13 +35,37 @@ Characteristics
 ===============
 
 The goal is to utilize the specified version of MiniEM (see
-:ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
-:ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
-changes are made to SPARTA).
+:ref:`MiniEMApplicationVersion`) that runs the benchmark problem (see
+:ref:`MiniEMProblem`) correctly (see :ref:`MiniEMCorrectness` if
+changes are made to MiniEM).
 
 
-Problems
---------
+.. _MiniEMApplicationVersion:
+
+Application Version
+-------------------
+
+The command to clone is provided below.
+
+.. literalinclude:: miniem_clone.sh
+   :language: sh
+   :lines: 2-
+
+.. note::
+   The Git SHA will be updated with a tag soon.
+
+The script to clone can be downloaded from :download:`miniem_clone.sh
+<miniem_clone.sh>`. It can also be executed in place to clone into
+``docs/50_miniem/miniem``.
+ 
+.. code-block:: bash
+
+   cd docs/50_miniem
+   ./miniem_clone.sh
+
+
+Problem
+-------
 
 Figure of Merit
 ---------------
