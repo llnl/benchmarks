@@ -232,10 +232,18 @@ Building
 
 MiniEM and Trilinos prefer static versus dynamic linking for its
 third-party libraries. Instructions for two systems will be provided
-below. The first is for the Hops system whose compute nodes have two
-Intel Xeon Sapphire Rapids processors each and a total of four Nvidia
-H100 GPUs.
+below. 
 
+The platforms utilized for benchmarking activities are listed and described below.
+
+* A GPU build and test system within Sandia National Laboratories
+  named "hops" (see :ref:`MiniEMCTS2PlusHops`). This system has
+  compute nodes with two Intel Xeon Sapphire Rapids processors each
+  and a total of four Nvidia H100 GPUs.
+* El Capitan (see :ref:`MiniEMATS4`)
+
+
+.. _MiniEMCTS2PlusHops:
 
 Hops
 ----
