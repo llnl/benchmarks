@@ -96,6 +96,32 @@ These parameters are described below.
 Figure of Merit
 ---------------
 
+Each MiniEM simulation writes out a Figure of Merit (FOM) block to
+STDOUT. The relevant portion of this block is in the below example.
+
+.. code-block::
+
+   =================================
+   FOM Calculation
+   =================================
+     Number of cells = 4116000
+     Time for Belos Linear Solve = 705.737 seconds
+     Number of Time Steps (one linear solve per step) = 1541
+     FOM ( num_cells * num_steps / solver_time / 1000) = 8987.42 k-cell-steps per second 
+   =================================
+
+The number of steps, specified with the ``--numTimeSteps`` command
+line option, described below in :ref:`MiniEMRunATS4`), must be large
+enough so the time for the Belos Linear Solve is greater than 600
+seconds, i.e., so the solver runs for at least 10 minutes. The figure
+of merit (FOM) is the bottom entry in this block, i.e., ``FOM (
+num_cells * num_steps / solver_time / 1000)``.
+
+It is desired to capture the FOM for varying problem sizes that
+encompass utilizing 35% to 75% of available memory (when all PEs are
+utilized). The ultimate goal is to maximize this throughput FOM while
+utilizing at least 50% of available memory.
+
 
 Source code modifications
 =========================
