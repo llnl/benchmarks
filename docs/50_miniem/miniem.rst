@@ -67,6 +67,32 @@ The script to clone can be downloaded from :download:`miniem_clone.sh
 Problem
 -------
 
+The [Maxwell-Large]_ problem given by the input deck "maxwell-large.xml"
+describes a uniform mesh of a 3D box which makes it ideal for scaling studies.
+The stock input file for this can be found within the Trilinos repository in the
+aforementioned link.
+
+Useful parameters from within this input deck are shown below.
+
+.. code-block::
+
+   <snip>
+   23    <ParameterList name="Inline Mesh">
+   <snip>
+   28      <ParameterList name="Mesh Factory Parameter List">
+   <snip>
+   35        <Parameter name="X Elements" type="int" value="40" />
+   36        <Parameter name="Y Elements" type="int" value="40" />
+   37        <Parameter name="Z Elements" type="int" value="40" />
+
+These parameters are described below.
+
+``X Elements, Y Elements, Z Elements``
+   This sets the size of the problem, which is the product of these 3
+   quantities. These parameters are set to other values with the cases shown
+   herein. These values should be identical for the calculations herein.
+
+
 Figure of Merit
 ---------------
 
