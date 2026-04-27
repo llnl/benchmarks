@@ -268,6 +268,8 @@ This script is replicated below for posterity.
 Spack
 ^^^^^
 
+The following script will clone Spack and add it to the environment.
+
 .. code-block:: sh
 
    # clone Spack and add it to the environment
@@ -283,6 +285,16 @@ This script is replicated below for posterity.
 TPLs
 ^^^^
 
+The following script will build the third-party libraries for Trilinos
+and, by extension, MiniEM.
+
+.. code-block:: sh
+
+   # build TPLs
+   ./build--hops.sh
+
+This script is replicated below for posterity.
+
 .. literalinclude:: build--hops.sh
    :language: sh
    :lines: 2-
@@ -290,6 +302,15 @@ TPLs
 
 MiniEM
 ^^^^^^
+
+The following script will build Trilinos and MiniEM once its
+dependencies are taken care of. This directly leverages Trilinos'
+CMake build system.
+
+.. code-block:: sh
+
+   # build Trilinos/MiniEM
+   ./trilinos--hops.sh
 
 .. literalinclude:: trilinos--hops.sh
    :language: sh
