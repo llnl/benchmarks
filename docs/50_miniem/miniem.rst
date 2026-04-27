@@ -123,6 +123,45 @@ utilized). The ultimate goal is to maximize this throughput FOM while
 utilizing at least 50% of available memory.
 
 
+Correctness Check
+-----------------
+
+MiniEM also provides the [Maxwell-AnalyticSolution]_ problem given by
+the input deck "maxwell-analyticSolution.xml". This will output
+analytic error values (see below for an example) and will cause the
+simulation to fail (and return a non-zero exit code) if it exceeds
+appropriate thresholds. This should be used to verify the build of
+MiniEM upon the system to assess both the used programming environment
+and any changes made to the benchmark.
+
+.. code-block::
+   :emphasize-lines: 2
+
+   The Belos solver "GMRES block system" of type ""Belos::BlockGmresSolMgr": {Flexible: true, Num Blocks: 10, Maximum Iterations: 10, Maximum Restarts: 20, Convergence Tolerance: 1e-08}" returned a solve status of "SOLVE_STATUS_CONVERGED" in 1 iterations with total CPU time of 0.0189103 sec
+   L2 Error E maxwell - analyticSolution = 0.0566793
+
+   * finished time step 6, t = 5e-09
+   **************************************************
+
+This case can be run simply by following the overall instructions in
+:ref:`MiniEMRunning` and replacing the benchmark input file with
+"maxwell-analyticSolution.xml". Example output of a failed case is
+provided below (also note that this case exited with an exit code of
+134).
+
+.. code-block::
+
+   what():  /path/to/trilinos/packages/panzer/mini-em/example/BlockPrec/main.cpp:690:
+
+   Throw number = 1
+
+   Throw test that evaluated to true: !( (std::sqrt(Thyra::get_ele(*g,0))) < (0.065) )
+
+   Error, (std::sqrt(Thyra::get_ele(*g,0)) = 0.0819696) < (0.065 = 0.065)! FAILED!
+   terminate called after throwing an instance of 'std::out_of_range'
+   what():  /path/to/trilinos/packages/panzer/mini-em/example/BlockPrec/main.cpp:690:
+
+
 Source code modifications
 =========================
 
