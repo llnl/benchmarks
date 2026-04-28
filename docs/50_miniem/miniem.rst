@@ -312,9 +312,9 @@ CMake build system.
    # build Trilinos/MiniEM
    ./trilinos--hops.sh
 
-.. literalinclude:: trilinos--hops.sh
-   :language: sh
-   :lines: 2-
+This script can be quite long. It is replicated below
+(:ref:`MiniEMBuildScriptsCTS2PlusHops`) for posterity and can be
+easily downloaded (:download:`trilinos--hops.sh <trilinos--hops.sh>`)
 
 
 .. _MiniEMATS4Build:
@@ -378,9 +378,9 @@ CMake build system.
 .. note::
    This will be updated for referencing ones own TPLs soon.
 
-.. literalinclude:: trilinos--ats4.sh
-   :language: sh
-   :lines: 2-
+This script can be quite long. It is replicated below
+(:ref:`MiniEMBuildScriptsATS4`) for posterity and can be
+easily downloaded (:download:`trilinos--ats4.sh <trilinos--ats4.sh>`)
 
 
 Running
@@ -405,6 +405,30 @@ Strong Scaling on El Capitan
 
 Weak Scaling on El Capitan
 ==========================
+
+
+Trilinos Build Scripts
+======================
+
+
+.. _MiniEMBuildScriptsCTS2PlusHops:
+
+Hops
+----
+
+.. literalinclude:: trilinos--hops.sh
+   :language: sh
+   :lines: 2-
+
+
+.. _MiniEMBuildScriptsATS4:
+
+El Capitan
+----------
+
+.. literalinclude:: trilinos--ats4.sh
+   :language: sh
+   :lines: 2-
 
 
 References
