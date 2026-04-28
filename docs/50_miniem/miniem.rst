@@ -237,13 +237,13 @@ below.
 The platforms utilized for benchmarking activities are listed and described below.
 
 * A GPU build and test system within Sandia National Laboratories
-  named "hops" (see :ref:`MiniEMCTS2PlusHops`). This system has
+  named "hops" (see :ref:`MiniEMCTS2PlusHopsBuild`). This system has
   compute nodes with two Intel Xeon Sapphire Rapids processors each
   and a total of four Nvidia H100 GPUs.
-* El Capitan (see :ref:`MiniEMATS4`)
+* El Capitan (see :ref:`MiniEMATS4Build`)
 
 
-.. _MiniEMCTS2PlusHops:
+.. _MiniEMCTS2PlusHopsBuild:
 
 Hops
 ----
@@ -317,9 +317,70 @@ CMake build system.
    :lines: 2-
 
 
+.. _MiniEMATS4Build:
 
 El Capitan
 ----------
+
+The El Capitan instructions are slightly more complicated due to
+complications with building Trilinos' TPLs in an appropriate manner
+for static linking. Accordingly, the TPL stack was built and leveraged
+by the bulk of SNL code teams that use Trilinos. This stack will be
+regenerated in a reproducible fashion soon. Until then, its existence
+is required.
+
+Environment
+^^^^^^^^^^^
+
+Change to a relevant environment.
+
+.. code-block:: sh
+
+   # source script to alter environment
+   . env--ats4.sh
+
+This script is replicated below for posterity.
+
+.. literalinclude:: env--ats4.sh
+   :language: sh
+   :lines: 2-
+
+Spack
+^^^^^
+
+The TPL stack can be built via Spack. Specific patching for El Capitan
+is being created in a reproducible fashion.
+
+.. note::
+   This will be updated once the Spack recipe is reproducible.
+
+TPLs
+^^^^
+
+The TPL stack can be built via Spack. Specific patching for El Capitan
+is being created in a reproducible fashion.
+
+.. note::
+   This will be updated once the Spack recipe is reproducible.
+
+MiniEM
+^^^^^^
+
+The following script will build Trilinos and MiniEM once its
+dependencies are taken care of. This directly leverages Trilinos'
+CMake build system. 
+
+.. code-block:: sh
+
+   # build Trilinos/MiniEM
+   ./trilinos--ats4.sh
+
+.. note::
+   This will be updated for referencing ones own TPLs soon.
+
+.. literalinclude:: trilinos--ats4.sh
+   :language: sh
+   :lines: 2-
 
 
 Running
