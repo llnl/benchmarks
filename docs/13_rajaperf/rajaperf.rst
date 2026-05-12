@@ -329,8 +329,8 @@ To get information about how to run the code, use the *help option*::
   path/to/RAJAPerf
   $ cd my-build
   $ ls bin
-  rajaperf.exe
-  $ ./bin/rajaperf.exe --help (or -h)
+  raja-perf.exe
+  $ ./bin/raja-perf.exe --help (or -h)
 
 This will print all available command-line options along with potential
 arguments and defaults. Available options allow one to print information about
