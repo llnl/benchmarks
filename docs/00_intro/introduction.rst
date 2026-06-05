@@ -4,16 +4,16 @@ Introduction
 
 This is benchmark documentation for a Department of Energy (DOE)
 National Nuclear Security Administration (NNSA) Advanced Simulation
-and Computing (ASC) **Future Computing Resource (FCR)**.
+and Computing (ASC) **Advanced Technology System 6 (ATS-6)**.
 
 
 Benchmark Overview 
 ==================
 
-Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Priority 1, or Priority 2.
+Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Technical Requirement 1, or Technical Requirement 2.
 
-Priority 1 Mini Applications
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Technical Requirement 1 Mini Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
 
@@ -62,8 +62,8 @@ Priority 1 Mini Applications
    - Kokkos
 
 
-Priority 2 Mini Applications
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Technical Requirement 2 Mini Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
 
@@ -101,7 +101,7 @@ Priority 2 Mini Applications
    - NCCL+CUDA
    - NVIDIA NeMo
 
-Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
+Please note that half of the RAJA kernels are Technical Requirement 1, and the other half are Technical Requirement 2.  Similarly, 2 of the Laghos problems are Technical Requirement 1, and the third is Technical Requirement 2.
 
 
 .. _GlobalRunRules:
