@@ -40,7 +40,6 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    32_lammpsACE/lammpsACE
    40_remhos/remhos
    50_miniem/miniem
-   60_mlperf/mlperf
    
 .. toctree::
    :maxdepth: 3
@@ -50,7 +49,6 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    70_phloem/phloem
    71_omb/omb
    72_smb/smb
-   73_gpcnet/gpcnet
    80_ior/ior
    81_mdtest/mdtest
    82_dlio/dlio
