@@ -9,7 +9,7 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-ATS-6 Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
+ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is considered to be final
 ==========================================================================================================
 
 .. toctree::
