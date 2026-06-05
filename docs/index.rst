@@ -9,8 +9,8 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
-========================================================================================================
+ATS-6 Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
+==========================================================================================================
 
 .. toctree::
    :maxdepth: 3
@@ -22,7 +22,7 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 1 Mini-Applications
+   :caption: Technical Requirements 1
 
    11_kripke/kripke
    12_laghos/laghos
@@ -34,7 +34,7 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 2 Mini-Applications
+   :caption: Technical Requirements 2
 
    10_amg/amg
    32_lammpsACE/lammpsACE
