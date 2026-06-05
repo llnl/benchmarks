@@ -19,15 +19,16 @@ Problems
 
 The test problems are the Sedov shock (problem 1 in Laghos) in 3D.
 The test problems should be run with a conforming mesh.
-Linear, quadratic, and cubic orders are of interest with the following priorities:
+Linear, quadratic, and cubic orders are of interest and fall into
+the Technical Requirements as following:
 
-Priority 1 problems
-^^^^^^^^^^^^^^^^^^^
+Technical Requirement 1 problems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    #. **3D Linear** This problem uses a kinematic order of 1, and a thermodynamic order of 0 (Q1Q0).
    #. **3D Quadratic** This problem uses a kinematic order of 2, and a thermodynamic order of 1 (Q2Q1).
 
-Priority 2 problems
-^^^^^^^^^^^^^^^^^^^
+Technical Requirement 2 problems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    3. **3D Cubic** This problem uses a kinematic order of 3, and a thermodynamics order of 2 (Q3Q2).
 
 
