@@ -65,7 +65,8 @@ The command to clone is provided below.
    :lines: 2-
 
 .. note::
-   The Git SHA will be updated with a tag soon.
+   This version of SPARTA has been updated to include the full
+   inclusion of Kokkos 5.
 
 The script to clone can be downloaded from :download:`sparta_clone.sh
 <sparta_clone.sh>`. It can also be executed in place to clone into
