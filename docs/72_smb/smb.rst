@@ -63,7 +63,7 @@ Build requirements:
 GPU Aware Requirements:
 
 * MPI implementation with GPU-aware communication support
-* An available instalation of either HIP or CUDA
+* An available installation of either HIP or CUDA
 
 
 
