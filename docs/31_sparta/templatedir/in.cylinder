@@ -34,7 +34,7 @@ variable            beta equal 0.0
 ###################################
 # Simulation initialization standards
 ###################################
-variable            ppc equal 47
+variable            ppc index 47
 variable            cpmfp equal 4
 
 ###################################
