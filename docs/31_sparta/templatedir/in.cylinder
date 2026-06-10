@@ -1,8 +1,8 @@
 # 2D flow around a circle = infinite cylinder
 # No flow velocity
 
-variable            nprocs index 1
-variable            L equal 1.0*sqrt(${nprocs})
+variable            nscale index 1
+variable            L equal 1.0*sqrt(${nscale})
 
 ###################################
 # Constants
