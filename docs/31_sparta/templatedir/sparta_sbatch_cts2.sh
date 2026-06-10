@@ -2,7 +2,6 @@
 #SBATCH --job-name=fcr30sparta
 #SBATCH --nodes=1
 #SBATCH --time=1:00:00
-#SBATCH --account=fy140252
 
 umask 022
 ulimit -c unlimited
