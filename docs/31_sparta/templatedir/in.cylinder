@@ -1,8 +1,9 @@
-# advect particles on uniform Cartesian grid
-# single-step moves that cross grid cell boundaries are detected
-# particle effectively moves from cell to cell
-# particles reflect off global box boundaries
-#
+# 2D flow around a circle = infinite cylinder
+# No flow velocity
+
+variable            nprocs index 1
+variable            L equal 1.0*sqrt(${nprocs})
+
 ###################################
 # Constants
 ###################################
@@ -16,23 +17,19 @@ variable            mass equal 46.5E-27
 variable            visc equal 1.656E-5
 variable            gamma equal 1.400
 variable            To equal 293.
-variable            pi equal 3.14159
 
-variable            cbar equal sqrt(8.*${boltz}*${To}/${mass}/${pi})
+variable            cbar equal sqrt(8.*${boltz}*${To}/${mass}/PI)
 variable            uspeed equal sqrt(${gamma}*${boltz}*${To}/${mass})
 
 ###################################
 # Trajectory inputs
 ###################################
 variable            mach equal 1.71
-variable            L index 1.
-variable            Vo equal ${mach}*${uspeed}
-variable            nden equal 1.E20 
-variable            Vo equal ${mach}*${uspeed}
+variable            nden equal 1.0E20
 
 variable            surftemp equal 293.
-variable            temp equal 293.00
-variable            beta equal 0.000
+variable            temp equal 293.0
+variable            beta equal 0.0
 
 ###################################
 # Simulation initialization standards
@@ -43,10 +40,6 @@ variable            cpmfp equal 4
 ###################################
 # Parameter calculations
 ###################################
-variable            Vx equal ${Vo}*cos(${beta}*2*PI/360)
-variable            Vy equal ${Vo}*sin(${beta}*2*PI/360)
-
-
 variable            mfp equal 2*${mue}/(${nden}*${mass}*${cbar})
 
 variable            xmin equal -5.0*${L}
@@ -57,25 +50,22 @@ variable            ymax equal  5.1*${L}
 variable            xncells equal (${xmax}-${xmin})/${mfp}*${cpmfp}
 variable            yncells equal (${ymax}-${ymin})/${mfp}*${cpmfp}
 
-variable            Fnum equal  ${nden}*(${xmax}-${xmin})*(${ymax}-${ymin})/${ppc}/${xncells}/${yncells}
+variable            Fnum equal ${nden}*(${xmax}-${xmin})*(${ymax}-${ymin})/${ppc}/${xncells}/${yncells}
 
-# The default time step is too small
-# variable            tstep equal (-${xmin}+${xmax})/${Vx}/${xncells}/10/4
-variable            tstep equal (-${xmin}+${xmax})/${Vx}/${xncells}/4
+variable            tstep equal 1.0e-05
+
+variable            radius equal 0.5*${L}
 
 ###################################
 # Print variable values to log file
 ###################################
-print               " Velocity  = ${Vo}"
 print               " Density  = ${nden}"
-print               " X-Velocity  = ${Vx}"
-print               " Y-Velocity  = ${Vy}"
 print               " Temp  = ${temp}"
 print               " cbar  = ${cbar}"
 print               " mean free path  = ${mfp}"
 print               " cells per free stream mean free path = ${cpmfp}"
 print               " sound speed  = ${uspeed}"
-#print               " number of mean free paths = ${nmfp}"
+print               " cylinder radius = ${radius}"
 print               " x-min = ${xmin}"
 print               " x-max = ${xmax}"
 print               " y-min = ${ymin}"
@@ -84,48 +74,42 @@ print               " x-cells = ${xncells}"
 print               " y-cells = ${yncells}"
 print               " Simulation Ratio = ${Fnum}"
 print               " Timestep = ${tstep}"
+print               " Surface scale factor = ${L}"
 
 ###################################
 # Simulation parameters
 ###################################
-seed	    	    847384
-dimension   	    2
-global		    nrho ${nden}
+seed                847384
+dimension           2
+global              nrho ${nden}
 global              fnum ${Fnum}
 
 timestep            ${tstep}
-global              gridcut 1.E-1 particle/reorder 100 comm/sort yes
+global              gridcut 1.E-1 particle/reorder 10 comm/sort yes
 
 ###################################
 # Grid generation
 ###################################
-boundary	    o o p
+boundary            r r p
 create_box          ${xmin} ${xmax} ${ymin} ${ymax} -0.5 0.5
-create_grid 	    ${xncells} ${yncells} 1 block * * * 
+create_grid         ${xncells} ${yncells} 1 block * * *
 
 #####################################
 # Gas/Collision Model Specification #
 #####################################
 species             air.species N2
-mixture             air vstream ${Vx} ${Vy} 0.0 temp ${temp}
+mixture             air vstream 0.0 0.0 0.0 temp ${temp}
 mixture             air N2 frac 1.0
 
-mixture             air vstream ${Vx} ${Vy} 0.0 temp ${temp}
-
-collide             vss all air.vss relax variable 
-collide_modify      vremax 100 yes vibrate no rotate smooth nearcp yes 10
+collide             vss all air.vss relax variable
+collide_modify      vremax 1000 yes vibrate no rotate smooth nearcp yes 10
 
 #####################################################
 # Surface generation and collision specification
 #####################################################
-read_surf	        circle_R0.5_P10000.surf group 1 invert scale ${L} ${L} 1.0
-surf_collide	    1 diffuse ${surftemp} 1.0 
-surf_modify         1 collide 1 
-
-###################################
-# Boundary conditions
-###################################
-fix                 in emit/face air xlo xhi ylo yhi twopass
+read_surf           circle_R0.5_P10000.surf scale ${L} ${L} 1.0 group 1 invert
+surf_collide        1 diffuse ${surftemp} 1.0
+surf_modify         1 collide 1
 
 # adapt the grid around the surface before running the simulation
 adapt_grid          all refine surf all 0.00001 iterate 5
@@ -140,17 +124,16 @@ create_particles    air n 0 twopass
 ###################################
 # Output
 ###################################
-stats_style         step cpu np nattempt ncoll maxlevel
+stats_style         step cpu spcpu np nattempt ncoll maxlevel
 
 stats               100
 
-# Some systems buffer extensively
-stats_modify        flush yes
+# Stop after 5.5 minutes
+fix             2 halt 10 tlimit > 330.0 message no error continue
+run             10000000
 
-# Stop after 11 minutes
-fix 1 halt 10 tlimit > 660.0 message no
+unfix           2
 
-# Print out the value of L for parsing ease
-print "The value of L is $L" 
-
-run                 10000000
+# Stop after 5.5 minutes
+fix             3 halt 10 tlimit > 330.0 message no
+run             10000000
