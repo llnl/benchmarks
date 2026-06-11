@@ -29,7 +29,7 @@ IO500 consists of three underlying applications, run in multiple configurations.
   * The specific find executable is configurable.
 
 
-Further detail on the tests is provided below, as described on the `IO500 project page <https://io500.org/about>`_.
+Further detail on the tests is provided below, as described on the IO500 project page at `<https://io500.org/about>`_:
 
 
 IOR
@@ -68,10 +68,12 @@ The mdtest benchmark measures the performance of POSIX metadata operations and i
 
 FIND
 ------
+
 * **find-easy**: Scans the full set of files created by all of the \*-write phases, and look for files created after the mdtest-easy-write phase with a file size of 3901 bytes and a filename containing the string '01' somewhere within it. Reports the total number of such files found.
 
 Figure of Merit
 ---------------
+
 Each complete IO500 run will produce a *SCORE* for each of the bandwidth and metadata portions, and then for the entire run. Each SCORE is based on the geometric mean of the associated group of tests.
 
 .. raw:: html
@@ -115,7 +117,7 @@ Basic instructions are:
 Running
 =======
 
-Full instructions for running the benchmarks are available at the projects `run IO500 page <https://io500.org/running>`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
+Full instructions for running IO500 are available at `https://io500.org/running`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
 
 The basic steps to run a full IO500 test are:
 
