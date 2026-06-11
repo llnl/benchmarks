@@ -51,9 +51,9 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
    71_omb/omb
    72_smb/smb
    73_gpcnet/gpcnet
-   80_ior/ior
-   81_mdtest/mdtest
-   82_dlio/dlio
+   80_io500/io500
+   81_macsio/macsio
+   82_mlpstor/mlpstor
 
 .. toctree::
    :maxdepth: 3
