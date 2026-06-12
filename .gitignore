@@ -73,3 +73,4 @@ docs/31_sparta/templatedir/sparta_env_cts2gpu.sh
 docs/31_sparta/templatedir/sparta_env_elcapitan.sh
 docs/31_sparta/templatedir/sparta
 docs/31_sparta/check*
+docs/31_sparta/templatedir/run-*
