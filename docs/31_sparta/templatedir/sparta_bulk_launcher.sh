@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-sbatch --account=fy140252 --partition=batch,short sparta_sbatch_cts2.sh
+SPARTA_NSCALE=1 SPARTA_PPC=47 \
+    sbatch \
+        --account=fy140252 \
+        --partition=batch,short \
+        sparta_sbatch_cts2.sh
 
 exit 0

@@ -33,7 +33,7 @@ export FILE_TIME="output-time-${DIR_CASE}.txt"
 export SPARTA_PPC=${SPARTA_PPC:-47}
 export SPARTA_NSCALE=${SPARTA_NSCALE:-1}
 export SPARTA_IS_KOKKOS_TOOLS="${SPARTA_IS_KOKKOS_TOOLS:-no}"
-export APP_REPEAT=${APP_REPEAT:-1}
+export APP_REPEAT=${APP_REPEAT:-4}
 export APP_NAME=${APP_NAME:-"spa_kokkos_mpi_only"}
 export APP_EXE="${DIR_EXE}/${APP_NAME}"
 
@@ -121,8 +121,8 @@ run_try()
     # export LD_PRELOAD=libldpxi_mpi.so
     # export LD_PRELOAD=/usr/projects/hpctest/amagela/ldpxi/ldpxi/install/ats3/ldpxi-1.0.1/intel+cray-mpich-8.1.25/lib/libldpxi_mpi.so.1.0.1
     # export LD_PRELOAD=/usr/projects/hpctest/amagela/ats-5/LDPXI/xr/libldpxi.so
-    # /usr/bin/time --verbose --output="${FILE_TIME}" \
-    # time \
+    # time
+    /usr/bin/time --verbose --output="${FILE_TIME}" \
         srun \
             --unbuffered \
             --ntasks=$RANKS_PER_JOB \
@@ -131,7 +131,9 @@ run_try()
             --distribution=block:block \
             --output="${FILE_LOG//.log/-${i}.log}" \
             "${APP_EXE}" \
-                -k on sf kk \
+                -k on -sf kk \
+                -var nscale ${SPARTA_NSCALE} \
+                -var ppc ${SPARTA_PPC} \
                 -in "in.cylinder"
     # unset LD_PRELOAD
 #             --ntasks-per-socket=$RANKS_PER_SOCKET \
