@@ -143,43 +143,65 @@ If a *result_summary.txt* file is blank, test failures may be noted in the *resu
 Example Scalability Results
 ===========================
 
-Performance typically increases with numbers of processes to a certain point. Example results for two 8 node runs, the first with 2 cores/node and the second with 8 processes/node are as follows:
-.. code-block:: bash
+Performance typically increases with numbers of processes and/or nodes to a certain point. Example results are shown below for three runs where the total run score scales up due to increased IOPS numbers even though the Bandwidth does not.
+* 8 Nodes w/ 2 procs/node
+* 8 Nodes w/ 8 procs/node
+* 10 Nodes w/ 36 procs/node
 
-# 8 Nodes, 2 procs/node
-[RESULT]       ior-easy-write       12.796751 GiB/s : time 311.025 seconds
-[RESULT]    mdtest-easy-write        6.611423 kIOPS : time 343.089 seconds
-[      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
-[RESULT]       ior-hard-write        0.137987 GiB/s : time 1631.212 seconds
-[RESULT]    mdtest-hard-write        3.893660 kIOPS : time 309.028 seconds
-[RESULT]                 find      220.319273 kIOPS : time 15.725 seconds
-[RESULT]        ior-easy-read       17.643188 GiB/s : time 225.582 seconds
-[RESULT]     mdtest-easy-stat        9.071526 kIOPS : time 250.208 seconds
-[RESULT]        ior-hard-read        7.769585 GiB/s : time 28.991 seconds
-[RESULT]     mdtest-hard-stat        8.816394 kIOPS : time 137.033 seconds
-[RESULT]   mdtest-easy-delete        8.365338 kIOPS : time 271.519 seconds
-[RESULT]     mdtest-hard-read        3.706129 kIOPS : time 324.585 seconds
-[RESULT]   mdtest-hard-delete        4.760443 kIOPS : time 253.289 seconds
-[      ]  ior-rnd4K-easy-read        0.002054 GiB/s : time 307.248 seconds
-[SCORE ] Bandwidth 3.944372 GiB/s : IOPS 9.510778 kiops : TOTAL 6.124871
+.. code-block::
 
-# 8 Nodes, 8 procs/node
-[RESULT]       ior-easy-write       20.046531 GiB/s : time 354.526 seconds
-[RESULT]    mdtest-easy-write       14.191851 kIOPS : time 367.873 seconds
-[      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
-[RESULT]       ior-hard-write        0.136641 GiB/s : time 3324.892 seconds
-[RESULT]    mdtest-hard-write        2.479237 kIOPS : time 309.674 seconds
-[RESULT]                 find      684.031558 kIOPS : time 8.753 seconds
-[RESULT]        ior-easy-read       20.881646 GiB/s : time 340.334 seconds
-[RESULT]     mdtest-easy-stat       20.241713 kIOPS : time 258.140 seconds
-[RESULT]        ior-hard-read        2.462711 GiB/s : time 184.493 seconds
-[RESULT]     mdtest-hard-stat       20.916452 kIOPS : time 37.599 seconds
-[RESULT]   mdtest-easy-delete       16.776099 kIOPS : time 311.641 seconds
-[RESULT]     mdtest-hard-read        8.487589 kIOPS : time 91.246 seconds
-[RESULT]   mdtest-hard-delete        4.288957 kIOPS : time 179.481 seconds
-[      ]  ior-rnd4K-easy-read        0.008195 GiB/s : time 307.429 seconds
-[SCORE ] Bandwidth 3.445083 GiB/s : IOPS 16.759052 kiops : TOTAL 7.598442
+    # 8 Nodes, 2 procs/node
+    [RESULT]       ior-easy-write       12.796751 GiB/s : time 311.025 seconds
+    [RESULT]    mdtest-easy-write        6.611423 kIOPS : time 343.089 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.137987 GiB/s : time 1631.212 seconds
+    [RESULT]    mdtest-hard-write        3.893660 kIOPS : time 309.028 seconds
+    [RESULT]                 find      220.319273 kIOPS : time 15.725 seconds
+    [RESULT]        ior-easy-read       17.643188 GiB/s : time 225.582 seconds
+    [RESULT]     mdtest-easy-stat        9.071526 kIOPS : time 250.208 seconds
+    [RESULT]        ior-hard-read        7.769585 GiB/s : time 28.991 seconds
+    [RESULT]     mdtest-hard-stat        8.816394 kIOPS : time 137.033 seconds
+    [RESULT]   mdtest-easy-delete        8.365338 kIOPS : time 271.519 seconds
+    [RESULT]     mdtest-hard-read        3.706129 kIOPS : time 324.585 seconds
+    [RESULT]   mdtest-hard-delete        4.760443 kIOPS : time 253.289 seconds
+    [      ]  ior-rnd4K-easy-read        0.002054 GiB/s : time 307.248 seconds
+    [SCORE ] Bandwidth 3.944372 GiB/s : IOPS 9.510778 kiops : TOTAL 6.124871
 
+    # 8 Nodes, 8 procs/node
+    [RESULT]       ior-easy-write       20.046531 GiB/s : time 354.526 seconds
+    [RESULT]    mdtest-easy-write       14.191851 kIOPS : time 367.873 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.136641 GiB/s : time 3324.892 seconds
+    [RESULT]    mdtest-hard-write        2.479237 kIOPS : time 309.674 seconds
+    [RESULT]                 find      684.031558 kIOPS : time 8.753 seconds
+    [RESULT]        ior-easy-read       20.881646 GiB/s : time 340.334 seconds
+    [RESULT]     mdtest-easy-stat       20.241713 kIOPS : time 258.140 seconds
+    [RESULT]        ior-hard-read        2.462711 GiB/s : time 184.493 seconds
+    [RESULT]     mdtest-hard-stat       20.916452 kIOPS : time 37.599 seconds
+    [RESULT]   mdtest-easy-delete       16.776099 kIOPS : time 311.641 seconds
+    [RESULT]     mdtest-hard-read        8.487589 kIOPS : time 91.246 seconds
+    [RESULT]   mdtest-hard-delete        4.288957 kIOPS : time 179.481 seconds
+    [      ]  ior-rnd4K-easy-read        0.008195 GiB/s : time 307.429 seconds
+    [SCORE ] Bandwidth 3.445083 GiB/s : IOPS 16.759052 kiops : TOTAL 7.598442
+
+    # 10 Nodes, 36 procs/node
+    [RESULT]       ior-easy-write       20.524085 GiB/s : time 398.964 seconds
+    [RESULT]    mdtest-easy-write        9.930871 kIOPS : time 2872.391 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.139053 GiB/s : time 9323.515 seconds
+    [RESULT]    mdtest-hard-write        2.672797 kIOPS : time 348.968 seconds
+    [RESULT]                 find     1895.276448 kIOPS : time 15.563 seconds
+    [RESULT]        ior-easy-read       21.292236 GiB/s : time 384.298 seconds
+    [RESULT]     mdtest-easy-stat       61.387897 kIOPS : time 465.458 seconds
+    [RESULT]        ior-hard-read        1.600313 GiB/s : time 810.219 seconds
+    [RESULT]     mdtest-hard-stat      102.486286 kIOPS : time 10.096 seconds
+    [RESULT]   mdtest-easy-delete       30.767623 kIOPS : time 929.679 seconds
+    [RESULT]     mdtest-hard-read       33.870216 kIOPS : time 28.531 seconds
+    [RESULT]   mdtest-hard-delete        7.095293 kIOPS : time 131.996 seconds
+    [      ]  ior-rnd4K-easy-read        0.040576 GiB/s : time 302.763 seconds
+    [SCORE ] Bandwidth 3.140276 GiB/s : IOPS 35.168763 kiops : TOTAL 10.509026
+
+..
 
 References
 ==========
