@@ -75,6 +75,8 @@ print               " y-cells = ${yncells}"
 print               " Simulation Ratio = ${Fnum}"
 print               " Timestep = ${tstep}"
 print               " Surface scale factor = ${L}"
+print               " Weak scaling factor (nscale) = ${nscale}"
+print               " Particles per cell (ppc) = ${ppc}"
 
 ###################################
 # Simulation parameters
