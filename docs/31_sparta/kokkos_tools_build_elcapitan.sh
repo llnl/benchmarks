@@ -9,7 +9,7 @@ set -x
 dir_root="`git rev-parse --show-toplevel`"
 dir_pwd="` pwd -P `"
 dir_src="${dir_pwd}/kokkos-tools/profiling/space-time-stack"
-dir_build="${dir_pwd}/kokkos-tools/profiling/space-time-stack"
+dir_build="${dir_pwd}/kokkos-tools-space-time-stack-elcapitan"
 file_log="${dir_pwd}/kokkos-tools-build.log"
 
 # redirect STDOUT and STDERR through tee
@@ -30,8 +30,9 @@ git reset --hard
 popd
 
 # create build directory
-# test -d "${dir_build}" && rm -rf "${dir_build}"
-# mkdir -p "${dir_build}"
+test -d "${dir_build}" && rm -rf "${dir_build}"
+mkdir -p "${dir_build}"
+rsync -va "${dir_src}/" "${dir_build}/"
 
 # build
 # list current environment
