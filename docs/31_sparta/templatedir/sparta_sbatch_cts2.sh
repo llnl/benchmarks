@@ -1,7 +1,4 @@
 #!/bin/bash
-#SBATCH --job-name=fcr30sparta
-#SBATCH --nodes=1
-#SBATCH --time=1:00:00
 
 umask 022
 ulimit -c unlimited
@@ -57,7 +54,7 @@ export PES_PER_NODE=$(( $RANKS_PER_NODE * $SWTHREADS_PER_RANK ))
 
 # Kokkos Tools
 if test "${SPARTA_IS_KOKKOS_TOOLS}" = "yes" ; then
-    export KOKKOS_TOOLS_LIBS="${DIR_ROOT}/kokkos-tools/profiling/space-time-stack/kp_space_time_stack.so"
+    export KOKKOS_TOOLS_LIBS="${DIR_ROOT}/docs/31_sparta/kokkos-tools-${DIR_BUILD_TAG}/profiling/space-time-stack/kp_space_time_stack.so"
 else
     unset KOKKOS_TOOLS_LIBS
 fi
