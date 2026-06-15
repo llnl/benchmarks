@@ -1,55 +1,31 @@
 #!/usr/bin/env bash
 
-# set top-level script parameters
-umask 022
-set -e
+# dump out steps
 set -x
 
-# create vars for common directories and files
-dir_root="`git rev-parse --show-toplevel`"
-dir_pwd="` pwd -P `"
-dir_src="${dir_pwd}/sparta"
-dir_build="${dir_pwd}/sparta/_build"
-file_log="${dir_pwd}/sparta_build.log"
+# set some convenience vars
+env_platform="elcapitan"
 
-# redirect STDOUT and STDERR through tee
-exec &> >(tee >(ts '[%Y-%m-%d %H:%M:%S]' > "${file_log}"))
+# load environment
+. sparta_env_${env_platform}.sh
+module list
 
-# let's turn on verbosity now
-set -v
+# go into checkout if present and checkout if not
+if test ! -d sparta ; then
+    ./sparta_clone.sh
+fi
+pushd sparta
 
-# output for posterity
-hostname
-uptime
-lscpu
-
-# clean and reset source
-pushd "${dir_src}"
-git clean -fdx
-git reset --hard
-popd
-
-# create build directory
-test -d "${dir_build}" && rm -rf "${dir_build}"
+# create and enter build directory
+dir_build="_build-${env_platform}"
 mkdir -p "${dir_build}"
-
-# build
-#   list current environment
-module list
-#   alter environment
-. sparta_env_elcapitan.sh
-#   list current environment
-module list
 pushd "${dir_build}"
+
+# perform the build
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
-    -DPKG_FFT=on \
-    -DBUILD_MPI=on \
     ../cmake
-/usr/bin/time --verbose -- \
-    nice -n 1 \
-        gmake -j 64
-popd
+nice -n 1 gmake -j 64
 
-# gracefully exit
-exit 0
+popd
+popd
