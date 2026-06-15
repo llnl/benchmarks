@@ -8,9 +8,12 @@ set -x
 # create vars for common directories and files
 dir_root="`git rev-parse --show-toplevel`"
 dir_pwd="` pwd -P `"
-dir_src="${dir_pwd}/kokkos-tools/profiling/space-time-stack"
-dir_build="${dir_pwd}/kokkos-tools-space-time-stack-elcapitan"
-file_log="${dir_pwd}/kokkos-tools-build.log"
+dir_src_root="${dir_pwd}/kokkos-tools"
+dir_sts="profiling/space-time-stack"
+dir_src="${dir_src_root}/${dir_sts}"
+dir_build_root="${dir_pwd}/kokkos-tools-elcapitan"
+dir_build="${dir_build_root}/${dir_sts}"
+file_log="${dir_pwd}/kokkos-tools-build-elcapitan.log"
 
 # redirect STDOUT and STDERR through tee
 exec &> >(tee >(ts '[%Y-%m-%d %H:%M:%S]' > "${file_log}"))
@@ -30,9 +33,9 @@ git reset --hard
 popd
 
 # create build directory
-test -d "${dir_build}" && rm -rf "${dir_build}"
-mkdir -p "${dir_build}"
-rsync -va "${dir_src}/" "${dir_build}/"
+test -d "${dir_build_root}" && rm -rf "${dir_build_root}"
+mkdir -p "${dir_build_root}"
+rsync -va "${dir_src_root}/" "${dir_build_root}/"
 
 # build
 # list current environment
@@ -44,7 +47,7 @@ module list
 pushd "${dir_build}"
 /usr/bin/time --verbose -- \
     nice -n 1 \
-        gmake CXX=CC
+        gmake CXX="CC -DUSE_MPI=1"
 popd
 
 # gracefully exit
