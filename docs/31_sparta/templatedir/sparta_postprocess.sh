@@ -28,8 +28,10 @@
 
 
 file_name="log.sparta"
+file_result="${file_name}.csv"
+file_tmp="${file_result}.tmp"
 
-echo "FOM,PPC,NSCALE,ranks,GPUs/node,threads/rank,MaxRSS (kB),FILE"
+echo "PPC,NSCALE,ranks,GPUs/node,threads/rank,FOM,Mean MaxRSS (KiB),Mean Nodal MaxRSS (GiB),FILE" > "${file_tmp}"
 find . \
      -type f \
      -name "${file_name}" \
@@ -43,10 +45,14 @@ while IFS= read -r -d '' file; do  # <- read each name into $file
     nscale=`grep -oP '^ Weak scaling factor \(nscale\) = \K[+-]?\d+' "${file}" | sed -n '1{p;q;}'`
     fom=`grep -oP '^Performance:.*?[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?.*?\K[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?' "${file}" | sed -n '2{p;q;}'`
 
-    maxrss=`grep -oP 'Host process high water mark memory consumption:.*?\K\d+(?=\s*kB)' "${dir_spartalog}"/output-srun*.log | sed -n '1{p;q;}'`
+    maxrss=`grep -zPo '(?m)^Host process high water mark memory consumption:[ \t]*\d+[ \t]*kB\n[ \t]*Max:[ \t]*\d+,[ \t]*Min:[ \t]*\d+,[ \t]*Ave:[ \t]*\K\d+(?=[ \t]*kB)' "${dir_spartalog}"/output-srun*.log | tr '\0' '\n'`
+    mem_node=`echo "((${maxrss}*(${ranks}/${nscale}))/1024)/1024" | bc -l`
 
-    echo "${fom},${ppc},${nscale},${ranks},${gpus_per_node},${threads_per_rank},${maxrss},${file}"
+    echo "${ppc},${nscale},${ranks},${gpus_per_node},${threads_per_rank},${fom},${maxrss},${mem_node},${file}" >> "${file_tmp}"
 done
+
+(head -n 1 "${file_tmp}" && tail -n +2 "${file_tmp}" | sort -t, -k1,1n) > "${file_result}"
+cat "${file_result}"
 
 
 exit 0
