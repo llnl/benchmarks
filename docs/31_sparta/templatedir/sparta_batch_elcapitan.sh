@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-#flux: # --nodes=1
+#flux: --nodes=1
 #flux: -u
 #flux: --exclusive
-#flux: -q pbatch
 #flux: -t 20
 #flux: --job-name=spartafcr30
+#flux: --output='spartafcr30.{{id}}.out'
+#flux: --error='spartafcr30.{{id}}.err'
 #flux: --setattr=thp=always
 #flux: --setattr=hugepages=512GB
 
@@ -16,7 +17,7 @@ set -x
 
 # directory and log file setup
 export DIR_BUILD_TAG="${DIR_BUILD_TAG:-elcapitan}"
-# export SLURM_JOB_ID=${SLURM_JOB_ID:-424242}
+export SLURM_JOB_ID=${SLURM_JOB_ID:-424242}
 export DIR_BASE="`pwd -P`"
 export DIR_ROOT="`git rev-parse --show-toplevel`"
 export DIR_SRC="${DIR_BASE}/sparta"
@@ -36,7 +37,7 @@ export FILE_TRY="output-script-${DIR_CASE}.log"
 export FILE_TIME="output-time-${DIR_CASE}.txt"
 
 # SPARTA setup
-export SPARTA_PPC=${SPARTA_PPC:-222}
+export SPARTA_PPC=${SPARTA_PPC:-47}
 export SPARTA_NSCALE=${SPARTA_NSCALE:-1}
 export SPARTA_IS_KOKKOS_TOOLS="${SPARTA_IS_KOKKOS_TOOLS:-no}"
 export APP_REPEAT=${APP_REPEAT:-4}
