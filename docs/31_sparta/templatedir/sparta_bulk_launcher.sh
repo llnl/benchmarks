@@ -4,7 +4,7 @@
 # decide which to do
 export IS_CTS2=${IS_CTS2:-0}
 export IS_CTS2GPU=${IS_CTS2GPU:-0}
-export IS_ELCAP=${IS_ELCAP:-1}
+export IS_ELCAP=${IS_ELCAP:-0}
 
 # loop over PPC for single-node weak scaling
 for m_ppc in ` seq 45 20 205 ` ; do
