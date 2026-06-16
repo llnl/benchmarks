@@ -128,7 +128,7 @@ run_try()
     # time
     /usr/bin/time --verbose --output="${FILE_TIME}" \
         mpiexec \
-            -np 4 \
+            -np $((SPARTA_NSCALE * 4)) \
             --output-filename "${FILE_LOG//.log/-${i}.log}" \
             "${APP_EXE}" \
                 -k on g 4 -sf kk \
