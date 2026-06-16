@@ -18,6 +18,7 @@ set -x
 # directory and log file setup
 export DIR_BUILD_TAG="${DIR_BUILD_TAG:-elcapitan}"
 export SLURM_JOB_ID=${SLURM_JOB_ID:-424242}
+export FLUX_JOB_ID=${FLUX_JOB_ID:-`flux getattr jobid`}
 export DIR_BASE="`pwd -P`"
 export DIR_ROOT="`git rev-parse --show-toplevel`"
 export DIR_SRC="${DIR_BASE}/sparta"
@@ -26,7 +27,7 @@ export DIR_TAG="${DIR_TAG:-run}"
 export DAYSTAMP="`date '+%Y%m%d'`"
 export SECSTAMP="`date '+%Y%m%d_%H%M%S'`"
 export FULLUNIQ="${SECSTAMP}_${RANDOM}"
-export DIR_CASE="${SECSTAMP}_${SLURM_JOB_ID}"
+export DIR_CASE="${SECSTAMP}_${FLUX_JOB_ID}"
 export DIR_RUN="${DIR_TAG}-${DIR_CASE}"
 # export TMPDIR="/tmp/$SLURM_JOB_ID"  # set to avoid potential runtime error
 export FILE_LOG="output-srun-${DIR_CASE}.log"
@@ -46,6 +47,9 @@ export APP_EXE="${DIR_EXE}/${APP_NAME}"
 
 # FLUX Item(s)
 export FLUX_JOB_NODES=${FLUX_JOB_NODES:-`flux resource list -s up -no {nnodes}`}
+
+# Environment
+. ./sparta_env_${DIR_BUILD_TAG}.sh
 
 # Kokkos Tools
 if test "${SPARTA_IS_KOKKOS_TOOLS}" = "yes" ; then
@@ -115,7 +119,7 @@ run_try()
             --exclusive \
             --verbose \
             -N ${FLUX_JOB_NODES} \
-            -n $((4 * flux_job_nodes)) \
+            -n $((4 * FLUX_JOB_NODES)) \
             -x \
             -c 24 \
             -o cpu-affinity=off \
