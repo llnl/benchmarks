@@ -20,7 +20,7 @@ export FULLUNIQ="${SECSTAMP}_${RANDOM}"
 export DIR_CASE="${SECSTAMP}_${SLURM_JOB_ID}"
 export DIR_RUN="${DIR_TAG}-${DIR_CASE}"
 export TMPDIR="/tmp/$SLURM_JOB_ID"  # set to avoid potential runtime error
-export FILE_LOG="output-srun-${DIR_CASE}.log"
+export FILE_LOG="output-launcher-${DIR_CASE}.log"
 export FILE_METRICS="output-metrics-${DIR_CASE}.csv"
 export FILE_ENV="output-environment-${DIR_CASE}.txt"
 export FILE_STATE="output-state-${DIR_CASE}.log"
@@ -126,6 +126,7 @@ run_try()
     /usr/bin/time --verbose --output="${FILE_TIME}" \
         mpiexec \
             -np 4 \
+            --output-filename "${FILE_LOG//.log/-${i}.log}" \
             "${APP_EXE}" \
                 -k on g 4 -sf kk \
                 -var nscale ${SPARTA_NSCALE} \
