@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-# salloc -N 1 -n 4 --ntasks-per-node=4 --cpus-per-task=28 --gpus-per-task=1 --gpu-bind=closest -A fy240071 --time=1:00:00 -p short,batch --license=pscratch
+
+
+# decide which to do
 export IS_CTS2=${IS_CTS2:-0}
 export IS_CTS2GPU=${IS_CTS2GPU:-0}
 export IS_ELCAP=${IS_ELCAP:-1}
 
-for m_ppc in ` seq 45 10 205 ` ; do
+# loop over PPC for single-node weak scaling
+for m_ppc in ` seq 45 20 205 ` ; do
     if test ${IS_CTS2} -eq 1 ; then
         DIR_TAG="run-cts2-" SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
             sbatch \
@@ -38,5 +41,6 @@ for m_ppc in ` seq 45 10 205 ` ; do
     fi
     sleep 0.5
 done
+
 
 exit 0
