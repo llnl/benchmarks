@@ -26,6 +26,9 @@ export FILE_STATE="output-state-${DIR_CASE}.log"
 export FILE_TRY="output-script-${DIR_CASE}.log"
 export FILE_TIME="output-time-${DIR_CASE}.txt"
 
+# environment
+. ./sparta_env_${DIR_BUILD_TAG}.sh
+
 # SPARTA setup
 export SPARTA_PPC=${SPARTA_PPC:-47}
 export SPARTA_NSCALE=${SPARTA_NSCALE:-1}

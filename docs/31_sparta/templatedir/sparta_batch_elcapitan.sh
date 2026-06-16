@@ -37,6 +37,9 @@ export FILE_STATE="output-state-${DIR_CASE}.log"
 export FILE_TRY="output-script-${DIR_CASE}.log"
 export FILE_TIME="output-time-${DIR_CASE}.txt"
 
+# environment
+. ./sparta_env_${DIR_BUILD_TAG}.sh
+
 # SPARTA setup
 export SPARTA_PPC=${SPARTA_PPC:-47}
 export SPARTA_NSCALE=${SPARTA_NSCALE:-1}
@@ -47,9 +50,6 @@ export APP_EXE="${DIR_EXE}/${APP_NAME}"
 
 # FLUX Item(s)
 export FLUX_JOB_NODES=${FLUX_JOB_NODES:-`flux resource list -s up -no {nnodes}`}
-
-# Environment
-. ./sparta_env_${DIR_BUILD_TAG}.sh
 
 # Kokkos Tools
 if test "${SPARTA_IS_KOKKOS_TOOLS}" = "yes" ; then
