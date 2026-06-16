@@ -129,12 +129,12 @@ run_try()
     /usr/bin/time --verbose --output="${FILE_TIME}" \
         mpiexec \
             -np $((SPARTA_NSCALE * 4)) \
-            --output-filename "${FILE_LOG//.log/-${i}.log}" \
             "${APP_EXE}" \
                 -k on g 4 -sf kk \
                 -var nscale ${SPARTA_NSCALE} \
                 -var ppc ${SPARTA_PPC} \
-                -in "in.cylinder"
+                -in "in.cylinder" \
+                >"${FILE_LOG//.log/-${i}.log}" 2>&1
     # unset LD_PRELOAD
 #             --ntasks-per-socket=$RANKS_PER_SOCKET \
 #             --hint=nomultithread \
