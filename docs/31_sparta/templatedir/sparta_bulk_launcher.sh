@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # salloc -N 1 -n 4 --ntasks-per-node=4 --cpus-per-task=28 --gpus-per-task=1 --gpu-bind=closest -A fy240071 --time=1:00:00 -p short,batch --license=pscratch
 export IS_CTS2=${IS_CTS2:-0}
-export IS_CTS2GPU=${IS_CTS2GPU:-1}
-export IS_ELCAP=${IS_ELCAP:-0}
+export IS_CTS2GPU=${IS_CTS2GPU:-0}
+export IS_ELCAP=${IS_ELCAP:-1}
 
 for m_ppc in ` seq 45 10 205 ` ; do
     if test ${IS_CTS2} -eq 1 ; then
-        SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
+        DIR_TAG="run-cts2-" SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
             sbatch \
                 --nodes=1 \
                 --account=fy150069 \
@@ -17,7 +17,7 @@ for m_ppc in ` seq 45 10 205 ` ; do
     fi
 
     if test ${IS_CTS2GPU} -eq 1 ; then
-        SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
+        DIR_TAG="run-cts2gpu-" SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
             sbatch \
                 --nodes=1 \
                 --ntasks=4 \
@@ -33,7 +33,7 @@ for m_ppc in ` seq 45 10 205 ` ; do
     fi
 
     if test ${IS_ELCAP} -eq 1 ; then
-        SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
+        DIR_TAG="run-elcapitan-" SPARTA_NSCALE=1 SPARTA_PPC=${m_ppc} SPARTA_IS_KOKKOS_TOOLS="yes" APP_REPEAT=1 \
             flux batch sparta_batch_elcapitan.sh
     fi
     sleep 0.5
