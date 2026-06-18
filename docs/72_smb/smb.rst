@@ -58,12 +58,21 @@ Build requirements:
   * `OpenMPI 1.10+ <https://www.open-mpi.org/software/ompi/>`_
   * `mpich <http://www.mpich.org>`_
 
+.. 
+
+GPU Aware Requirements:
+
+* MPI implementation with GPU-aware communication support
+* An available installation of either HIP or CUDA
+
+
 
 .. code-block:: bash
 
    cd <path/to/smb> 
    make -j
 
+   For GPU aware MPI add either CUDA=1 or HIP=1 to the make command (Additional steps may be needed to find the proper includes and libraries objects)
 .. 
 
 Testing the build:
