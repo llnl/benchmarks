@@ -9,7 +9,6 @@ Purpose
 
 **Laghos** (LAGrangian High-Order Solver) is a miniapp that solves the time-dependent Euler equations of compressible gas dynamics in a moving Lagrangian frame using unstructured high-order finite element spatial discretization and explicit high-order time-stepping.
 It is available at https://github.com/CEED/Laghos .
-It requires an installation of Hypre, Metis, and MFEM.
 
 Characteristics
 ===============
@@ -46,7 +45,7 @@ Each time step in Laghos contains 3 major distinct computations:
 3. The physics kernel in quadrature points (UpdateQuadData).
 
 Laghos is instrumented to report the total execution times and rates, in terms of millions of degrees of freedom per second (megadofs), for each of these computational phases. (The time for inversion of the local thermodynamic mass matrices (CG L2) is also reported, but that takes a small part of the overall computation.)
-Rates are averaged over all RK stages taken and for the purposes of benchmarking are configured to take 100 RK4 timesteps.
+Rates are averaged over all RK stages taken and for the purposes of benchmarking are configured to attempt 250 RK4 timesteps.
 
 Laghos also reports the total rate for these major kernels, which is the **Figure of Merit (FOM)** for benchmarking purposes.
 
@@ -80,7 +79,7 @@ Prerequisites:
 
 * CMake 3.24.0+
 * C compiler
-* C++17 compiler
+* C++20 compiler
 * MPI
 
 These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$CUDACC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
@@ -225,7 +224,7 @@ Serial CPU:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DCMAKE_CXX_COMPILER=$CXX
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
                 make -j install
 
 CPU OpenMP:
@@ -236,7 +235,7 @@ CPU OpenMP:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DMFEM_USE_OPENMP -DCMAKE_CXX_COMPILER=$CXX
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DMFEM_USE_OPENMP -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
                 make -j install
                 
 CUDA:
@@ -247,7 +246,7 @@ CUDA:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -260,7 +259,7 @@ HIP:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -276,7 +275,7 @@ Serial CPU:
                 cd Laghos
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
                 make -j
 
 CPU OpenMP:
@@ -289,7 +288,7 @@ CUDA:
                 cd Laghos
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DCMAKE_CUDA_ARCHITECTURES=native
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
                 make -j
 
 HIP:
@@ -300,7 +299,7 @@ HIP:
                 cd Laghos
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DCMAKE_HIP_ARCHITECTURES=native
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
                 make -j
 
 .. _RunningLaghos:
@@ -308,18 +307,35 @@ HIP:
 Running
 =======
 
-Note: these run commands do not include any compute device/MPI configurations. See :ref:`LaghosModifications` for available options for configuring OpenMP/GPU compute.
+Benchmark runs should target approximately 4194304 (`4x1024x1024`) quadrature points per "compute device" (i.e. one GPU or one CPU socket).
+The `-epm` parameter will generate a domain which has the specified number of elements/zones per MPI rank and equally distribute them to all ranks.
+The following table has the number of quadrature points per zone for various orders, and example `-epm` values assuming each MPI rank is assigned one compute device, i.e. each MPI rank either is assigned one GPU, or each rank is assigned one CPU socket using OpenMP.
+For runs which divide the work differently such as a multi-socket CPU node using one rank per node or one rank per CPU thread you will have to calculate an appropriate `-epm` perameter.
 
+.. table:: Example elements per rank with one compute device per rank.
+   :align: center
+
+   +--------+----------------+--------+
+   | Order  |  QPts per zone | epm    |
+   +--------+----------------+--------+
+   | Q1Q0   |   8            | 524288 |
+   +--------+----------------+--------+
+   | Q2Q1   |   64           | 65536  |
+   +--------+----------------+--------+
+   | Q3Q2   |  216           | 19418  |
+   +--------+----------------+--------+
+
+Run commands using the tabulated values for `-epm` for one compute device per MPI rank are given below.
+Note: these run commands do not include any compute device/MPI configurations. See :ref:`LaghosModifications` for available options for configuring OpenMP/GPU compute.
+  
 .. code-block:: console
                 
                 # 3D Q1Q0
-                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
+                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 524288
                 # 3D Q2Q1
-                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
+                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 65536
                 # 3D Q3Q2
-                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom
-
-TODO: problem sizes and partitioning options
+                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 19418
 
 .. _ValidateLaghos:
 
