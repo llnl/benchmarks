@@ -11,9 +11,9 @@ dir_pwd="` pwd -P `"
 dir_src_root="${dir_pwd}/kokkos-tools"
 dir_sts="profiling/space-time-stack"
 dir_src="${dir_src_root}/${dir_sts}"
-dir_build_root="${dir_pwd}/kokkos-tools-elcapitan"
+dir_build_root="${dir_pwd}/kokkos-tools-cts2gpu"
 dir_build="${dir_build_root}/${dir_sts}"
-file_log="${dir_pwd}/kokkos-tools-build-elcapitan.log"
+file_log="${dir_pwd}/kokkos-tools-build-cts2gpu.log"
 
 # redirect STDOUT and STDERR through tee
 exec &> >(tee >(ts '[%Y-%m-%d %H:%M:%S]' > "${file_log}"))
@@ -41,13 +41,13 @@ rsync -va "${dir_src_root}/" "${dir_build_root}/"
 # list current environment
 module list
 # alter environment
-. lammps_env_elcapitan.sh
+. lammps_env_cts2gpu.sh
 # list current environment
 module list
 pushd "${dir_build}"
 /usr/bin/time --verbose -- \
     nice -n 1 \
-        gmake CXX="CC -DUSE_MPI=1"
+        gmake CXX="mpicxx -DUSE_MPI=1"
 popd
 
 # gracefully exit
