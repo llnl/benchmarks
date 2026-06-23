@@ -3,7 +3,7 @@
 #flux: --nodes=1
 #flux: -u
 #flux: --exclusive
-#flux: -t 20
+#flux: -t 40
 #flux: --job-name=spartafcr30
 #flux: --output='spartafcr30.{{id}}.out'
 #flux: --error='spartafcr30.{{id}}.err'
