@@ -15,7 +15,7 @@ create_atoms    1 box
 
 mass            1 26.98
 
-pair_style      pace product chunksize 49152
+pair_style      pace product chunksize 32768
 pair_coeff  * * Cu-PBE-core-rep.ace Cu
 
 velocity        all create 300 8728 loop geom
