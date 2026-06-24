@@ -1,0 +1,14 @@
+PPC,nodes,ranks,GPUs/node,FOM,Max Nodal Computing Resource Memory (GB),Memory Percentage,FILE
+45,1,4,4,2.089,75.56315804,0.147584293,./run-elcapitan--20260616_142449_f2WYQvgDnscb/try-00/log.sparta
+65,1,4,4,2.17,99.68555679,0.194698353,./run-elcapitan--20260616_142449_f2WYQw7YzbtK/try-00/log.sparta
+85,1,4,4,2.223,130.7896809,0.255448595,./run-elcapitan--20260616_142451_f2WYQwapsPaF/try-00/log.sparta
+105,1,4,4,2.258,156.9143589,0.306473357,./run-elcapitan--20260616_143308_f2WYQx3ttH1R/try-00/log.sparta
+125,1,4,4,2.285,188.8240654,0.368797003,./run-elcapitan--20260616_143725_f2WYQxWtTCbZ/try-00/log.sparta
+145,1,4,4,2.287,227.1903782,0.443731207,./run-elcapitan--20260616_143737_f2WYQxyq49d1/try-00/log.sparta
+165,1,4,4,2.314,249.6225525,0.487544048,./run-elcapitan--20260616_143744_f2WYQySih85m/try-00/log.sparta
+185,1,4,4,2.335,274.2163345,0.535578778,./run-elcapitan--20260616_144606_f2WYQyuL2ESj/try-00/log.sparta
+205,1,4,4,2.344,301.4516209,0.588772697,./run-elcapitan--20260616_144913_f2WYQzMqRPgK/try-00/log.sparta
+225,1,4,4,2.366,329.7843143,0.644109989,./run-elcapitan--20260622_200005_f2XkXbApmnpP/try-00/log.sparta
+245,1,4,4,2.364,362.2683655,0.707555401,./run-elcapitan--20260622_201421_f2XkXbdpLiQX/try-00/log.sparta
+265,1,4,4,2.369,398.6445087,0.778602556,./run-elcapitan--20260622_202151_f2XkXc6W7ncX/try-00/log.sparta
+285,1,4,4,2.377,437.3398029,0.854179303,./run-elcapitan--20260622_202151_f2XkXcZBtrpX/try-00/log.sparta
