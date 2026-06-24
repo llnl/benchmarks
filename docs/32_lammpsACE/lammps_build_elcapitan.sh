@@ -24,6 +24,7 @@ pushd "${dir_build}"
 # perform the build
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
+    -DPKG_ML-PACE:bool=on \
     ../cmake
 nice -n 1 gmake -j 64
 

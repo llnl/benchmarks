@@ -26,7 +26,7 @@ cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_MPI:bool=on \
     -DPKG_KOKKOS:bool=on \
-    -DPKG_PACE:bool=on \
+    -DPKG_ML-PACE:bool=on \
     -DKokkos_ENABLE_CUDA:bool=on \
     -DKokkos_ARCH_HOPPER90:bool=on \
     -DKokkos_ARCH_SPR:bool=ON \
