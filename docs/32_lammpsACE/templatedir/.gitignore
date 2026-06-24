@@ -1,1 +1,4 @@
 log.lammps
+lammpsfcr30.*.err
+notes.txt
+run-*
