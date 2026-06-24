@@ -10,6 +10,7 @@ variable        a equal 3.597
 lattice         fcc $a
 variable        Lprime index 64.0
 variable        nscale index 1.0
+variable        pacechunksize index 32768
 variable        L equal ${Lprime}*(${nscale})^(1/3)
 region          box block 0 ${L} 0 ${L} 0 ${L}
 create_box      1 box
@@ -17,7 +18,7 @@ create_atoms    1 box
 
 mass            1 26.98
 
-pair_style      pace product chunksize 32768
+pair_style      pace product chunksize ${pacechunksize}
 pair_coeff  * * Cu-PBE-core-rep.ace Cu
 
 velocity        all create 300 8728 loop geom
