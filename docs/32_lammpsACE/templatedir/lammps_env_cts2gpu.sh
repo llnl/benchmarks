@@ -1,0 +1,1 @@
+../lammps_env_cts2gpu.sh
