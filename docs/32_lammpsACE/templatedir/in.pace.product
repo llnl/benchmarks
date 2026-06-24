@@ -52,6 +52,7 @@ print "The value of L is $L"
 print " Weak scaling factor (nscale) = ${nscale}"
 print " Baseline L (Lprime) = ${Lprime}"
 print " Simulation cell length (L) = ${L}"
+print " PACE Chunk Size (pacechunksize) = ${pacechunksize}"
 
 ### Throw out first 5 minutes for hardware equilibrium
 
