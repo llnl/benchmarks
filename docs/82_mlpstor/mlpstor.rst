@@ -7,7 +7,7 @@ MLPerf Storage
 
 Purpose
 =======
-Standard parallel high-performance storage benchmarks were written to test HPC workloads, including streaming or random IOs. MLPerf Storage models modern AI workloads for *training*, *inference* and *checkpointing* in tandem with many-core accelerators -- uniqe workloads that haven't not been well emulated in legacy benchmarks
+Standard parallel high-performance storage benchmarks were written to test HPC workloads, including streaming or random IOs. MLPerf Storage models modern AI workloads for *training*, *inference* and *checkpointing* in tandem with many-core accelerators -- unique workloads that haven't not been well emulated in legacy benchmarks
 
 Characteristics
 ===============
