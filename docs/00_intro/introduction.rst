@@ -4,7 +4,7 @@ Introduction
 
 This is benchmark documentation for a Department of Energy (DOE)
 National Nuclear Security Administration (NNSA) Advanced Simulation
-and Computing (ASC) **Future Computing Resource (FCR)**.
+and Computing (ASC) **Advanced Technology System 6 (ATS-6)**.
 
 
 Benchmark Overview 

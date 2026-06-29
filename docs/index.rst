@@ -9,8 +9,8 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
-========================================================================================================
+ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is considered to be final
+==================================================================================================
 
 .. toctree::
    :maxdepth: 3
@@ -45,12 +45,17 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Microbenchmarks
+   :caption: MPI benchmarks
 
    70_phloem/phloem
    71_omb/omb
    72_smb/smb
-   73_gpcnet/gpcnet
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: File system benchmarks
+
    80_io500/io500
    81_macsio/macsio
    82_mlpstor/mlpstor

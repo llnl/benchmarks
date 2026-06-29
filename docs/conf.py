@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "FCR Benchmarks"
+project = "ATS-6 Benchmarks"
 copyright = "Advanced Simulation and Computing"
 author = "Tri-labs"
 
