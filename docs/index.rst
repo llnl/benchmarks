@@ -22,25 +22,40 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 1 Mini-Applications
+   :caption: Mod/Sim Priority 1
 
    11_kripke/kripke
    12_laghos/laghos
    13_rajaperf/rajaperf
-   14_scaffold/scaffold
    20_branson/branson
    31_sparta/sparta
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 2 Mini-Applications
+   :caption: Mod/Sim Priority 2
 
    10_amg/amg
    32_lammpsACE/lammpsACE
    40_remhos/remhos
    50_miniem/miniem
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: AI benchmarks
+
+   14_scaffold/scaffold
    60_mlperf/mlperf
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: Storage benchmarks
+
+   80_io500/io500
+   81_macsio/macsio
+   82_mlpstor/mlpstor
    
 .. toctree::
    :maxdepth: 3
@@ -50,15 +65,6 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    70_phloem/phloem
    71_omb/omb
    72_smb/smb
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: File system benchmarks
-
-   80_io500/io500
-   81_macsio/macsio
-   82_mlpstor/mlpstor
 
 .. toctree::
    :maxdepth: 3
