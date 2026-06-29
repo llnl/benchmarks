@@ -60,7 +60,7 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: MPI benchmarks
+   :caption: Network benchmarks
 
    70_phloem/phloem
    71_omb/omb
