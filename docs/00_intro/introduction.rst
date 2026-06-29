@@ -10,10 +10,10 @@ and Computing (ASC) **Advanced Technology System 6 (ATS-6)**.
 Benchmark Overview 
 ==================
 
-Mini Applications and Microbenchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mini Applications are prioritized as Priority 1, or Priority 2.
+Mod/Sim benchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mod/Sim benchmarks are prioritized as Priority 1, or Priority 2.
 
-Priority 1 Mini Applications
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mod/Sim Priority 1
+^^^^^^^^^^^^^^^^^^
 
 .. list-table::
 
@@ -42,14 +42,6 @@ Priority 1 Mini Applications
    - | MPI+RAJA 
      | /CUDA/HIP/OpenMP
    - RAJA
- * - ScaFFold
-   - | Scale-Free Fractal Benchmark, 
-     | Proxy for emerging models such as 
-     | programmatic inverse-design projects
-   - Python
-   - | MPI/NCCL/RCCL 
-     | CUDA/HIP
-   - PyTorch
  * - Branson
    - Implicit Monte Carlo transport
    - C++
@@ -62,8 +54,8 @@ Priority 1 Mini Applications
    - Kokkos
 
 
-Priority 2 Mini Applications
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mod/Sim Priority 2
+^^^^^^^^^^^^^^^^^^
 
 .. list-table::
 
@@ -95,14 +87,33 @@ Priority 2 Mini Applications
    - C++
    - MPI+Kokkos
    - Kokkos, Trillinos
+
+Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
+
+
+AI benchmarks
+^^^^^^^^^^^^^
+
+.. list-table::
+
+ * - **Benchmark**
+   - **Description**
+   - **Language**
+   - **Parallelism** 
+   - **Libraries**
+ * - ScaFFold
+   - | Scale-Free Fractal Benchmark, 
+     | Proxy for emerging models such as 
+     | programmatic inverse-design projects
+   - Python
+   - | MPI/NCCL/RCCL 
+     | CUDA/HIP
+   - PyTorch
  * - MLPerf
    - Llama 3.1 405B training 
    - Python
    - NCCL+CUDA
    - NVIDIA NeMo
-
-Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
-
 
 .. _GlobalRunRules:
 
