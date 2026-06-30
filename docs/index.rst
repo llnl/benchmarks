@@ -23,9 +23,9 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    :maxdepth: 3
    :numbered:
    :caption: ModSim
-
+	     
    modsim/index
-
+	     
 .. toctree::
    :maxdepth: 3
    :numbered:
@@ -36,9 +36,25 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
+   :caption: Microbenchmarks
+
+   10_amg/amg
+   32_lammpsACE/lammpsACE
+   40_remhos/remhos
+   50_miniem/miniem
+   60_mlperf/mlperf
+   70_phloem/phloem
+   71_omb/omb
+   72_smb/smb
+   73_gpcnet/gpcnet
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
    :caption: Storage
 
-   storage/index
+   80_io500/io500
+   81_mlpstor/mlpstor
 
 .. toctree::
    :maxdepth: 3
