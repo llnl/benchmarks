@@ -34,7 +34,7 @@ Further detail on the tests is provided below, as described on the IO500 project
 
 IOR
 ---
-`IOR <https://https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are avaible to test different application I/O profiles, including I/O sizing and data structure. 
+`IOR <https://https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are available to test different application I/O profiles, including I/O sizing and data structure. 
 
 IO500 uses the POSIX API for its IOR tests, which consist of the following patterns:
 
@@ -136,7 +136,7 @@ Validation
 
 Results from each run, and the individual tests themselves, are stored in a timestamp-based directory in the defined *results* directory. A *result_summary.txt* file there contains a clean summary of performance and time for each test, along with the overall **SCORE** for the entire run. A higher score is deemed better.
 
-If a result is determined to be invalid, the first column of the *result_summary.txt* line will report **[RESULT-invalid]** and the final score itself will also be labled as **[SCORE-invalid]**. 
+If a result is determined to be invalid, the first column of the *result_summary.txt* line will report **[RESULT-invalid]** and the final score itself will also be labeled as **[SCORE-invalid]**. 
 
 If a *result_summary.txt* file is blank, test failures may be noted in the *result.txt* file.
 
