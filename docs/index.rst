@@ -54,8 +54,7 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    :caption: Storage benchmarks
 
    80_io500/io500
-   81_macsio/macsio
-   82_mlpstor/mlpstor
+   81_mlpstor/mlpstor
    
 .. toctree::
    :maxdepth: 3
@@ -65,6 +64,7 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    70_phloem/phloem
    71_omb/omb
    72_smb/smb
+   80_io500/io500
 
 .. toctree::
    :maxdepth: 3
