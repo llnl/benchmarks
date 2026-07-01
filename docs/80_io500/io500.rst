@@ -29,12 +29,12 @@ IO500 consists of three underlying applications, run in multiple configurations.
   * The specific find executable is configurable.
 
 
-Further detail on the tests is provided below, as described on the IO500 project page at `<https://io500.org/about>`_:
+Further detail on the tests is provided below, as described on the `IO500 project page <https://io500.org/about>`_.
 
 
 IOR
 ---
-`IOR <https://https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are available to test different application I/O profiles, including I/O sizing and data structure. 
+`IOR <https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are available to test different application I/O profiles, including I/O sizing and data structure.
 
 IO500 uses the POSIX API for its IOR tests, which consist of the following patterns:
 
@@ -100,21 +100,22 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 Building
 ========
 
-Full instructions for downloading and building the IO500 code are available at `https://github.com/IO500/io500/`_. The IO500 code base includes all the intrinsic benchmarks to run the full suite, but requires a working MPI installation.
+Full instructions for downloading and building the IO500 code are available from the `IO500 GitHub repository <https://github.com/IO500/io500/>`_. The IO500 code base includes all the intrinsic benchmarks to run the full suite, but requires a working MPI installation.
 
 Basic instructions are:
+
 .. code-block:: bash
 
-    $ git clone https://github.com/IO500/io500.git
-    $ cd io500
-    $ ./prepare.sh
+    git clone https://github.com/IO500/io500.git
+    cd io500
+    ./prepare.sh
 
 ..
 
 Running
 =======
 
-Full instructions for running IO500 are available at `https://io500.org/running`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
+Full instructions for running the benchmarks are available at the projects `run IO500 page <https://io500.org/running>`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
 
 The basic steps to run a full IO500 test are:
 

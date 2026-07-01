@@ -17,9 +17,10 @@ MLPerf Storage performs I/O from a specified number of physical client nodes, mo
 Problems
 --------
 
-MLPerf Storage presents multiple workload types that can be tested. FCR runs should be performed for both `Training <https://github.com/mlcommons/storage/blob/main/training/README.md>`_ and `Checkpointing https://github.com/mlcommons/storage/blob/main/checkpointing/README.md`_
+MLPerf Storage presents multiple workload types that can be tested. FCR runs should be performed for both `Training <https://github.com/mlcommons/storage/blob/main/training/README.md>`_ and `Checkpointing <https://github.com/mlcommons/storage/blob/main/checkpointing/README.md>`_
 
-For the Training run, respondents should run on the following two models:
+For the Training run, respondents should run the following two models:
+
 * unet3d
 * resnet50
 
@@ -56,53 +57,52 @@ Running
 
 .. code-block:: bash
 
-# Perform checkpoint writes  (make sure the number of hosts is WORLD_SIZE/num_processes_per_host)
-mlpstorage checkpointing run --model llama3-405b \
-  --hosts ip1 ip2 .... \
-  --num-processes 512 \
-  --num-checkpoints-read 0 \
-  --checkpoint-folder ./checkpoint_data1 \
-  --results-dir ./mlpstorage_results \
-  --client-host-memory-in-gb 64
-# Clear the cache (This might require admin access to the system)
-... 
-
-# perform checkpoint reads
-mlpstorage checkpointing run --model llama3-405b \
-  --hosts ip1 ip2 .... \
-  --num-processes 512 \
-  --num-checkpoints-write 0 \
-  --checkpoint-folder ./checkpoint_data1 \
-  --results-dir ./mlpstorage_results \
-  --client-host-memory-in-gb 64
+    # Perform checkpoint writes  (make sure the number of hosts is WORLD_SIZE/num_processes_per_host)
+    mlpstorage checkpointing run --model llama3-405b \
+      --hosts ip1 ip2 .... \
+      --num-processes 512 \
+      --num-checkpoints-read 0 \
+      --checkpoint-folder ./checkpoint_data1 \
+      --results-dir ./mlpstorage_results \
+      --client-host-memory-in-gb 64
+    # Clear the cache (This might require admin access to the system)
+    ...
+    # Perform checkpoint reads
+    mlpstorage checkpointing run --model llama3-405b \
+      --hosts ip1 ip2 .... \
+      --num-processes 512 \
+      --num-checkpoints-write 0 \
+      --checkpoint-folder ./checkpoint_data1 \
+      --results-dir ./mlpstorage_results \
+      --client-host-memory-in-gb 64
 
 ..
+
+Subset mode (on a single host with 8 simulated accelerators)
 
 .. code-block:: bash
 
-subset mode (on a single host with 8 simulated accelerators)
 
-# Perform checkpoint writes (data parallelism must match Table 2)
-mlpstorage checkpointing run --model llama3-405b \
-  --hosts ip1 \
-  --num-processes 8 \
-  --num-checkpoints-read 0 \
-  --checkpoint-folder ./checkpoint_data1 \
-  --results-dir ./mlpstorage_results \
-  --client-host-memory-in-gb 64
-# Clear the cache 
-... 
-# Perform checkpoint read (data parallelism must match Table 2)
-mlpstorage checkpointing run --model llama3-405b \
-  --hosts ip1 \
-  --num-processes 8 \
-  --num-checkpoints-write 0 \
-  --checkpoint-folder ./checkpoint_data1 \
-  --results-dir ./mlpstorage_results \
-  --client-host-memory-in-gb 64
+    # Perform checkpoint writes (data parallelism must match Table 2)
+    mlpstorage checkpointing run --model llama3-405b \
+      --hosts ip1 \
+      --num-processes 8 \
+      --num-checkpoints-read 0 \
+      --checkpoint-folder ./checkpoint_data1 \
+      --results-dir ./mlpstorage_results \
+      --client-host-memory-in-gb 64
+    # Clear the cache
+    ...
+    # Perform checkpoint read (data parallelism must match Table 2)
+    mlpstorage checkpointing run --model llama3-405b \
+      --hosts ip1 \
+      --num-processes 8 \
+      --num-checkpoints-write 0 \
+      --checkpoint-folder ./checkpoint_data1 \
+      --results-dir ./mlpstorage_results \
+      --client-host-memory-in-gb 64
 
 ..
-
 
 Example Scalability Results
 ===========================
