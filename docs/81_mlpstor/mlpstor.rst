@@ -23,7 +23,7 @@ For the Training run, respondents should run on the following two models:
 * unet3d
 * resnet50
 
-For the Checkpointing run, the *default* operation mode should be tested for all shared storage systems. If a node-local storage system is proposed, teh *subset* operation mode should be tested as well.
+For the Checkpointing run, the *default* operation mode should be tested for all shared storage systems. If a node-local storage system is proposed, the *subset* operation mode should be tested as well.
 
 Respondents are required to run an unmodified *Closed* run for each test and *may optionally* run modified *Open* runs, documenting any modifications in the submission.
 
