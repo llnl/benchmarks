@@ -60,14 +60,7 @@ For Laghos we define the following restrictions on source code modifications:
 
 * Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
 * Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built in "CPU Serial" (one thread per MPI rank), "CPU OpenMP", "CUDA", or "HIP" device backends.
-* The listed command line options shown in :ref:`RunningLaghos` must be used without modification. A few additional command line options may be added:
-
-  * ``-d raja-omp`` for CPU OpenMP acceleration.
-  * ``-d raja-gpu`` for GPU acceleration.
-  * ``-dev`` for specifying which GPU to run on for a multi-GPU system (if not restricted by the job scheduler first).
-  * ``-gam`` for GPU-aware MPI
-  * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
-    
+* The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU/OpenMP execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
 * `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get an accurate FOM.
 * Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
@@ -326,7 +319,6 @@ For runs which divide the work differently such as a multi-socket CPU node using
    +--------+----------------+--------+
 
 Run commands using the tabulated values for `-epm` for one compute device per MPI rank are given below.
-Note: these run commands do not include any compute device/MPI configurations. See :ref:`LaghosModifications` for available options for configuring OpenMP/GPU compute.
   
 .. code-block:: console
                 
@@ -337,6 +329,14 @@ Note: these run commands do not include any compute device/MPI configurations. S
                 # 3D Q3Q2
                 laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 19418
 
+These run commands do not include any compute device/MPI configurations. Available options for configuring OpenMP/GPU compute:
+
+  * ``-d raja-omp`` for CPU OpenMP acceleration.
+  * ``-d raja-gpu`` for GPU acceleration.
+  * ``-dev`` for specifying which GPU to run on for a multi-GPU system (if not restricted by the job scheduler first).
+  * ``-gam`` for GPU-aware MPI
+  * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
+    
 .. _ValidateLaghos:
 
 Validation
