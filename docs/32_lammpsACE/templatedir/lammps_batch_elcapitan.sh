@@ -64,6 +64,12 @@ prep_toplevel_run()
     cd "${DIR_BASE}/${DIR_RUN}"
     cp -a "${DIR_BASE}/in.pace.product" ./
     cp -a "${DIR_SRC}/potentials/Cu-PBE-core-rep.ace" ./
+    cp -a "${DIR_BASE}/defrag" ./
+    cp -a "${DIR_BASE}/slow_test" ./
+    cp -a "${DIR_BASE}/liblammps.so" ./
+    cp -a "${DIR_BASE}/in.slow_test_pace" ./
+    cp -a "${DIR_BASE}/CuZr_ACE.yaml" ./
+    cp -a "${DIR_BASE}/CuZr.quenched.ace.10.data" ./
 }
 export -f prep_toplevel_run
 prep_toplevel_run
@@ -101,7 +107,19 @@ run_try()
     dir_try="try-` printf '%02d' $i `"
     mkdir -p "${dir_try}"
     pushd "${dir_try}"
-    ln -s ../in.pace.product ../Cu-PBE-core-rep.ace ./
+    ln -s ../in.pace.product ../Cu-PBE-core-rep.ace ../slow_test ../in.slow_test_pace ../CuZr_ACE.yaml ../CuZr.quenched.ace.10.data ../liblammps.so ./
+
+    export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH
+    THRESH_PERCENT=50.0
+    export FLUX_JOB_NODES=`flux resource list -s up -no {nnodes}`
+    flux run --exclusive -N ${FLUX_JOB_NODES} --tasks-per-node=4 ./slow_test $THRESH_PERCENT
+
+    # Clear the system wide reserved core setting, since we do a custom set with corespecbal
+    unset MPIBIND_RESTRICT
+    flux run --exclusive -N ${FLUX_JOB_NODES} --tasks-per-node=1 -x -o cpu-affinity=off -o gpu-affinity=off -l -u --quiet --time-limit=5m -o exit-timeout=none ../defrag
+    if [[ $? -ne 0 ]]; then
+      echo "WARNING: The defrag device memory utility failed"
+    fi
 
     # export LD_PRELOAD=libldpxi_mpi.so
     # export LD_PRELOAD=/usr/projects/hpctest/amagela/ldpxi/ldpxi/install/ats3/ldpxi-1.0.1/intel+cray-mpich-8.1.25/lib/libldpxi_mpi.so.1.0.1
