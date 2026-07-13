@@ -24,6 +24,7 @@ pushd "${dir_build}"
 # perform the build
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
+    -D SPARTA_DEFAULT_CXX_COMPILE_FLAGS="-DSPARTA_BIGBIG" \
     ../cmake
 nice -n 1 gmake -j 64
 
