@@ -52,19 +52,38 @@ Figure of Merit
 
 The Figure of Merit is the time (in seconds) to train the ScaFFold model to convergence
 (validation Dice score of at least 0.95), inclusive of all I/O and other overheads (but
-excluding dataset generation).
+excluding dataset generation). Note that since the FOM depends on convergence, a given
+FOM is specific to multiple problem and learning rate specification parameters. For
+example, a FOM from a run at ``target_dice=0.9`` is not comparable to a FOM from a run
+at ``target_dice=0.95``.
+
+FOM constraints:
+
+- The current requirements for parameters that cannot be varied for comparable FOMs is
+  logged directly after the FOM is printed in the benchmark.
+- FOM's must be reported as the median from at least 3 different ``seed``
+  configurations.
 
 ***************************
  Source code modifications
 ***************************
 
 See :ref:`GlobalRunRules` for general guidance on allowed modifications. For ScaFFold,
-we permit the following modifications: * Hyperparameters (e.g., learning rate) may be
-changed. * The datatypes used may be changed.
+we permit the following modifications:
 
-We also explicitly note the following constraints: * The training framework must be
-PyTorch. * The train/validation data split may not be changed, nor may other data
-generation parameters. * The random seed may not be fixed.
+- In ``ScaFFold/configs/benchmark_default.yml``, any "External/user-facing" parameters
+  may be freely changed.
+- Changes to "External problem specification" and "External learning rate specification"
+  from ``ScaFFold/configs/benchmark_default.yml`` may impact convergence and results may
+  be incomparable to the baseline data we provide.
+- The datatypes used may be changed.
+
+We also explicitly note the following constraints:
+
+- The training framework must be PyTorch.
+- In the config ``ScaFFold/configs/benchmark_default.yml``, Parameters marked
+  "Internal/dev use only" may not be changed.
+- The random seed may not be fixed.
 
 **********
  Building
@@ -96,6 +115,43 @@ Once the dataset is generated, the benchmark can be run:
 
     scaffold benchmark -c /path/to/config.yml
 
+****************
+ Run Parameters
+****************
+
+These are the parameters from ``ScaFFold/configs/benchmark_default.yml`` that are used
+for the baseline data, aside from the "Internal/dev use only" parameters which should
+not be modified.
+
+- n_categories = 5
+- n_instances_used_per_fractal: 145
+- optimizer: "ADAM"
+- starting_learning_rate: 0.001
+- min_learning_rate: 0.0001
+- T_0: 100
+- T_mult: 2
+
+The following are the ``unet_bottleneck_dim`` values that should be used at each
+``problem_scale``
+
+.. list-table::
+    :header-rows: 1
+
+    - - problem_scale
+      - unet_bottleneck_dim
+    - - 7
+      - 3
+    - - 8
+      - 3
+    - - 9
+      - 4
+    - - 10
+      - 5
+    - - 11
+      - 6
+    - - 12
+      - 7
+
 ************
  Validation
 ************
@@ -115,9 +171,25 @@ ScaFFold will report this after each training epoch.
  Strong Scaling on El Capitan
 ******************************
 
+Perform strong scaling by decreasing ``local_batch_size`` by 2x for each 2x increase in
+resources. For example, if the highest number of resources is 1024 ranks,
+``local_batch_size=1``. Then at 512 ranks, run ``local_batch_size=2``,
+``local_batch_size=4`` for 256 ranks, etc. This will result in a constant global batch
+size.
+
+Keep the sharding configuration constant for a given scaling study, otherwise the global
+batch size will vary.
+
 ****************************
  Weak Scaling on El Capitan
 ****************************
+
+Perform weak scaling by keeping the ``local_batch_size`` parameter constant as the
+number of resources increases. This results in the global batch size increasing by 2x
+for each 2x increase in resources.
+
+Keep the sharding configuration constant for a given scaling study, otherwise the global
+batch size will vary.
 
 ************
  References
