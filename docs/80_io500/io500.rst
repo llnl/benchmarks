@@ -1,0 +1,208 @@
+*****
+IO500
+*****
+
+Purpose
+=======
+
+`IO500 <https://io500.org/>`_ is a standard benchmark in the HPC storage community that attempts to characterize the parallel (MPI-enabled) I/O performance of a particular storage system in a way that allows easier comparison with other storage solutions.
+
+HPC applications can perform I/O to storage in numerous ways. Capturing the I/O performance of a full application run may be difficult, so synthetic benchmarks like IOR and MDTEST allow one to simulate I/O workloads that can provide a rough approximation of how a particular application's I/O workload will perform.
+
+Characteristics
+===============
+
+IO500 consists of three underlying applications, run in multiple configurations. These applications and overview of the tested patterns are: 
+
+* IOR v4.1: Test file I/O throughput performance
+
+  * Easy: Aligned file-per-process (FPP) streaming writes and both random & streaming reads
+  * Hard: Unaligned single-shared-file (SSF) streaming writes and reads
+
+* MDTest: Test file metadata performance
+
+  * Easy: Write/Stat/Delete of 0-byte files on rotating nodes (to avoid caching)
+  * Hard: Unaligned Write/Stat/Read/Delete of 3901-byte files on rotating nodes
+
+* Find: Scan fileset and search for data pattern
+
+  * The specific find executable is configurable.
+
+
+Further detail on the tests is provided below, as described on the `IO500 project page <https://io500.org/about>`_.
+
+
+IOR
+---
+`IOR <https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are available to test different application I/O profiles, including I/O sizing and data structure.
+
+IO500 uses the POSIX API for its IOR tests, which consist of the following patterns:
+
+* Easy
+
+  * **ior-easy-write**: Each process creates and writes to one file at the maximum write throughput of the storage system. Each process writes the same size of file as that of the rank which was able to write the most data when the 300s stonewall timer is hit, so that every process writes the same amount of data.
+  * **ior-easy-read**: Each process reads the entirety of one file created by a process on a different node during the ior-easy-write phase.
+  * **ior-rnd4k-easy-read**: Each process reads random 4k blocks from one file created by another process on a different node in the ior-easy-write phase until the 300s stonewall timer is hit. 
+
+* Hard
+
+  * **ior-hard-write**: Create one shared file and write interleaved 47008-byte records to the file at the maximum write throughput of the storage system. The number of records written by each process is determined by the rank which was able to write the most records when the 300s stonewall timer is hit, so that every process writes the same amount of data.
+  * **ior-hard-read**: Each process reads interleaved 47008-byte records from the file created by the ior-hard-write phase with an offset that ensures each node is reading records written by a process on a different node. 
+
+MDTEST
+------
+The mdtest benchmark measures the performance of POSIX metadata operations and is packaged and built with the IOR code. Mdtest creates a tree structure and tests the rate of directory and file operations including [create|stat|read|remove] from one or more client processes.
+
+* Easy
+
+  * **mdtest-easy-write**: A single directory is created and each process creates 3901-byte files with a unique name within that directory at the maximum rate possible. Each process creates the same number of files as of the rank which was able to write the most data within the 300s stonewall time period.
+  * **mdtest-easy-stat**: Each process fetches the file attributes of the files created by a process on a different node during the mdtest-easy-write phase.
+  * **mdtest-easy-delete**: Each process deletes all of the files and directory created by a process on a different node during the mdtest-easy-write phase.
+
+* Hard
+
+  * **mdtest-hard-stat**: Each process fetches the file attributes of the files created by a process on a different node during the mdtest-hard-write phase.
+  * **mdtest-hard-stat**: Each process fetches the file attributes of the files created by a process on a different node during the mdtest-hard-write phase.
+  * **mdtest-hard-read**: Each process reads the 3901-byte data of the files created by a process on a different node during the previous mdtest-hard-write/-stat phases.
+  * **mdtest-hard-delete**: Each process deletes all of the files created by a process on a different node during the previous mdtest-hard-write/-stat/-read phases.
+
+FIND
+------
+* **find-easy**: Scans the full set of files created by all of the \*-write phases, and look for files created after the mdtest-easy-write phase with a file size of 3901 bytes and a filename containing the string '01' somewhere within it. Reports the total number of such files found.
+
+Figure of Merit
+---------------
+Each complete IO500 run will produce a *SCORE* for each of the bandwidth and metadata portions, and then for the entire run. Each SCORE is based on the geometric mean of the associated group of tests.
+
+.. raw:: html
+
+   <style>
+       /* Forces MathJax display equations to left-align globally on this page */
+       .MathJax_Display, .math, mjx-container[display="true"] {
+           text-align: left !important;
+       }
+   </style>
+
+.. math:: 
+
+    Score_{BW} = \sqrt[4]{S_{ior-easy-w} \times S_{ior-easy-r} \times S_{ior-hard-w} \times S_{ior-hard-r}}
+
+    Score_{MD} = \sqrt[6]{S_{md-easy-w} \times S_{md-easy-s} \times S_{md-hard-w} \times S_{md-hard-s} \times S_{md-easy-d} \times S_{md-hard-d} \times S_{find}}
+
+    Score_{Overall} = \sqrt{Score_{BW} \times Score_{MD}}
+
+Source code modifications
+=========================
+
+Please see :ref:`GlobalRunRules` for general guidance on allowed modifications. 
+
+
+Building
+========
+
+Full instructions for downloading and building the IO500 code are available from the `IO500 GitHub repository <https://github.com/IO500/io500/>`_. The IO500 code base includes all the intrinsic benchmarks to run the full suite, but requires a working MPI installation.
+
+Basic instructions are:
+
+.. code-block:: bash
+
+    git clone https://github.com/IO500/io500.git
+    cd io500
+    ./prepare.sh
+
+..
+
+Running
+=======
+
+Full instructions for running the benchmarks are available at the projects `run IO500 page <https://io500.org/running>`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
+
+The basic steps to run a full IO500 test are:
+
+#. Edit the `io500.sh` script to provide correct information about your MPI and run environment.
+#. Create an `.ini` configuration file with all the tests: `./io500 --list > myconfig.ini`
+#. Edit the *datadir* parameter to update where to run the test, along with any other desired parameters.
+#. Run `io500.sh myconfig.ini` via commandline or batch file
+
+.. code-block:: bash
+
+    # Example with 32 processes on 10 nodes
+    srun -N 10 -n 320 ./io500 ./myconfig.ini
+
+..
+
+
+Validation
+==========
+
+Results from each run, and the individual tests themselves, are stored in a timestamp-based directory in the defined *results* directory. A *result_summary.txt* file there contains a clean summary of performance and time for each test, along with the overall **SCORE** for the entire run. A higher score is deemed better.
+
+If a result is determined to be invalid, the first column of the *result_summary.txt* line will report **[RESULT-invalid]** and the final score itself will also be labeled as **[SCORE-invalid]**. 
+
+If a *result_summary.txt* file is blank, test failures may be noted in the *result.txt* file.
+
+Example Scalability Results
+===========================
+
+Performance typically increases with numbers of processes and/or nodes to a certain point. Example results are shown below for three runs where the total run score scales up due to increased IOPS numbers even though the Bandwidth does not.
+* 8 Nodes w/ 2 procs/node
+* 8 Nodes w/ 8 procs/node
+* 10 Nodes w/ 36 procs/node
+
+.. code-block::
+
+    # 8 Nodes, 2 procs/node
+    [RESULT]       ior-easy-write       12.796751 GiB/s : time 311.025 seconds
+    [RESULT]    mdtest-easy-write        6.611423 kIOPS : time 343.089 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.137987 GiB/s : time 1631.212 seconds
+    [RESULT]    mdtest-hard-write        3.893660 kIOPS : time 309.028 seconds
+    [RESULT]                 find      220.319273 kIOPS : time 15.725 seconds
+    [RESULT]        ior-easy-read       17.643188 GiB/s : time 225.582 seconds
+    [RESULT]     mdtest-easy-stat        9.071526 kIOPS : time 250.208 seconds
+    [RESULT]        ior-hard-read        7.769585 GiB/s : time 28.991 seconds
+    [RESULT]     mdtest-hard-stat        8.816394 kIOPS : time 137.033 seconds
+    [RESULT]   mdtest-easy-delete        8.365338 kIOPS : time 271.519 seconds
+    [RESULT]     mdtest-hard-read        3.706129 kIOPS : time 324.585 seconds
+    [RESULT]   mdtest-hard-delete        4.760443 kIOPS : time 253.289 seconds
+    [      ]  ior-rnd4K-easy-read        0.002054 GiB/s : time 307.248 seconds
+    [SCORE ] Bandwidth 3.944372 GiB/s : IOPS 9.510778 kiops : TOTAL 6.124871
+
+    # 8 Nodes, 8 procs/node
+    [RESULT]       ior-easy-write       20.046531 GiB/s : time 354.526 seconds
+    [RESULT]    mdtest-easy-write       14.191851 kIOPS : time 367.873 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.136641 GiB/s : time 3324.892 seconds
+    [RESULT]    mdtest-hard-write        2.479237 kIOPS : time 309.674 seconds
+    [RESULT]                 find      684.031558 kIOPS : time 8.753 seconds
+    [RESULT]        ior-easy-read       20.881646 GiB/s : time 340.334 seconds
+    [RESULT]     mdtest-easy-stat       20.241713 kIOPS : time 258.140 seconds
+    [RESULT]        ior-hard-read        2.462711 GiB/s : time 184.493 seconds
+    [RESULT]     mdtest-hard-stat       20.916452 kIOPS : time 37.599 seconds
+    [RESULT]   mdtest-easy-delete       16.776099 kIOPS : time 311.641 seconds
+    [RESULT]     mdtest-hard-read        8.487589 kIOPS : time 91.246 seconds
+    [RESULT]   mdtest-hard-delete        4.288957 kIOPS : time 179.481 seconds
+    [      ]  ior-rnd4K-easy-read        0.008195 GiB/s : time 307.429 seconds
+    [SCORE ] Bandwidth 3.445083 GiB/s : IOPS 16.759052 kiops : TOTAL 7.598442
+
+    # 10 Nodes, 36 procs/node
+    [RESULT]       ior-easy-write       20.524085 GiB/s : time 398.964 seconds
+    [RESULT]    mdtest-easy-write        9.930871 kIOPS : time 2872.391 seconds
+    [      ]            timestamp        0.000000 kIOPS : time 0.001 seconds
+    [RESULT]       ior-hard-write        0.139053 GiB/s : time 9323.515 seconds
+    [RESULT]    mdtest-hard-write        2.672797 kIOPS : time 348.968 seconds
+    [RESULT]                 find     1895.276448 kIOPS : time 15.563 seconds
+    [RESULT]        ior-easy-read       21.292236 GiB/s : time 384.298 seconds
+    [RESULT]     mdtest-easy-stat       61.387897 kIOPS : time 465.458 seconds
+    [RESULT]        ior-hard-read        1.600313 GiB/s : time 810.219 seconds
+    [RESULT]     mdtest-hard-stat      102.486286 kIOPS : time 10.096 seconds
+    [RESULT]   mdtest-easy-delete       30.767623 kIOPS : time 929.679 seconds
+    [RESULT]     mdtest-hard-read       33.870216 kIOPS : time 28.531 seconds
+    [RESULT]   mdtest-hard-delete        7.095293 kIOPS : time 131.996 seconds
+    [      ]  ior-rnd4K-easy-read        0.040576 GiB/s : time 302.763 seconds
+    [SCORE ] Bandwidth 3.140276 GiB/s : IOPS 35.168763 kiops : TOTAL 10.509026
+
+..
+
+References
+==========

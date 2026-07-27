@@ -9,8 +9,8 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing is considered to be final
-========================================================================================================
+ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is considered to be final
+==================================================================================================
 
 .. toctree::
    :maxdepth: 3
@@ -22,37 +22,49 @@ FCR Benchmarks Project. ATTENTION: This page is a work in progress and nothing i
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 1 Mini-Applications
+   :caption: Mod/Sim Priority 1
 
    11_kripke/kripke
    12_laghos/laghos
    13_rajaperf/rajaperf
-   14_scaffold/scaffold
    20_branson/branson
    31_sparta/sparta
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Priority 2 Mini-Applications
+   :caption: Mod/Sim Priority 2
 
    10_amg/amg
    32_lammpsACE/lammpsACE
    40_remhos/remhos
    50_miniem/miniem
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: AI benchmarks
+
+   14_scaffold/scaffold
    60_mlperf/mlperf
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: Storage benchmarks
+
+   80_io500/io500
+   81_mlpstor/mlpstor
    
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Microbenchmarks
+   :caption: Network benchmarks
 
-   70_omb/omb
-   71_gpcnet/gpcnet
-   72_phloem/phloem
-   80_ior/ior
-   81_mdtest/mdtest
-   82_dlio/dlio
+   70_phloem/phloem
+   71_omb/omb
+   72_smb/smb
+   80_io500/io500
 
 .. toctree::
    :maxdepth: 3
