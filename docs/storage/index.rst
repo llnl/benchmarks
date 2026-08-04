@@ -9,13 +9,13 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is considered to be final
-==================================================================================================
+ATS-6 Storage Benchmarks
+========================
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Storage benchmarks
+   :caption: Procurement benchmarks
 
    80_io500/io500
    81_mlpstor/mlpstor
