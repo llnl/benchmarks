@@ -15,39 +15,26 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Getting Started
+   :caption: AI for Science Procurememt
 
-   00_intro/introduction
+   14_scaffold/scaffold
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: ModSim
+   :caption: AI for Science Collectives
+   
+   71_omb/omb
+   
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: AI for Science Acceptance
 	     
-   modsim/index
-	     
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: AI4Sim
+   60_mlperf/mlperf
 
-   ai4sim/index
 
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Storage
-
-   storage/index
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Appendices
-
-   90_appendix/build_docs
-   91_reference_systems/reference_systems
-
+   
 .. Indices and tables
    ==================
 ..   * :ref:`genindex`

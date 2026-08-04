@@ -15,38 +15,32 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Getting Started
+   :caption: Mod/Sim Priority 1
 
-   00_intro/introduction
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: ModSim
-	     
-   modsim/index
-	     
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: AI4Sim
-
-   ai4sim/index
+   11_kripke/kripke
+   12_laghos/laghos
+   13_rajaperf/rajaperf
+   20_branson/branson
+   31_sparta/sparta
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Storage
+   :caption: Mod/Sim Priority 2
 
-   storage/index
+   10_amg/amg
+   32_lammpsACE/lammpsACE
+   40_remhos/remhos
+   50_miniem/miniem
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Appendices
+   :caption: MPI
 
-   90_appendix/build_docs
-   91_reference_systems/reference_systems
+   70_phloem/phloem
+   71_omb/omb
+   72_smb/smb
 
 .. Indices and tables
    ==================

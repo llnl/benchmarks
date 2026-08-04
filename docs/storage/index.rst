@@ -15,38 +15,11 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Getting Started
+   :caption: Storage benchmarks
 
-   00_intro/introduction
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: ModSim
-	     
-   modsim/index
-	     
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: AI4Sim
-
-   ai4sim/index
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Storage
-
-   storage/index
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Appendices
-
-   90_appendix/build_docs
-   91_reference_systems/reference_systems
+   80_io500/io500
+   81_mlpstor/mlpstor
+   
 
 .. Indices and tables
    ==================
