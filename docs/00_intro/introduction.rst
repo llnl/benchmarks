@@ -7,114 +7,6 @@ National Nuclear Security Administration (NNSA) Advanced Simulation
 and Computing (ASC) **Advanced Technology System 6 (ATS-6)**.
 
 
-Benchmark Overview 
-==================
-
-Mod/Sim benchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mod/Sim benchmarks are prioritized as Priority 1, or Priority 2.
-
-Mod/Sim Priority 1
-^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-
- * - **Benchmark**
-   - **Description**
-   - **Language**
-   - **Parallelism** 
-   - **Libraries**
- * - Kripke
-   - | Scalable 3D Sn deterministic 
-     | particle transport code 
-   - C++
-   - MPI+RAJA
-   - RAJA, CHAI, Camp
- * - Laghos
-   - | LAGrangian High-Order Solver, 
-     | unstructured high-order finite 
-     | element compressible gas dynamics
-   - C++
-   - MPI+RAJA/CUDA/HIP
-   - RAJA, MFEM, Hypre
- * - RAJA Performance Suite
-   - | Collection of loop-based computational 
-     | kernels found in HPC applications
-   - C++
-   - | MPI+RAJA 
-     | /CUDA/HIP/OpenMP
-   - RAJA
- * - Branson
-   - Implicit Monte Carlo transport
-   - C++
-   - MPI+CUDA/HIP
-   - N/A
- * - Sparta
-   - Direct Simulation Monte Carlo
-   - C++
-   - MPI+Kokkos
-   - Kokkos
-
-
-Mod/Sim Priority 2
-^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-
- * - **Benchmark**
-   - **Description**
-   - **Language**
-   - **Parallelism** 
-   - **Libraries**
- * - AMG2023
-   - AMG solver of sparse matrices  
-   - C 
-   - | MPI+CUDA/HIP/SYCL
-     | OpenMP on CPU
-   - Hypre
- * - LAMMPS ACE
-   - | Molecular dynamics using
-     | Atomic Cluster Expansion (ACE)
-   - C++
-   - MPI+Kokkos
-   - Kokkos
- * - Remhos
-   - | REMap High-Order Solver, unstructured 
-     | high-order finite element advection
-   - C++
-   - MPI+RAJA/CUDA/HIP
-   - RAJA, MFEM, Hypre
- * - MiniEM
-   - Electro-Magnetics solver
-   - C++
-   - MPI+Kokkos
-   - Kokkos, Trillinos
-
-Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
-
-
-AI benchmarks
-^^^^^^^^^^^^^
-
-.. list-table::
-
- * - **Benchmark**
-   - **Description**
-   - **Language**
-   - **Parallelism** 
-   - **Libraries**
- * - ScaFFold
-   - | Scale-Free Fractal Benchmark, 
-     | Proxy for emerging models such as 
-     | programmatic inverse-design projects
-   - Python
-   - | MPI/NCCL/RCCL 
-     | CUDA/HIP
-   - PyTorch
- * - MLPerf
-   - Llama 3.1 405B training 
-   - Python
-   - NCCL+CUDA
-   - NVIDIA NeMo
-
 .. _GlobalRunRules:
 
 Run Rules Synopsis
@@ -136,7 +28,7 @@ Source code modification categories:
 Approvals
 =========
 
-- Benchmarks is released under the Creative Commons Attribution 4.0
+- Benchmarks are released under the Creative Commons Attribution 4.0
   International Public License. For more details, see the
   https://github.com/LLNL/benchmarks/blob/develop/LICENSE 
   and

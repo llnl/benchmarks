@@ -9,30 +9,63 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is considered to be final
-==================================================================================================
+
+******************
+Benchmark Overview
+******************
+
+.. list-table::
+
+ * - **Benchmark**
+   - **Description**
+   - **Language**
+   - **Parallelism**
+   - **Libraries**
+ * - ScaFFold
+   - | Scale-Free Fractal Benchmark,
+     | Proxy for emerging models such as
+     | programmatic inverse-design projects
+   - Python
+   - | MPI/NCCL/RCCL
+     | CUDA/HIP
+   - PyTorch
+ * - MLPerf
+   - Llama 3.1 405B training
+   - Python
+   - NCCL+CUDA
+   - NVIDIA NeMo
+
+
+***********
+Procurement
+***********
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: AI for Science Procurememt
 
-   14_scaffold/scaffold
+   ../14_scaffold/scaffold
+
+**********
+Acceptance
+**********
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: AI for Science Collectives
-   
-   71_omb/omb
-   
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: AI for Science Acceptance
+
 	     
-   60_mlperf/mlperf
+   ../60_mlperf/mlperf
 
+***********
+Collectives
+***********
+   
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   ../71_omb/omb
 
    
 .. Indices and tables
