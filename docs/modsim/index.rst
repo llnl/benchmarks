@@ -10,17 +10,17 @@
    90-99 :: Appendices
 
 
-************
-Introduction
-************
+***********
+Procurement
+***********
 
-Mod/Sim benchmarks are features, components, performance characteristics, or other properties that are
-important to the Laboratories.  Mod/Sim benchmarks are prioritized as Priority 1, or Priority 2.
+ModSim benchmarks are features, components, performance characteristics,
+or other properties that are important to the Laboratories.  
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Mod/Sim Priority 1
+   :caption: 
 
    ../11_kripke/kripke
    ../12_laghos/laghos
@@ -28,24 +28,31 @@ important to the Laboratories.  Mod/Sim benchmarks are prioritized as Priority 1
    ../20_branson/branson
    ../31_sparta/sparta
 
+**********
+Acceptance
+**********
+   
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Mod/Sim Priority 2
 
-   10_amg/amg
-   32_lammpsACE/lammpsACE
-   40_remhos/remhos
-   50_miniem/miniem
+   ../10_amg/amg
+   ../32_lammpsACE/lammpsACE
+   ../40_remhos/remhos
+   ../50_miniem/miniem
 
+***
+MPI
+***
+   
 .. toctree::
    :maxdepth: 3
    :numbered:
    :caption: MPI
 
-   70_phloem/phloem
-   71_omb/omb
-   72_smb/smb
+   ../70_phloem/phloem
+   ../71_omb/omb
+   ../72_smb/smb
 
 .. Indices and tables
    ==================
