@@ -14,32 +14,19 @@
 Introduction
 ************
 
-This is benchmark documentation for a Department of Energy (DOE)
-National Nuclear Security Administration (NNSA) Advanced Simulation
-and Computing (ASC) **Advanced Technology System 6 (ATS-6)**.
-
-
-Benchmark Overview 
-==================
-
-Mod/Sim benchmarks are features, components, performance characteristics, or other properties that are important to the Laboratories.  Mod/Sim benchmarks are\
- prioritized as Priority 1, or Priority 2.
-
-Mod/Sim Priority 1
-^^^^^^^^^^^^^^^^^^
-
-
+Mod/Sim benchmarks are features, components, performance characteristics, or other properties that are
+important to the Laboratories.  Mod/Sim benchmarks are prioritized as Priority 1, or Priority 2.
 
 .. toctree::
    :maxdepth: 3
    :numbered:
    :caption: Mod/Sim Priority 1
 
-   11_kripke/kripke
-   12_laghos/laghos
-   13_rajaperf/rajaperf
-   20_branson/branson
-   31_sparta/sparta
+   ../11_kripke/kripke
+   ../12_laghos/laghos
+   ../13_rajaperf/rajaperf
+   ../20_branson/branson
+   ../31_sparta/sparta
 
 .. toctree::
    :maxdepth: 3
