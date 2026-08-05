@@ -17,8 +17,7 @@ Benchmark Overview
 ModSim benchmarks are features, components, performance characteristics,
 or other properties that are important to the Laboratories.  
 
-ModSim Procurement
-^^^^^^^^^^^^^^^^^^
+ModSim Priority 2
 
 .. list-table::
 
@@ -58,8 +57,8 @@ ModSim Procurement
    - MPI+Kokkos
    - Kokkos
 
-ModSim Acceptance
-^^^^^^^^^^^^^^^^^
+ModSim Priority 2
+
 
 .. list-table::
 
@@ -93,3 +92,21 @@ ModSim Acceptance
    - Kokkos, Trillinos
 
 Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
+
+
+.. _GlobalRunRules:
+
+Run Rules Synopsis
+==================
+
+Source code modification categories:
+
+1. Baseline: “out-of-the-box” performance
+  * Code modifications not permitted
+  * Compiler options can be modified, library substitutions permitted unless prohibited for a specific benchmark (see details on benchmark pages), problem decomposition may be changed
+  * If provided code cannot run on the proposed architecture as-is, limited source code modifications are permitted to port and tune for the target architecture using directives or commonly used interfaces.
+2. Optimized: "speed of light"
+  * Aggressive code changes that enhance performance are permitted.  Optimizations that will be applicable to mission applications are of more value.
+  * Algorithms fundamental to the program may not be replaced.  Wholesale algorithm changes or manual rewriting of loops that become strongly architecture specific are of less value.
+  * The modified code must still pass validation tests.
+  * Optimizations will be reviewed by subject matter experts for applicability to the larger application portfolio and other goals such as performance portability and programmer productivity.

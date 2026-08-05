@@ -36,9 +36,9 @@ Benchmark Overview
    - NVIDIA NeMo
 
 
-***********
-Procurement
-***********
+**********
+Priority 1
+**********
 
 .. toctree::
    :maxdepth: 3
@@ -47,7 +47,7 @@ Procurement
    ../14_scaffold/scaffold
 
 **********
-Acceptance
+Priority 2
 **********
 
 .. toctree::
@@ -67,9 +67,21 @@ Collectives
    
    ../71_omb/omb
 
-   
-.. Indices and tables
-   ==================
-..   * :ref:`genindex`
-..   * :ref:`modindex`
-..   * :ref:`search`
+
+.. _AI4SIMRunRules:
+
+Run Rules Synopsis
+==================
+
+Source code modification categories:
+
+1. Baseline: “out-of-the-box” performance
+  * Code modifications not permitted
+  * Compiler options can be modified, library substitutions permitted unless prohibited for a specific benchmark (see details on benchmark pages), problem decomposition may be changed
+  * If provided code cannot run on the proposed architecture as-is, limited source code modifications are permitted to port and tune for the target architecture using directives or commonly used interfaces.
+2. Optimized: "speed of light"
+  * Aggressive code changes that enhance performance are permitted.  Optimizations that will be applicable to mission applications are of more value.
+  * Algorithms fundamental to the program may not be replaced.  Wholesale algorithm changes or manual rewriting of loops that become strongly architecture specific are of less value.
+  * The modified code must still pass validation tests.
+  * Optimizations will be reviewed by subject matter experts for applicability to the larger application portfolio and other goals such as performance portability and programmer productivity.
+
