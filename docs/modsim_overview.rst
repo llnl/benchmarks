@@ -17,7 +17,7 @@ Benchmark Overview
 ModSim benchmarks are features, components, performance characteristics,
 or other properties that are important to the Laboratories.  
 
-ModSim Priority 2
+**ModSim Priority 1**
 
 .. list-table::
 
@@ -57,8 +57,8 @@ ModSim Priority 2
    - MPI+Kokkos
    - Kokkos
 
-ModSim Priority 2
-
+     
+**ModSim Priority 2**
 
 .. list-table::
 

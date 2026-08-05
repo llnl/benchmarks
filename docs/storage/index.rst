@@ -9,12 +9,9 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-************************
-ATS-6 Storage Benchmarks
-************************
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :numbered:
 
    ../80_io500/io500
