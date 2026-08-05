@@ -131,7 +131,7 @@ Priority 2
 **********
    
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :numbered:
 
    ../10_amg/amg
