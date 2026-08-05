@@ -19,7 +19,7 @@ Benchmark Overview
    :numbered:
    :caption: Benchmark Overview
 
-   modsim/overview
+   ../modsim_overview
 
 ***********
 Procurement
