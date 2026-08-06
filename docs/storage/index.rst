@@ -15,7 +15,7 @@ Benchmark Overview
 ******************
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    ../80_io500/io500

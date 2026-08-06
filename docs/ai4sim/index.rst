@@ -59,7 +59,7 @@ Priority 1
 **********
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :numbered:
 
    ../14_scaffold/scaffold
@@ -69,7 +69,7 @@ Priority 2
 **********
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :numbered:
 
 	     
@@ -80,7 +80,7 @@ Collectives
 ***********
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :numbered:
    
    ../71_omb/omb

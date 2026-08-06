@@ -25,36 +25,42 @@ or other properties that are important to the Laboratories.
    - **Description**
    - **Language**
    - **Parallelism**
+   - **Scale**
    - **Libraries**
  * - Kripke
    - | Scalable 3D Sn deterministic
      | particle transport code
    - C++
    - MPI+RAJA
-   - RAJA, CHAI, Camp
+   - Multi-node
+   - RAJA, CHAI, Camp, Umpire
  * - Laghos
    - | LAGrangian High-Order Solver,
      | unstructured high-order finite
      | element compressible gas dynamics
    - C++
    - MPI+RAJA/CUDA/HIP
-   - RAJA, MFEM, Hypre
+   - Multi-node  
+   - RAJA, MFEM, Hypre, Umpire
  * - RAJA Performance Suite
    - | Collection of loop-based computational
      | kernels found in HPC applications
    - C++
    - | MPI+RAJA
      | /CUDA/HIP/OpenMP
+   - Single node
    - RAJA
  * - Branson
    - Implicit Monte Carlo transport
    - C++
    - MPI+CUDA/HIP
-   - N/A
+   - Multi-node
+   - Umpire
  * - Sparta
    - Direct Simulation Monte Carlo
    - C++
    - MPI+Kokkos
+   - Multi-node     
    - Kokkos
 
 
@@ -66,29 +72,34 @@ or other properties that are important to the Laboratories.
    - **Description**
    - **Language**
    - **Parallelism**
+   - **Scale**
    - **Libraries**
  * - AMG2023
    - AMG solver of sparse matrices
    - C
    - | MPI+CUDA/HIP/SYCL
      | OpenMP on CPU
-   - Hypre
+   - Multi-node
+   - Hypre, Umpire
  * - LAMMPS ACE
    - | Molecular dynamics using
      | Atomic Cluster Expansion (ACE)
    - C++
    - MPI+Kokkos
+   - Multi-node
    - Kokkos
  * - Remhos
    - | REMap High-Order Solver, unstructured
      | high-order finite element advection
    - C++
    - MPI+RAJA/CUDA/HIP
+   - Multi-node
    - RAJA, MFEM, Hypre
  * - MiniEM
    - Electro-Magnetics solver
    - C++
    - MPI+Kokkos
+   - Multi-node
    - Kokkos, Trillinos
 
 Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
@@ -117,7 +128,7 @@ Priority 1
 **********
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :numbered:
 
    ../11_kripke/kripke
@@ -145,7 +156,7 @@ MPI Benchmarks
 **************
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    ../70_phloem/phloem
