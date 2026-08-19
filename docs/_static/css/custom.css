@@ -85,3 +85,21 @@ a:visited {
 html.writer-html4 .rst-content dl:not(.docutils) > dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
     color: #7fa866
 }
+
+.draft-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: rgba(180, 0, 0, 0.18);
+  font: bold 8rem/1 sans-serif;
+  letter-spacing: 0.2em;
+  transform: rotate(-30deg);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
