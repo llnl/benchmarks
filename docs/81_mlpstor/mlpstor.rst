@@ -165,7 +165,7 @@ Sample POSIX File I/O-based Checkpoint test with split phases:
     (mlpstorage) $ chkpt_dir=/path/to/file system/checkpointing
     (mlpstorage) $ results_dir=$HOME/mlperf_storage_results/ # Different f/s from $datadir
     (mlpstorage) $ mkdir -p ${chkpt_dir}
-    (mlpstorage) $ mkdir -p ${results_dir} # If not done previously
+    (mlpstorage) $ mkdir -p ${results_dir}
     (mlpstorage) $ mlpstorage init $(hostname -d) ${results_dir} # If not done previously
 
     # Write phase
@@ -193,7 +193,113 @@ Sample POSIX File I/O-based Checkpoint test with split phases:
 
 ..
 
+Sample S3 Object I/O-based Checkpoint test with split phases:
+
 .. code-block:: bash
+
+    # Set up AWS environment and pre-create bucket (if necessary)
+    (mlpstorage) $ export AWS_ACCESS_KEY_ID=<access key id>
+    (mlpstorage) $ export AWS_SECRET_ACCESS_KEY==<secret access key>
+    (mlpstorage) $ export AWS_ENDPOINT_URL=https://<s3.domain>
+    (mlpstorage) $ export BUCKET=mlp-storage
+    (mlpstorage) $ aws s3api create-bucket --bucket ${BUCKET}
+
+    # Set up mlpstorage run environment
+    (mlpstorage) $ systemname=$(hostname)-s3
+    (mlpstorage) $ chkpt_bkt="s3://${BUCKET}" # s3:// prefix is necessary
+    (mlpstorage) $ results_dir=$HOME/mlperf_storage_results/ # Different f/s from $datadir
+    (mlpstorage) $ mkdir -p ${results_dir}
+    (mlpstorage) $ mlpstorage init $(hostname -d) ${results_dir} # If not done previously
+
+    # Write phase
+    (mlpstorage) $ mlpstorage closed checkpointing run object \
+                   --systemname ${systemname} \
+                   --client-host-memory-in-gb 502 \
+                   --model llama3-8b \
+                   --num-processes 8 \
+                   --checkpoint-folder ${chkpt_bkt} \
+                   --results-dir ${results_dir} \
+                   --num-checkpoints-read=0
+
+    # Clear the cache (This might require admin access to the system)
+    (mlpstorage) $ sudo echo 3 > /proc/sys/vm/drop_caches
+
+    # Read phase
+    (mlpstorage) $ mlpstorage closed checkpointing run object \
+                   --systemname ${systemname} \
+                   --client-host-memory-in-gb 502 \
+                   --model llama3-8b \
+                   --num-processes 8 \
+                   --checkpoint-folder ${chkpt_bkt} \
+                   --results-dir ${results_dir} \
+                   --num-checkpoints-write=0
+
+..
+
+Training
+-------------
+
+Running the Training benchmark is a 3-stage process, with each stage requiring a sub-command with certain parameters. Those sub-commands are:
+    1. `datasize`: Determine the problem size 
+    2. `datagen`: Generate the training data
+    3. `run`: Simulate training the data on accelerators
+
+
+    1. Create and initialize a folder for mlpstorage test results. (Only performed once for all benchmarks)
+        1. :code:`mkdir -p ${results_dir}`
+        2. :code:`mlpstorage init <orgname> ${results_dir}`
+    3. Define and create a folder or bucket for checkpoint data I/O.
+        1. :code:`mkdir -p ${chkpt_dir}`
+    4. Run `mlpstorage` with the pre-defined destinations and parameter values from the `Problems <Problems>` section, along with the amount of system memory on the machine running the test.
+
+*Important*: Caches should be flushed between Write and Read phases of the checkpoint benchmark with :code:`echo 3 > /proc/sys/vm/drop_caches`. If the Checkpointing run is unable to automatically flush the caches, the write and read phases can be run separately to allow a manual clearing. To split phases, specify the :code:`--num-checkpoints-read=0` option for the Write phase and :code:`--num-checkpoints-write=0` for the Read phase.
+
+Sample POSIX File I/O-based Training run:
+
+.. code-block:: bash
+
+    # Set up mlpstorage run environment
+    (mlpstorage) $ systemname=$(hostname)-file
+    (mlpstorage) $ data_dir=/path/to/file system/training
+    (mlpstorage) $ results_dir=$HOME/mlperf_storage_results/ # Different f/s from $datadir
+    (mlpstorage) $ mkdir -p ${data_dir}
+    (mlpstorage) $ mkdir -p ${results_dir} 
+    (mlpstorage) $ mlpstorage init $(hostname -d) ${results_dir} # If not done previously
+
+    # Run datasize command to determine size of dataset to generate 
+    (mlpstorage) $ mlpstorage closed training retinanet datasize \
+                   --hosts 127.0.0.1 \
+                   --client-host-memory-in-gb 252 \
+                   --num-client-hosts 1 \
+                   --max-accelerators 4 \
+                   --accelerator-type b200 \
+                   --systemname ${systemname} \
+                   --results-dir ${resultsdir}
+
+    # Run datagen command to generate dataset
+    (mlpstorage) $ mlpstorage closed training retinanet datagen file \
+                   --hosts 127.0.0.1 \
+                   --client-host-memory-in-gb 252 \
+                   --num-client-hosts 1 \
+                   --max-accelerators 4 \
+                   --accelerator-type b200 \
+                   --systemname ${systemname} \
+                   --results-dir ${resultsdir}
+
+    # Clear the cache (This might require admin access to the system)
+    (mlpstorage) $ sudo echo 3 > /proc/sys/vm/drop_caches
+
+    # Execute the training run
+    (mlpstorage) $ mlpstorage closed training retinanet run file \
+                   --hosts 127.0.0.1 \
+                   --client-host-memory-in-gb 252 \
+                   --num-client-hosts 1 \
+                   --max-accelerators 4 \
+                   --accelerator-type b200 \
+                   --systemname ${systemname} \
+                   --results-dir ${resultsdir}
+
+..
 
 Sample S3 Object I/O-based Checkpoint test with split phases:
 
