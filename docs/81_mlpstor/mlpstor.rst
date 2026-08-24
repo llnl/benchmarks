@@ -147,12 +147,14 @@ Sample tests provided here were performed under the following software environme
 Checkpointing
 -------------
 
-    1. Create and initialize a folder for mlpstorage test results. (Only performed once for all benchmarks)
+Suggested instructions to setup and execute the steps for the the Training run are:
+
+    1. Create and initialize a folder for mlpstorage test results that lies outside the mlpstorage code directory. (Only performed once for all benchmarks)
         1. :code:`mkdir -p ${results_dir}`
         2. :code:`mlpstorage init <orgname> ${results_dir}`
-    3. Define and create a folder or bucket for checkpoint data I/O.
+    2. Define and create a folder or bucket for checkpoint data I/O.
         1. :code:`mkdir -p ${chkpt_dir}`
-    4. Run `mlpstorage` with the pre-defined destinations and parameter values from the `Problems <Problems>` section, along with the amount of system memory on the machine running the test.
+    3. Run `mlpstorage` with the pre-defined destinations and parameter values from the `Problems <Problems>` section, along with the amount of system memory on the machine running the test.
 
 *Important*: Caches should be flushed between Write and Read phases of the checkpoint benchmark with :code:`echo 3 > /proc/sys/vm/drop_caches`. If the Checkpointing run is unable to automatically flush the caches, the write and read phases can be run separately to allow a manual clearing. To split phases, specify the :code:`--num-checkpoints-read=0` option for the Write phase and :code:`--num-checkpoints-write=0` for the Read phase.
 
@@ -198,10 +200,13 @@ Sample S3 Object I/O-based Checkpoint test with split phases:
 .. code-block:: bash
 
     # Set up AWS environment and pre-create bucket (if necessary)
-    (mlpstorage) $ export AWS_ACCESS_KEY_ID=<access key id>
-    (mlpstorage) $ export AWS_SECRET_ACCESS_KEY==<secret access key>
-    (mlpstorage) $ export AWS_ENDPOINT_URL=https://<s3.domain>
-    (mlpstorage) $ export BUCKET=mlp-storage
+    (mlpstorage) $ AWS_ACCESS_KEY_ID=<access key id>
+    (mlpstorage) $ AWS_SECRET_ACCESS_KEY==<secret access key>
+    (mlpstorage) $ AWS_ENDPOINT_URL=https://<s3.domain>
+    (mlpstorage) $ BUCKET=mlp-storage
+    (mlpstorage) $ STORAGE_LIBRARY=s3dlio
+    (mlpstorage) $ STORAGE_URI_SCHEME=s3
+    (mlpstorage) $ BUCKET=mlp-storage
     (mlpstorage) $ aws s3api create-bucket --bucket ${BUCKET}
 
     # Set up mlpstorage run environment
@@ -240,19 +245,21 @@ Training
 -------------
 
 Running the Training benchmark is a 3-stage process, with each stage requiring a sub-command with certain parameters. Those sub-commands are:
-    1. `datasize`: Determine the problem size 
-    2. `datagen`: Generate the training data
-    3. `run`: Simulate training the data on accelerators
+    * `datasize`: Determine the problem size 
+    * `datagen`: Generate the training data
+    * `run`: Simulate training the data on accelerators
 
+Once the appropriate dataset is sized and generated for a particular configuration, it is generally not necessary to re-run the *datasize* and *datagen* subcommands.
 
-    1. Create and initialize a folder for mlpstorage test results. (Only performed once for all benchmarks)
-        1. :code:`mkdir -p ${results_dir}`
-        2. :code:`mlpstorage init <orgname> ${results_dir}`
-    3. Define and create a folder or bucket for checkpoint data I/O.
-        1. :code:`mkdir -p ${chkpt_dir}`
-    4. Run `mlpstorage` with the pre-defined destinations and parameter values from the `Problems <Problems>` section, along with the amount of system memory on the machine running the test.
+Suggested instructions to setup and execute the steps for the the Training run are:
 
-*Important*: Caches should be flushed between Write and Read phases of the checkpoint benchmark with :code:`echo 3 > /proc/sys/vm/drop_caches`. If the Checkpointing run is unable to automatically flush the caches, the write and read phases can be run separately to allow a manual clearing. To split phases, specify the :code:`--num-checkpoints-read=0` option for the Write phase and :code:`--num-checkpoints-write=0` for the Read phase.
+    1. Define and create a folder or bucket for the training dataset.
+    2. Create and initialize a folder for mlpstorage test results that lies outside the mlpstorage code directory. (Only performed once for all benchmarks)
+    3. Run the *mlpstorage ... training ... datasize ...* command with number of host clients (1), client RAM in GB, number of simulated accelerators (4) and accelerator type (b200)
+        * Note the number of training files and the suggested commandline near the end to generate the dataset.
+    4. Run the suggested `mlpstorage ... training ... datagen ...` command from step 3.
+    5. Run the `mlpstorage ... training ... run` command to run the training benchmark on the data.
+
 
 Sample POSIX File I/O-based Training run:
 
@@ -274,17 +281,30 @@ Sample POSIX File I/O-based Training run:
                    --max-accelerators 4 \
                    --accelerator-type b200 \
                    --systemname ${systemname} \
-                   --results-dir ${resultsdir}
+                   --results-dir ${results_dir}
 
-    # Run datagen command to generate dataset
+    # Capture suggested *datagen* command with dataset size information
+        ...
+        2026-08-24 09:31:12|RESULT: Minimum file count dictated by dataset size to memory size ratio.
+        2026-08-24 09:31:12|RESULT: Number of training files: 4189149
+        2026-08-24 09:31:12|RESULT: Number of training subfolders: 0
+        2026-08-24 09:31:12|RESULT: Total disk space required for training: 1260.00GiB
+        2026-08-24 09:31:12|RESULT: Run the following command to generate data:
+        mlpstorage closed training retinanet datagen file --hosts 127.0.0.1 --exec-type=mpi --num-processes=4 --results-dir=${results_dir} --data-dir=<INSERT_DATA_DIR> --systemname=${systemname} --params dataset.num_files_train=4189149 dataset.num_subfolders_train=0 dataset.total_disk_bytes=1352914993593 dataset.skip_listing=True dataset.listing_validation_interval=1000
+        ...
+
+    # Run suggested datagen command to generate dataset
     (mlpstorage) $ mlpstorage closed training retinanet datagen file \
                    --hosts 127.0.0.1 \
-                   --client-host-memory-in-gb 252 \
-                   --num-client-hosts 1 \
-                   --max-accelerators 4 \
-                   --accelerator-type b200 \
+                   --num-processes 4 \
+                   --results-dir ${results_dir} \
+                   --data-dir ${data_dir} \
                    --systemname ${systemname} \
-                   --results-dir ${resultsdir}
+                   --params dataset.num_files_train=4189149 \
+                     dataset.num_subfolders_train=0 \
+                     dataset.total_disk_bytes=1352914993593 \
+                     dataset.skip_listing=True \
+                     dataset.listing_validation_interval=1000
 
     # Clear the cache (This might require admin access to the system)
     (mlpstorage) $ sudo echo 3 > /proc/sys/vm/drop_caches
@@ -292,12 +312,13 @@ Sample POSIX File I/O-based Training run:
     # Execute the training run
     (mlpstorage) $ mlpstorage closed training retinanet run file \
                    --hosts 127.0.0.1 \
-                   --client-host-memory-in-gb 252 \
-                   --num-client-hosts 1 \
-                   --max-accelerators 4 \
+                   --num-accelerators 4 \
                    --accelerator-type b200 \
+                   --results-dir ${results_dir} \
+                   --data-dir ${data_dir} \
+                   --client-host-memory-in-gb 252 \
                    --systemname ${systemname} \
-                   --results-dir ${resultsdir}
+                   --params dataset.num_files_train=4189149
 
 ..
 
@@ -305,42 +326,69 @@ Sample S3 Object I/O-based Checkpoint test with split phases:
 
 .. code-block:: bash
 
-    # Set up AWS environment and pre-create bucket (if necessary)
-    (mlpstorage) $ export AWS_ACCESS_KEY_ID=<access key id>
-    (mlpstorage) $ export AWS_SECRET_ACCESS_KEY==<secret access key>
-    (mlpstorage) $ export AWS_ENDPOINT_URL=https://<s3.domain>
-    (mlpstorage) $ export BUCKET=mlp-storage
-    (mlpstorage) $ aws s3api create-bucket --bucket ${BUCKET}
-
-    # Set up mlpstorage run environment
+    # Set up *mlpstorate* run environment to include AWS S3 
+    # and pre-create bucket (if necessary)
+    (mlpstorage) $ AWS_ACCESS_KEY_ID=<access key id>
+    (mlpstorage) $ AWS_SECRET_ACCESS_KEY==<secret access key>
+    (mlpstorage) $ AWS_ENDPOINT_URL=https://<s3.domain>
+    (mlpstorage) $ BUCKET=mlp-storage
+    (mlpstorage) $ STORAGE_LIBRARY=s3dlio
+    (mlpstorage) $ STORAGE_URI_SCHEME=s3
     (mlpstorage) $ systemname=$(hostname)-s3
-    (mlpstorage) $ chkpt_bkt="s3://${BUCKET}" # s3:// prefix is necessary
-    (mlpstorage) $ results_dir=$HOME/mlperf_storage_results/ # Different f/s from $datadir
-    (mlpstorage) $ mkdir -p ${results_dir} # If not done previously
+    (mlpstorage) $ data_dir="s3://${BUCKET}"
+    (mlpstorage) $ results_dir=$HOME/mlperf_storage_results/
+    (mlpstorage) $ mkdir -p ${results_dir} 
     (mlpstorage) $ mlpstorage init $(hostname -d) ${results_dir} # If not done previously
+    (mlpstorage) $ aws s3api create-bucket --bucket ${BUCKET} # If ${BUCKET} doesn't exist 
 
-    # Write phase
-    (mlpstorage) $ mlpstorage closed checkpointing run object \
+    # Run datasize command to determine size of dataset to generate
+    # The option to provide a bucket location with --data-dir appears invalid
+    (mlpstorage) $ mlpstorage closed training retinanet datasize \
+                   --hosts 127.0.0.1 \
+                   --client-host-memory-in-gb 252 \
+                   --num-client-hosts 1 \
+                   --max-accelerators 4 \
+                   --accelerator-type b200 \
                    --systemname ${systemname} \
-                   --client-host-memory-in-gb 502 \
-                   --model llama3-8b \
-                   --num-processes 8 \
-                   --checkpoint-folder ${chkpt_bkt} \
+                   --results-dir ${results_dir}
+
+    # Capture suggested *datagen* command with dataset size information
+    # Note that objects will be created, rather than files
+        ...
+        2026-08-24 09:31:12|RESULT: Minimum file count dictated by dataset size to memory size ratio.
+        2026-08-24 09:31:12|RESULT: Number of training files: 4189149
+        2026-08-24 09:31:12|RESULT: Number of training subfolders: 0
+        2026-08-24 09:31:12|RESULT: Total disk space required for training: 1260.00GiB
+        2026-08-24 09:31:12|RESULT: Run the following command to generate data:
+        mlpstorage closed training retinanet datagen file --hosts 127.0.0.1 --exec-type=mpi --num-processes=4 --results-dir=${results_dir} --data-dir=<INSERT_DATA_DIR> --systemname=${systemname} --params dataset.num_files_train=4189149 dataset.num_subfolders_train=0 dataset.total_disk_bytes=1352914993593 dataset.skip_listing=True dataset.listing_validation_interval=1000
+        ...
+
+    # Run suggested datagen command to generate dataset
+    (mlpstorage) $ mlpstorage closed training retinanet datagen object \
+                   --hosts 127.0.0.1 \
+                   --num-processes 4 \
                    --results-dir ${results_dir} \
-                   --num-checkpoints-read=0
+                   --data-dir ${data_dir} \
+                   --systemname ${systemname} \
+                   --params dataset.num_files_train=4189149 \
+                     dataset.num_subfolders_train=0 \
+                     dataset.total_disk_bytes=1352914993593 \
+                     dataset.skip_listing=True \
+                     dataset.listing_validation_interval=1000
 
     # Clear the cache (This might require admin access to the system)
     (mlpstorage) $ sudo echo 3 > /proc/sys/vm/drop_caches
 
-    # Read phase
-    (mlpstorage) $ mlpstorage closed checkpointing run object \
-                   --systemname ${systemname} \
-                   --client-host-memory-in-gb 502 \
-                   --model llama3-8b \
-                   --num-processes 8 \
-                   --checkpoint-folder ${chkpt_bkt} \
+    # Execute the training run
+    (mlpstorage) $ mlpstorage closed training retinanet run object \
+                   --hosts 127.0.0.1 \
+                   --num-accelerators 4 \
+                   --accelerator-type b200 \
                    --results-dir ${results_dir} \
-                   --num-checkpoints-write=0
+                   --data-dir ${data_dir} \
+                   --client-host-memory-in-gb 252 \
+                   --systemname ${systemname} \
+                   --params dataset.num_files_train=4189149
 
 ..
 
