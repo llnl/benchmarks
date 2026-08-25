@@ -87,7 +87,7 @@ FCR submissions are required to contain results for the following four benchmark
 Figures of Merit
 ================
 
-Figures of Merit (FoMs) are printed in the *dlio.log* files in each run's results directory. Those FoMs are identifed by the preceding text, "[METRIC]", as shown below.
+Figures of Merit (FoMs) are printed in the *dlio.log* files in each run's results directory. Those FoMs are identified by the preceding text, "[METRIC]", as shown below.
 
 * Training: For training runs, there are a total of 5 FoMs that all must be reported:
 
