@@ -2,19 +2,21 @@
 
    <div class="draft-watermark" aria-hidden="true">DRAFT</div>
 
-**************
+##############
 MLPerf Storage
-**************
+##############
 
-`MLPerf Storage <https://github.com/mlcommons/storage/blob/main/docs/README.md>`_ is a benchmark suite developed to test storage performance under AI-type workloads. MLPerf Storage is part of the standard ML Commons consortium.
+`MLPerf Storage <https://github.com/mlcommons/storage/blob/main/docs/README.md>`_ is a benchmark suite developed to test storage performance under AI-type workloads. MLPerf Storage is part of the standard ML Commons consortium and is built around the `DLIO <https://github.com/argonne-lcf/dlio_benchmark>`_ deep learning benchmark.
 
 
 Purpose
-=======
+*******
 Standard parallel high-performance storage benchmarks were written to test HPC workloads, including streaming sequential or random data. MLPerf Storage models I/O patterns representative of modern AI *training* and *checkpointing* workloads, including how contemporary accelerators might be impacted by a particular storage solution. 
 
+.. _characteristics:
+
 Characteristics
-===============
+***************
 
 MLPerf Storage tests `Training <https://github.com/mlcommons/storage/blob/main/training/README.md>`_ and `Checkpointing <https://github.com/mlcommons/storage/blob/main/checkpointing/README.md>`_ I/O benchmarks for a given computer vision model, RetinaNet or UNet3D, across one or more client nodes using a specified number of *simulated* accelerators (GPUs) and I/O interface. The general benchmark command syntax is:
 
@@ -30,7 +32,8 @@ MLPerf Storage tests `Training <https://github.com/mlcommons/storage/blob/main/t
         - Additional parameters are supported to simulate different accelerators types and quantities, file/object counts, and more.
 
 Code Version
-------------
+============
+
 Submissions will use version 3.0.46 or later of the MLPerf Storage code:
 
 .. code-block:: bash
@@ -40,8 +43,10 @@ Submissions will use version 3.0.46 or later of the MLPerf Storage code:
    $ $ ./mlpstorage version
    3.0.46
 
+.. _problems:
+
 Problems
---------
+========
 
 FCR submissions are required to contain results for the following four benchmarks, each adhering to the configuration parameters in the sub-bullets. Respondents are required to perform and submit results for an unmodified *Closed* run for each benchmark and *may optionally* submit results for runs across multiple nodes or for modified *Open* runs, documenting any modifications in the submission.
 
@@ -77,8 +82,10 @@ FCR submissions are required to contain results for the following four benchmark
         - I/O interface: object (s3)
 
 
+.. _foms:
+
 Figures of Merit
-----------------
+================
 
 Figures of Merit (FoMs) are printed in the *dlio.log* files in each run's results directory. Those FoMs are identifed by the preceding text, "[METRIC]", as shown below.
 
@@ -115,12 +122,14 @@ Figures of Merit (FoMs) are printed in the *dlio.log* files in each run's result
 ..
 
 Source code modifications
-=========================
+*************************
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications. *Baseline* runs are equivalent to MLPerf Storage's *Closed* run mode and do not permit code modifications.
 
+.. _installation:
+
 Installation
-============
+************
 
 Installation of MLPerf Storage can be done by following the `Installation Instructions <https://github.com/mlcommons/storage#installation>`_.
 
@@ -132,8 +141,10 @@ MLPerf Storage is dependent on a working MPI environment and numerous Python pac
   $ ./setup_env.sh && source .venv/bin/activate
   $ (mlpstorage) $ 
 
+.. _running:
+
 Running
-=======
+*******
 
 `Detailed documentation on command line options <https://github.com/mlcommons/storage/blob/main/README.md#cli-structure>` provides information on the various options to the `mlperf_storage` binary; however, sample command lines for the different benchmarks are provided below.
 
@@ -144,8 +155,10 @@ Sample tests provided here were performed under the following software environme
   * OpenMPI 4.1.8
   * Flux resource scheduler
 
+.. _chkpointing:
+
 Checkpointing
--------------
+=============
 
 Suggested instructions to setup and execute the steps for the the Training run are:
 
@@ -154,11 +167,12 @@ Suggested instructions to setup and execute the steps for the the Training run a
         2. :code:`mlpstorage init <orgname> ${results_dir}`
     2. Define and create a folder or bucket for checkpoint data I/O.
         1. :code:`mkdir -p ${chkpt_dir}`
-    3. Run `mlpstorage` with the pre-defined destinations and parameter values from the `Problems <Problems>` section, along with the amount of system memory on the machine running the test.
+    3. Run `mlpstorage` with the pre-defined destinations and parameter values from the :ref:`Problems <problems>` section, along with the amount of system memory on the machine running the test.
 
 *Important*: Caches should be flushed between Write and Read phases of the checkpoint benchmark with :code:`echo 3 > /proc/sys/vm/drop_caches`. If the Checkpointing run is unable to automatically flush the caches, the write and read phases can be run separately to allow a manual clearing. To split phases, specify the :code:`--num-checkpoints-read=0` option for the Write phase and :code:`--num-checkpoints-write=0` for the Read phase.
 
 Sample POSIX File I/O-based Checkpoint test with split phases:
+--------------------------------------------------------------
 
 .. code-block:: bash
 
@@ -196,6 +210,7 @@ Sample POSIX File I/O-based Checkpoint test with split phases:
 ..
 
 Sample S3 Object I/O-based Checkpoint test with split phases:
+-------------------------------------------------------------
 
 .. code-block:: bash
 
@@ -241,8 +256,10 @@ Sample S3 Object I/O-based Checkpoint test with split phases:
 
 ..
 
+.. _training:
+
 Training
--------------
+========
 
 Running the Training benchmark is a 3-stage process, with each stage requiring a sub-command with certain parameters. Those sub-commands are:
     * `datasize`: Determine the problem size 
@@ -262,6 +279,7 @@ Suggested instructions to setup and execute the steps for the the Training run a
 
 
 Sample POSIX File I/O-based Training run:
+-----------------------------------------
 
 .. code-block:: bash
 
@@ -323,6 +341,7 @@ Sample POSIX File I/O-based Training run:
 ..
 
 Sample S3 Object I/O-based Checkpoint test with split phases:
+-------------------------------------------------------------
 
 .. code-block:: bash
 
@@ -392,13 +411,123 @@ Sample S3 Object I/O-based Checkpoint test with split phases:
 
 ..
 
-Example Scalability Results
-===========================
+Validation & Reporting
+**********************
 
+Valid runs show the Figures of Merit for Checkpointing and Training runs, and will have Training results show *train_au_meet_expectation: success*.
 
-Memory Usage
-============
+For each submission, the following artifacts should be submitted to report the achieved results:
+  * A table showing the the achieved Figures of Merit for each benchmark
+  * A TAR archive of the results directory that has been cleaned of any non-relevant benchmark runs
 
+Example Results
+***************
 
-References
+As presented in the :ref:`Figures of Merit <foms>` section, results are prefixed in the log files with :code:`[METRIC]`. Such results from various Checkpointing and Training runs are presented here as examples, based on the back-end storage used.
+
+Lustre
+======
+
+.. code-block:: bash
+
+    * Tuolumne - NVMe-based Lustre (Rabbit)
+      * 1x HPE/Cray EX255a
+      * CPU: AMD MI300a
+      * Memory: 512GB HBM
+      * F/S Lustre w/ 1 MDT + 1 OST on 2 Rabbit Modules
+
+    # Checkpoint Write
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8 
+    [METRIC] Checkpoint save duration (seconds): 47.7386 (0.9589)
+    [METRIC] Checkpoint save I/O Throughput (GiB/second): 2.1942 (0.0441)
+    [METRIC] ==========================================================
+
+    # Checkpoint Load
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8 
+    [METRIC] Checkpoint load duration (seconds): 40.8838 (1.0364)
+    [METRIC] Checkpoint load I/O Throughput (GiB/second): 2.5627 (0.0675)
+    [METRIC] ==========================================================
+
+    # Training Run
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 4 
+    [METRIC] Training Accelerator Utilization [AU] (%): 94.4286 (0.4908)
+    [METRIC] Training Throughput (samples/second): 1903.7393 (9.8968)
+    [METRIC] Training I/O Throughput (MiB/second): 586.3437 (3.0482)
+    [METRIC] train_au_meet_expectation: success
+    [METRIC] ========================================================== 
+
+..
+
+Local XFS
+=========
+
+.. code-block:: bash
+
+    * Tuolumne - NVMe-based local XFS (Rabbit)
+      * 1x HPE/Cray EX255a
+      * CPU: AMD MI300a
+      * Memory: 512GB HBM
+      * 12 TB XFS volume on 1 Rabbit Module
+
+    # Checkpoint Write
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8 
+    [METRIC] Checkpoint save duration (seconds): 19.5647 (3.3145)
+    [METRIC] Checkpoint save I/O Throughput (GiB/second): 5.5173 (0.9801)
+    [METRIC] ==========================================================
+
+    # Checkpoint Load
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8 
+    [METRIC] Checkpoint load duration (seconds): 15.8956 (0.4074)
+    [METRIC] Checkpoint load I/O Throughput (GiB/second): 6.5915 (0.1728)
+    [METRIC] ==========================================================
+
+    # Training Run
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 4
+    [METRIC] Training Accelerator Utilization [AU] (%): 95.0721 (0.2162)
+    [METRIC] Training Throughput (samples/second): 1916.8112 (4.3558)
+    [METRIC] Training I/O Throughput (MiB/second): 590.3698 (1.3416)
+    [METRIC] train_au_meet_expectation: success
+    [METRIC] ==========================================================
+
+..
+
+S3 on VAST
 ==========
+
+.. code-block:: bash
+
+    * Corona - S3 on VAST Appliance
+      * 1x Supermicro AS4124GS-TNR
+      * CPU: AMD Epyc 7402 24c 2.8 GHz
+      * Memory: 256GB DDR4-3200
+
+    # Checkpoint Write
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8
+    [METRIC] Checkpoint save duration (seconds): 40.4392 (6.0167)
+    [METRIC] Checkpoint save I/O Throughput (GiB/second): 2.6416 (0.3558)
+    [METRIC] ==========================================================
+
+    # Checkpoint Load
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 8
+    [METRIC] Checkpoint load duration (seconds): 24.4076 (0.4545)
+    [METRIC] Checkpoint load I/O Throughput (GiB/second): 4.2913 (0.0798)
+    [METRIC] ==========================================================
+
+    # Training Run
+    [METRIC] ==========================================================
+    [METRIC] Number of Simulated Accelerators: 4
+    [METRIC] Training Accelerator Utilization [AU] (%): 97.9049 (0.0229)
+    [METRIC] Training Throughput (samples/second): 1973.7753 (0.4797)
+    [METRIC] Training I/O Throughput (MiB/second): 607.9145 (0.1478)
+    [METRIC] train_au_meet_expectation: success
+    [METRIC] ==========================================================
+
+..
