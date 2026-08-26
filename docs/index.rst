@@ -22,49 +22,23 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Mod/Sim Priority 1
+   :caption: ModSim
+	     
+   modsim/index
+	     
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   :caption: AI4Sim
 
-   11_kripke/kripke
-   12_laghos/laghos
-   13_rajaperf/rajaperf
-   20_branson/branson
-   31_sparta/sparta
+   ai4sim/index
 
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: Mod/Sim Priority 2
+   :caption: Storage
 
-   10_amg/amg
-   32_lammpsACE/lammpsACE
-   40_remhos/remhos
-   50_miniem/miniem
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: AI benchmarks
-
-   14_scaffold/scaffold
-   60_mlperf/mlperf
-
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Storage benchmarks
-
-   80_io500/io500
-   81_mlpstor/mlpstor
-   
-.. toctree::
-   :maxdepth: 3
-   :numbered:
-   :caption: Network benchmarks
-
-   70_phloem/phloem
-   71_omb/omb
-   72_smb/smb
-   80_io500/io500
+   storage/index
 
 .. toctree::
    :maxdepth: 3
