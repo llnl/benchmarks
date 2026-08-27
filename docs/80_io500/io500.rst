@@ -1,16 +1,20 @@
-*****
+.. raw:: html
+
+   <div class="draft-watermark" aria-hidden="true">DRAFT</div>
+
+#####
 IO500
-*****
+#####
 
 Purpose
-=======
+*******
 
 `IO500 <https://io500.org/>`_ is a standard benchmark in the HPC storage community that attempts to characterize the parallel (MPI-enabled) I/O performance of a particular storage system in a way that allows easier comparison with other storage solutions.
 
 HPC applications can perform I/O to storage in numerous ways. Capturing the I/O performance of a full application run may be difficult, so synthetic benchmarks like IOR and MDTEST allow one to simulate I/O workloads that can provide a rough approximation of how a particular application's I/O workload will perform.
 
 Characteristics
-===============
+***************
 
 IO500 consists of three underlying applications, run in multiple configurations. These applications and overview of the tested patterns are: 
 
@@ -29,11 +33,12 @@ IO500 consists of three underlying applications, run in multiple configurations.
   * The specific find executable is configurable.
 
 
-Further detail on the tests is provided below, as described on the `IO500 project page <https://io500.org/about>`_.
+Further detail on the tests is provided below, as described on the IO500 project page at `<https://io500.org/about>`_:
 
 
 IOR
----
+===
+
 `IOR <https://ior.readthedocs.io>`_, version 4.1, is used for testing MPI-based I/O performance of parallel storage systems using various protocols and access patterns. Many attributes are available to test different application I/O profiles, including I/O sizing and data structure.
 
 IO500 uses the POSIX API for its IOR tests, which consist of the following patterns:
@@ -50,7 +55,8 @@ IO500 uses the POSIX API for its IOR tests, which consist of the following patte
   * **ior-hard-read**: Each process reads interleaved 47008-byte records from the file created by the ior-hard-write phase with an offset that ensures each node is reading records written by a process on a different node. 
 
 MDTEST
-------
+======
+
 The mdtest benchmark measures the performance of POSIX metadata operations and is packaged and built with the IOR code. Mdtest creates a tree structure and tests the rate of directory and file operations including [create|stat|read|remove] from one or more client processes.
 
 * Easy
@@ -67,11 +73,13 @@ The mdtest benchmark measures the performance of POSIX metadata operations and i
   * **mdtest-hard-delete**: Each process deletes all of the files created by a process on a different node during the previous mdtest-hard-write/-stat/-read phases.
 
 FIND
-------
+====
+
 * **find-easy**: Scans the full set of files created by all of the \*-write phases, and look for files created after the mdtest-easy-write phase with a file size of 3901 bytes and a filename containing the string '01' somewhere within it. Reports the total number of such files found.
 
 Figure of Merit
----------------
+===============
+
 Each complete IO500 run will produce a *SCORE* for each of the bandwidth and metadata portions, and then for the entire run. Each SCORE is based on the geometric mean of the associated group of tests.
 
 .. raw:: html
@@ -92,13 +100,13 @@ Each complete IO500 run will produce a *SCORE* for each of the bandwidth and met
     Score_{Overall} = \sqrt{Score_{BW} \times Score_{MD}}
 
 Source code modifications
-=========================
+*************************
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications. 
 
 
 Building
-========
+********
 
 Full instructions for downloading and building the IO500 code are available from the `IO500 GitHub repository <https://github.com/IO500/io500/>`_. The IO500 code base includes all the intrinsic benchmarks to run the full suite, but requires a working MPI installation.
 
@@ -113,9 +121,9 @@ Basic instructions are:
 ..
 
 Running
-=======
+*******
 
-Full instructions for running the benchmarks are available at the projects `run IO500 page <https://io500.org/running>`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
+Full instructions for running IO500 are available at `https://io500.org/running`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
 
 The basic steps to run a full IO500 test are:
 
@@ -132,17 +140,17 @@ The basic steps to run a full IO500 test are:
 ..
 
 
-Validation
-==========
+Validation & Reporting
+**********************
 
 Results from each run, and the individual tests themselves, are stored in a timestamp-based directory in the defined *results* directory. A *result_summary.txt* file there contains a clean summary of performance and time for each test, along with the overall **SCORE** for the entire run. A higher score is deemed better.
 
-If a result is determined to be invalid, the first column of the *result_summary.txt* line will report **[RESULT-invalid]** and the final score itself will also be labeled as **[SCORE-invalid]**. 
+If a result is determined to be invalid, the first column of the *result_summary.txt* line will report **[RESULT-invalid]** and the final score itself will also be labeled as **[SCORE-invalid]**. If a *result_summary.txt* file is blank, test failures may be noted in the *result.txt* file.
 
-If a *result_summary.txt* file is blank, test failures may be noted in the *result.txt* file.
+Submissions shall include both the reult summary and a TAR archive of the results directory, cleaned of any non-relevant results.
 
 Example Scalability Results
-===========================
+***************************
 
 Performance typically increases with numbers of processes and/or nodes to a certain point. Example results are shown below for three runs where the total run score scales up due to increased IOPS numbers even though the Bandwidth does not.
 * 8 Nodes w/ 2 procs/node
@@ -204,5 +212,3 @@ Performance typically increases with numbers of processes and/or nodes to a cert
 
 ..
 
-References
-==========
