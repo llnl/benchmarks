@@ -1,8 +1,8 @@
-*************************************
-Sandia Microbenchmarks - Message rate
-*************************************
+*********************
+MPI: SMB Message rate
+*********************
 
-SMB Message Rate - A multi-node MPI point-to-point benchmark.  https://github.com/sandialabs/SMB.
+Sandia Microbenchmarks Message Rate - A multi-node MPI point-to-point benchmark.  https://github.com/sandialabs/SMB.
 
 Purpose
 =======
