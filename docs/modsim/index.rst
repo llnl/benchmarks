@@ -136,7 +136,10 @@ Priority 1
    ../13_rajaperf/rajaperf
    ../20_branson/branson
    ../31_sparta/sparta
-
+   ../70_phloem/phloem
+   ../71_omb/omb
+   ../72_smb/smb
+   
 **********
 Priority 2
 **********
@@ -151,14 +154,3 @@ Priority 2
    ../40_remhos/remhos
    ../50_miniem/miniem
 
-**************
-MPI Benchmarks
-**************
-   
-.. toctree::
-   :maxdepth: 1
-   :numbered:
-
-   ../70_phloem/phloem
-   ../71_omb/omb
-   ../72_smb/smb
