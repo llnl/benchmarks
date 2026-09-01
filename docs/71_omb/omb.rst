@@ -1,6 +1,6 @@
-*******************
-OSU Microbenchmarks
-*******************
+********
+MPI: OMB
+********
 
 https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.2.tar.gz
 
