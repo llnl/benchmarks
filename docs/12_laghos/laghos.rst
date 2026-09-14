@@ -82,11 +82,21 @@ Metis (required)
 
 .. code-block:: console
                 
-                git clone https://github.com/KarypisLab/METIS.git
-                cd METIS
+                wget https://github.com/mfem/tpls/raw/refs/heads/gh-pages/metis-5.1.0.tar.gz
+                tar -xf metis-5.1.0.tar.gz
+                cd metis-5.1.0
+                # Patch so metis works with newer CMakes which dropped support for 2.8
+                patch CMakeLists.txt <<< "--- CMakeLists.txt      2026-09-14 13:09:34.251437313 -0700
+                +++ CMakeLists.new.txt  2026-09-14 13:09:23.940477144 -0700
+                @@ -1,4 +1,4 @@
+                -cmake_minimum_required(VERSION 2.8)
+                +cmake_minimum_required(VERSION 2.8...5.0)
+                 project(METIS)
+                 
+                 set(GKLIB_PATH \"GKlib\" CACHE PATH \"path to GKlib\")"
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_INSTALL_PREFIX=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DGKLIB_PATH=$(realpath ../GKlib)
                 make -j install
 
 Umpire (required)
