@@ -59,8 +59,8 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 For Laghos we define the following restrictions on source code modifications:
 
 * Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
-* Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built in "CPU Serial" (one thread per MPI rank), "CPU OpenMP", "CUDA", or "HIP" device backends.
-* The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU/OpenMP execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
+* Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built with "CUDA" or "HIP" device backends.
+* The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
 * `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get an accurate FOM.
 * Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
@@ -82,17 +82,25 @@ Metis (required)
 
 .. code-block:: console
                 
-                git clone https://github.com/KarypisLab/METIS.git
-                cd METIS
+                wget https://github.com/mfem/tpls/raw/refs/heads/gh-pages/metis-5.1.0.tar.gz
+                tar -xf metis-5.1.0.tar.gz
+                cd metis-5.1.0
+                # Patch so metis works with newer CMakes which dropped support for 2.8
+                patch CMakeLists.txt <<< "--- CMakeLists.txt      2026-09-14 13:09:34.251437313 -0700
+                +++ CMakeLists.new.txt  2026-09-14 13:09:23.940477144 -0700
+                @@ -1,4 +1,4 @@
+                -cmake_minimum_required(VERSION 2.8)
+                +cmake_minimum_required(VERSION 2.8...5.0)
+                 project(METIS)
+                 
+                 set(GKLIB_PATH \"GKlib\" CACHE PATH \"path to GKlib\")"
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_INSTALL_PREFIX=$INSTALLDIR
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DGKLIB_PATH=$(realpath ../GKlib)
                 make -j install
 
-Umpire (optional)
+Umpire (required)
 -----------------
-
-It is only recommended to use Umpire for GPU-accelerated configurations.
 
 CUDA:
 
@@ -119,28 +127,6 @@ HIP:
 RAJA (required)
 ----------------
 
-Serial CPU:
-
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
-                make -j install
-
-CPU OpenMP:
-
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DENABLE_OPENMP=ON
-                make -j install
-
 CUDA:
 
 .. code-block:: console
@@ -165,24 +151,6 @@ HIP:
 
 Hypre (required)
 ----------------
-
-Serial CPU:
-
-.. code-block:: console
-                
-                git clone https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
-                make -j install
-
-CPU OpenMP:
-
-.. code-block:: console
-                
-                git clone https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_OPENMP=ON -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
-                make -j install
 
 CUDA:
 
@@ -209,28 +177,6 @@ HIP:
 MFEM (required)
 ---------------
 
-Serial CPU:
-
-.. code-block:: console
-                
-                git clone https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALLDIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
-                make -j install
-
-CPU OpenMP:
-
-.. code-block:: console
-                
-                git clone https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_RAJA=ON -DMFEM_USE_OPENMP -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
-                make -j install
-                
 CUDA:
 
 .. code-block:: console
@@ -260,19 +206,6 @@ HIP:
 Laghos (required)
 -----------------
 
-Serial CPU:
-
-.. code-block:: console
-                
-                git clone https://github.com/CEED/Laghos.git
-                cd Laghos
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
-                make -j
-
-CPU OpenMP:
-                
 CUDA:
 
 .. code-block:: console
@@ -300,12 +233,11 @@ HIP:
 Running
 =======
 
-Benchmark runs should target approximately 4194304 (`4x1024x1024`) quadrature points per "compute device" (i.e. one GPU or one CPU socket).
+Benchmark runs should target approximately 4194304 (`4x1024x1024`) quadrature points per "compute device" (i.e. one GPU).
 The `-epm` parameter will generate a domain which has the specified number of elements/zones per MPI rank and equally distribute them to all ranks.
-The following table has the number of quadrature points per zone for various orders, and example `-epm` values assuming each MPI rank is assigned one compute device, i.e. each MPI rank either is assigned one GPU, or each rank is assigned one CPU socket using OpenMP.
-For runs which divide the work differently such as a multi-socket CPU node using one rank per node or one rank per CPU thread you will have to calculate an appropriate `-epm` perameter.
+The following table has the number of quadrature points per zone for various orders, and `-epm` values for each MPI rank being assigned one GPU.
 
-.. table:: Example elements per rank with one compute device per rank.
+.. table:: Elements per rank with one compute device per rank.
    :align: center
 
    +--------+----------------+--------+
@@ -318,24 +250,24 @@ For runs which divide the work differently such as a multi-socket CPU node using
    | Q3Q2   |  216           | 19418  |
    +--------+----------------+--------+
 
-Run commands using the tabulated values for `-epm` for one compute device per MPI rank are given below.
+Run commands using the tabulated values for `-epm` are given below.
   
 .. code-block:: console
                 
                 # 3D Q1Q0
-                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 524288
+                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 524288 -d raja-gpu
                 # 3D Q2Q1
-                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 65536
+                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 65536 -d raja-gpu
                 # 3D Q3Q2
-                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 19418
+                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -ms 250 -tf 100000 --mem --fom -epm 19418 -d raja-gpu
 
-These run commands do not include any compute device/MPI configurations. Available options for configuring OpenMP/GPU compute:
+Available Laghos options for configuring the GPU compute and MPI:
 
-  * ``-d raja-omp`` for CPU OpenMP acceleration.
-  * ``-d raja-gpu`` for GPU acceleration.
   * ``-dev`` for specifying which GPU to run on for a multi-GPU system (if not restricted by the job scheduler first).
   * ``-gam`` for GPU-aware MPI
   * ``-dev-pool-size`` for specifying an initial Umpire device memory pool size.
+
+Any MPI scheduler options are allowed.
     
 .. _ValidateLaghos:
 
@@ -357,7 +289,7 @@ Code correctness is validated by using the following tests and comparing the out
                 Density L2 error: 1.03e-01
 
 The **Density L2 error** for other resolutions is shown in the following plot.
-                
+
 .. figure:: plots/rho_err_3d.png
    :alt: **Density L2 error** for an ``NxNxN`` zone domain
    :align: center
