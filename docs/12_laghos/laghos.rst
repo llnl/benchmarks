@@ -77,28 +77,6 @@ Prerequisites:
 
 These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$CUDACC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
 
-Metis (required)
-----------------
-
-.. code-block:: console
-                
-                wget https://github.com/mfem/tpls/raw/refs/heads/gh-pages/metis-5.1.0.tar.gz
-                tar -xf metis-5.1.0.tar.gz
-                cd metis-5.1.0
-                # Patch so metis works with newer CMakes which dropped support for 2.8
-                patch CMakeLists.txt <<< "--- CMakeLists.txt      2026-09-14 13:09:34.251437313 -0700
-                +++ CMakeLists.new.txt  2026-09-14 13:09:23.940477144 -0700
-                @@ -1,4 +1,4 @@
-                -cmake_minimum_required(VERSION 2.8)
-                +cmake_minimum_required(VERSION 2.8...5.0)
-                 project(METIS)
-                 
-                 set(GKLIB_PATH \"GKlib\" CACHE PATH \"path to GKlib\")"
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DGKLIB_PATH=$(realpath ../GKlib)
-                make -j install
-
 Umpire (required)
 -----------------
 
@@ -185,7 +163,7 @@ CUDA:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -198,7 +176,7 @@ HIP:
                 cd mfem
                 mkdir build
                 cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DMETIS_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_METIS=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
+                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
                 make -j install
 
 ``MFEM_USE_UMPIRE`` may be optionally turned off.
@@ -274,21 +252,31 @@ Any MPI scheduler options are allowed.
 Validation
 ==========
 
-Code correctness is validated by using the following tests and comparing the outputted **Energy diff**, and **Density L2 error**. These quantities must be less than or equal to the following values on CPU and GPU:
+Code correctness is validated by using the following tests and comparing the outputted **Energy diff**, and **Density L2 error**. These quantities must be less than or equal to the following values (CPU and GPU cases should give a similar output):
 
 .. code-block:: console
-                
-                laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+
+                # can be any power of 2 up to 64: [1,2,4,8,16,32,64]
+                nprocs_per_side=1
+                nranks=$((nprocs_per_side*nprocs_per_side*nprocs_per_side))
+                epm=$((262144/nranks))
+                # MPI run command can be modified as long as $nranks total ranks are used
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -tf 0.6 -err -epm $epm
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 1 -ot 0 -oq -1 -pa -no-nc -tf 0.6 -err -d raja-gpu -epm $epm
                 Energy  diff: 7.61e-05
                 Density L2 error: 1.95e-01
-                laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+                # MPI run command can be modified as long as $nranks total ranks are used
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -tf 0.6 -err -epm $epm
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 2 -ot 1 -oq -1 -pa -no-nc -tf 0.6 -err -d raja-gpu -epm $epm
                 Energy  diff: 3.46e-06
                 Density L2 error: 1.28e-01
-                laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -tf 0.6 -err -rs 0 -rp 0 -nx 64 -ny 64 -nz 64
+                # MPI run command can be modified as long as $nranks total ranks are used
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -tf 0.6 -err -epm $epm
+                mpirun -n $nranks laghos -dim 3 -p 1 -ok 3 -ot 2 -oq -1 -pa -no-nc -tf 0.6 -err -d raja-gpu -epm $epm
                 Energy  diff: 8.82e-06
                 Density L2 error: 1.03e-01
 
-The **Density L2 error** for other resolutions is shown in the following plot.
+The **Density L2 error** for other resolutions is shown in the following plot (for an N*N*N domain).
 
 .. figure:: plots/rho_err_3d.png
    :alt: **Density L2 error** for an ``NxNxN`` zone domain
