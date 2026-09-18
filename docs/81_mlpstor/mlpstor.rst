@@ -18,9 +18,9 @@ Standard parallel high-performance storage benchmarks were written to test HPC w
 Characteristics
 ***************
 
-MLPerf Storage tests `Training <https://github.com/mlcommons/storage/blob/main/training/README.md>`_ and `Checkpointing <https://github.com/mlcommons/storage/blob/main/checkpointing/README.md>`_ I/O benchmarks for a given computer vision model, RetinaNet or UNet3D, across one or more client nodes using a specified number of *simulated* accelerators (GPUs) and I/O interface. The general benchmark command syntax is:
+MLPerf Storage tests `Training <https://github.com/mlcommons/storage/blob/main/training/README.md>`_, `Checkpointing <https://github.com/mlcommons/storage/blob/main/checkpointing/README.md>`_ and other I/O benchmarks for a given computer vision model, RetinaNet or UNet3D, across one or more client nodes using a specified number of *simulated* accelerators (GPUs) and a given I/O interface. The general benchmark command syntax is:
 
-.. code-block::
+.. code-block:: none
 
    mlpstorage <closed|open|whatif> <benchmark> <model|algorithm> <command> <file|object> ...
 
@@ -40,7 +40,7 @@ Submissions will use version 3.0.46 or later of the MLPerf Storage code:
 
    $ git clone https://github.com/mlcommons/storage.git
    cd storage
-   $ $ ./mlpstorage version
+   $ ./mlpstorage version
    3.0.46
 
 .. _problems:
@@ -48,36 +48,34 @@ Submissions will use version 3.0.46 or later of the MLPerf Storage code:
 Problems
 ========
 
-FCR submissions are required to contain results for the following four benchmarks, each adhering to the configuration parameters in the sub-bullets. Respondents are required to perform and submit results for an unmodified *Closed* run for each benchmark and *may optionally* submit results for runs across multiple nodes or for modified *Open* runs, documenting any modifications in the submission.
+FCR submissions are required to contain two sets of results for each of the following four benchmarks, with one set for each of the two Host-Accelerator combinations. Each run must adhere to the configuration parameters in the sub-bullets to each benchmark specification below. 
 
-    1) Training - RetinaNet - file
+Respondents are required to perform and submit results for an unmodified *Closed* run for each benchmark and *may optionally* submit results for runs across multiple nodes or for modified *Open* runs, documenting any modifications in the submission. Checkpointing runs with the Llama3-8b model must run with an aggregate total of 8 processes.
+
+    1) Training - RetinaNet - File
         - Mode: closed
         - Model: RetinaNet
-        - Number of hosts: 1
-        - Number of accelerators: 4
+        - Number of (hosts,accelerators): (1,4),(10,40)
         - Accelerator type: b200
         - I/O interface: file
         - Num files: <specified by *datasize* command>
-    2) Checkpointing - RetinaNet - file
+    2) Checkpointing - RetinaNet - File
         - Mode: closed
         - Model: Llama3-8b
-        - Number of hosts: 1
-        - Number of processes: 8
+        - Number of (hosts,processes): (1,8),(8,8)
         - Accelerator type: b200
         - I/O interface: file
-    3) Training - RetinaNet - object
+    3) Training - RetinaNet - Object
         - Mode: closed
         - Model: RetinaNet
-        - Number of hosts: 1
-        - Number of accelerators: 4
+        - Number of (hosts,accelerators): (1,4),(10,40)
         - Accelerator type: b200
         - I/O interface: object (s3)
         - Num objects: <specified by *datasize* command>
-    4) Checkpointing - RetinaNet - object
+    4) Checkpointing - RetinaNet - Object
         - Mode: closed
         - Model: Llama3-8b
-        - Number of hosts: 1
-        - Number of processes: 8
+        - Number of (hosts,processes): (1,8),(8,8)
         - Accelerator type: b200
         - I/O interface: object (s3)
 
