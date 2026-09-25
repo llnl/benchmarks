@@ -33,7 +33,7 @@ or other properties that are important to the Laboratories.
    - C++
    - MPI+RAJA
    - Multi-node
-   - RAJA, CHAI, Camp, Umpire
+   - RAJA, CHAI, Camp, Umpire, BLT
  * - Laghos
    - | LAGrangian High-Order Solver,
      | unstructured high-order finite
@@ -41,7 +41,7 @@ or other properties that are important to the Laboratories.
    - C++
    - MPI+RAJA/CUDA/HIP
    - Multi-node  
-   - RAJA, MFEM, Hypre, Umpire
+   - RAJA, MFEM, Hypre, Camp, Umpire, BLT
  * - RAJA Performance Suite
    - | Collection of loop-based computational
      | kernels found in HPC applications
@@ -54,8 +54,8 @@ or other properties that are important to the Laboratories.
    - Implicit Monte Carlo transport
    - C++
    - MPI+CUDA/HIP
-   - Multi-node
-   - Umpire
+   - Single node
+   - Camp, Umpire, BLT
  * - Sparta
    - Direct Simulation Monte Carlo
    - C++
@@ -81,6 +81,12 @@ or other properties that are important to the Laboratories.
      | OpenMP on CPU
    - Multi-node
    - Hypre, Umpire
+ * - Branson
+   - Implicit Monte Carlo transport
+   - C++
+   - MPI+CUDA/HIP
+   - Multi-node
+   - Metis, Camp, Umpire, BLT
  * - LAMMPS ACE
    - | Molecular dynamics using
      | Atomic Cluster Expansion (ACE)
