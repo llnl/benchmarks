@@ -62,7 +62,24 @@ or other properties that are important to the Laboratories.
    - MPI+Kokkos
    - Multi-node     
    - Kokkos
-
+ * - MPI: Phloem
+   - Point-to-point, collectives
+   - C++
+   - MPI
+   - Multi-node     
+   - MPI, Umpire
+ * - MPI: OSU Microbenchmarks
+   - Point-to-point, multi-pair, collectives, one-sided
+   - C++
+   - MPI
+   - Multi-node     
+   - MPI
+ * - MPI: SMB Message rate
+   - Point-to-point
+   - C++
+   - MPI+ CUDA/HIP/Kokkos
+   - Multi-node     
+   - MPI
 
 **ModSim Priority 2**
 
