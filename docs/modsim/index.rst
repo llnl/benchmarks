@@ -122,35 +122,3 @@ Source code modification categories:
   * The modified code must still pass validation tests.
   * Optimizations will be reviewed by subject matter experts for applicability to the larger application portfolio and other goals such as performance portability and programmer productivity.
 
-
-**********
-Priority 1
-**********
-
-.. toctree::
-   :maxdepth: 1
-   :numbered:
-
-   ../11_kripke/kripke
-   ../12_laghos/laghos
-   ../13_rajaperf/rajaperf
-   ../20_branson/branson
-   ../31_sparta/sparta
-   ../70_phloem/phloem
-   ../71_omb/omb
-   ../72_smb/smb
-   
-**********
-Priority 2
-**********
-   
-.. toctree::
-   :maxdepth: 1
-   :numbered:
-
-   ../10_amg/amg
-   ../32_lammpsACE/lammpsACE
-   ../13_rajaperf/rajaperf   
-   ../40_remhos/remhos
-   ../50_miniem/miniem
-
