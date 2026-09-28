@@ -26,10 +26,12 @@ The benchmark performance problem is a single-node 3D hohlraum problem that is m
 It is in domain replicated mode which means the bulk of the work is the transport loop, with little MPI messaging.
 Four problem configurations are provided:
 
-#. CPU, decomposed, history, SoA
-#. GPU, decomposed, history, SoA
-#. GPU, decomposed, event, SoA
-#. GPU, decomposed, event, AoS
+#. Computing on the CPU, History based, Struct of Arrays (SoA)
+#. Computing on the GPU, History based, Struct of Arrays (SoA)
+#. Computing on the GPU, Event based, Struct of Arrays (SoA)
+#. Computing on the GPU, Event based, Array of Structs (AoS)
+
+For ATS-6, we use the History based configuration using Struct of Arrays
 
 Figure of Merit
 ---------------
@@ -115,43 +117,20 @@ Testing the build:
 Running
 =======
 
-Priority 1: Single node
+For Priority 1, we focus on single node performance. 
+We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
+and run with a 30 group build of Branson, which is the default in the ats-6 branch.
+To ensure we load the node, we will run 1 MPI rank per GPU, which will replicate the domains,
+meaning each GPU will be performing the same work.
 
-The ``inputs`` folder contains the 3D hohlraum input file: ``3D_hohlraum_single_node.xml``
-This input should be run with a 30 group build of Branson, which is the default in the ats-6 branch.
-The ``3D_hohlraum_single_node.xml`` problem can scale to multiple nodes as well, but will because the
-parallel mode is domain replicated it will have roughly the same amount of time spent in MPI as it
-is scaled up.
-
-It is run with:
+Use the following command to run:
 
 .. code-block:: bash
 
-   mpirun -n <procs_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_single_node.xml>
+   mpirun -n <gpus_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_single_node.xml>
 
 ..
 
-
-Priority 2: Multi-node
-
-The ``inputs`` folder contains the 3D, load-balanced hohlraum input file for multi-node: ``3D_lb_holhraum.xml``
-This input should also be run with a 30 group build of Branson, which is the default in the ats-6 branch.
-The ``3D_lb_holhraum.xml`` problem is meant to run on multiple nodes.
-
-It is run with:
-
-.. code-block:: bash
-
-   mpirun -n <procs_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_lb_hohlraum.xml>
-
-..
-
-For the multi-node problem, the ``particle_message_size`` value in the input is the main parameter
-that will affect performance, especially on the GPU. Using a larger particle message size means that
-more memory will be used in MPI buffers, which are statically sized to the particle message size and
-allocated for each neighbor of a a domain. The memory used by MPI buffers on a rank is thus the
-number of neighbors multiplied by the particle message size (which is in number of particles)
-multiplied by the size of a particle.
 
 Validation
 ==========
@@ -262,12 +241,8 @@ This can be obtained on a CPU system using the following (while the application 
 ..
 
 
-Strong Scaling on El Capitan
-============================
-
-
-Weak Scaling on El Capitan
-==========================
+Throughput on El Capitan
+========================
 
 
 References
