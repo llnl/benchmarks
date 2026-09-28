@@ -22,44 +22,44 @@ Characteristics
 
 Problems
 --------
-The benchmark performance problem is a multi-node 3D hohlraum problem that is meant to be run with a 30 group build of Branson.
-It is in domain decomposition mode which means there is both MPI communication for particle movement and end of cycle reductions.
-Four problem configurations are provided: 
+The benchmark performance problem is a single-node 3D hohlraum problem that is meant to be run with a 30 group build of Branson.
+It is in domain replicated mode which means the bulk of the work is the transport loop, with little MPI messaging.
+Four problem configurations are provided:
 
 #. CPU, decomposed, history, SoA
-#. GPU, decomposed, history, SoA 
+#. GPU, decomposed, history, SoA
 #. GPU, decomposed, event, SoA
 #. GPU, decomposed, event, AoS
 
 Figure of Merit
 ---------------
-The Figure of Merit is defined as particles/second and is obtained by dividing the number of particles in the problem divided by the `Total transport` value. 
-This value is labeled "Photons Per Second (FOM):" in Branson's output. 
+The Figure of Merit is defined as particles/second and is printed to the screen at the end of the simulation.
+This value is labeled "Photons Per Second (FOM):" in Branson's output.
 
 Source code modifications
 =========================
 
-Please see :ref:`GlobalRunRules` for general guidance on allowed modifications. 
+Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 Building
 ========
 
 Accessing the sources
 
-* Clone the FCR branch/tag? from the branson github https://github.com/lanl/branson.git
+* Clone the ats6 branch from the branson github https://github.com/lanl/branson.git
 
 .. code-block:: bash
 
    git clone https://github.com/lanl/branson.git
    cd branson
-   git checkout FCR 
+   git checkout ats6
 
 ..
 
 
 Build requirements:
 
-* C/C++ compiler(s) with support for C11 and C++14.
+* C/C++ compiler(s) with support for C11 and C++17.
 * `CMake 3.9X <https://cmake.org/download/>`_
 
 * MPI 3.0+
@@ -67,25 +67,25 @@ Build requirements:
   * `OpenMPI 1.10+ <https://www.open-mpi.org/software/ompi/>`_
   * `mpich <http://www.mpich.org>`_
 
-* There is only one CMake user option right now: ``CMAKE_BUILD_TYPE`` which can be
-  set on the command line with ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the
-  default is Release.
-* If cmake has trouble finding your installed TPLs, you can try
-
+* There are multiple configuration options:
+ * ``CMAKE_BUILD_TYPE`` which can be set on the command line with
+  ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the default is Release.
+ * If building a GPU enabled version of Branson use the ``USE_GPU`` toggle and Branson will attempt
+   to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a
+   GPU node.
+* If cmake has trouble finding your installed TPLs, you can try:
  * appending their locations to ``CMAKE_PREFIX_PATH``,
  * try running ``ccmake .`` from the build directory and changing the values of
     build system variables related to TPL locations.
 
-* If building a CUDA enabled version of Branson use the ``CUDADIR`` environment variable to specify your CUDA directory.
+* If building for multi-node runs Metis should be used for mesh partitioning. See README.md from Branson for more details. Single node CPU and single node GPU runs are run in replicated mode and do not use Metis.
 
-* If building for multi-node runs Metis should be used for mesh partitioning. See README.md from Branson for more details. Single node CPU and single node GPU runs for SSNI should not use Metis. 
-  
 To build metis:
 
 .. code-block:: bash
 
    cd <path/to/metis>
-	make config cc=<C compiler> prefix=<install-location> shared=1 
+	make config cc=<C compiler> prefix=<install-location> shared=1
 	make install
 
 ..
@@ -98,7 +98,7 @@ To build branson:
    cd <path/to/branson>
    mkdir build
    cd build
-   cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<install-location> <path/to/branson/src>
+   cmake -DCMAKE_BUILD_TYPE=Release -DUSE_GPU=ON -DCMAKE_INSTALL_PREFIX=<install-location> <path/to/branson/src>
    make -j
 
 ..
@@ -115,30 +115,43 @@ Testing the build:
 Running
 =======
 
-The ``inputs`` folder contains the 3D hohlraum input file.
-3D hohlraums and should be run with a 30 group build of Branson (see Special builds section above).
-The ``3D_hohlraum_multi_node.xml`` problem is meant to be run on multiple nodes.
+Priority 1: Single node
+
+The ``inputs`` folder contains the 3D hohlraum input file: ``3D_hohlraum_single_node.xml``
+This input should be run with a 30 group build of Branson, which is the default in the ats-6 branch.
+The ``3D_hohlraum_single_node.xml`` problem can scale to multiple nodes as well, but will because the
+parallel mode is domain replicated it will have roughly the same amount of time spent in MPI as it
+is scaled up.
 
 It is run with:
 
 .. code-block:: bash
 
-   mpirun -n <procs_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_multi_node.xml>
+   mpirun -n <procs_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_single_node.xml>
 
 ..
 
 
-Memory footprint is the sum of all Branson processes resident set size (or equivalent) on the node.
-This can be obtained on a CPU system using the following (while the application is in step 2):
+Priority 2: Multi-node
+
+The ``inputs`` folder contains the 3D, load-balanced hohlraum input file for multi-node: ``3D_lb_holhraum.xml``
+This input should also be run with a 30 group build of Branson, which is the default in the ats-6 branch.
+The ``3D_lb_holhraum.xml`` problem is meant to run on multiple nodes.
+
+It is run with:
 
 .. code-block:: bash
 
-   ps -C BRANSON -o euser,c,pid,ppid,cmd,%cpu,%mem,rss --sort=-rss
+   mpirun -n <procs_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_lb_hohlraum.xml>
 
-   ps -C BRANSON -o rss | awk '{sum+=$1;} END{print sum/1024/1024;}'
 ..
 
-
+For the multi-node problem, the ``particle_message_size`` value in the input is the main parameter
+that will affect performance, especially on the GPU. Using a larger particle message size means that
+more memory will be used in MPI buffers, which are statically sized to the particle message size and
+allocated for each neighbor of a a domain. The memory used by MPI buffers on a rank is thus the
+number of neighbors multiplied by the particle message size (which is in number of particles)
+multiplied by the size of a particle.
 
 Validation
 ==========
@@ -180,9 +193,10 @@ so the relative accuracy is about 1.0e-12, which is well above half the range of
 check can be done for the material energy conservation: here the total energy in the material at the
 end of the timestep is 0.0130705 jerks, and the conservation value is -5.8599e-15, representing
 relative precision of 1.0e-13. As mentioned above, conservation is a relatively loose check as more
-particles and more cells represent more summmations and more opportunities for loss of precision.
-This is  further complicated by MPI reductions. Still, this check is accurate enough to clearly
-detect particles that may havbe been lost in a modified MPI scheme (for example).
+particles and more cells represent more summations and more opportunities for loss of precision.
+This is further complicated by MPI reductions. Still, this check is accurate enough to clearly
+detect particles that may have been lost in a modified MPI scheme or a missing atomic guard
+in a GPU summation.
 
 The second check on correctness is much simpler. For any changes to Branson, the code should produce
 the same temperature in a standard marshak wave problem after 100 cycles. For the `marshak wave input <https://github.com/lanl/branson/blob/develop/inputs/marshak_wave_replicated.xml>`_ file, the following temperature profile should be reproduced to 3% after 100 cycles, as shown below:
@@ -236,6 +250,16 @@ Example Scalability Results
 
 Memory Usage
 ============
+
+Memory footprint is the sum of all Branson processes resident set size (or equivalent) on the node.
+This can be obtained on a CPU system using the following (while the application is in step 2):
+
+.. code-block:: bash
+
+   ps -C BRANSON -o euser,c,pid,ppid,cmd,%cpu,%mem,rss --sort=-rss
+
+   ps -C BRANSON -o rss | awk '{sum+=$1;} END{print sum/1024/1024;}'
+..
 
 
 Strong Scaling on El Capitan
