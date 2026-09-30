@@ -25,6 +25,8 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    :caption: ModSim
 	     
    modsim/index
+   modsim/priority1
+   modsim/priority2
 	     
 .. toctree::
    :maxdepth: 3
@@ -32,6 +34,9 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    :caption: AI4Sim
 
    ai4sim/index
+   ai4sim/priority1
+   ai4sim/priority2
+   ai4sim/collectives
 
 .. toctree::
    :maxdepth: 3
