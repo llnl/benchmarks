@@ -2,35 +2,23 @@
 Branson
 *******
 
-This is the documentation for the FCR Benchmark Branson - 3D hohlraum multi-node using domain decomposition.
-
-https://github.com/lanl/branson
-
+Branson is a proxy application for parallel Monte Carlo transport.
 
 Purpose
 =======
 
-From  [Branson]_:
+For the ATS-6 procurement, we use the 3D hohlraum problem.
+Branson source code and documentation are on github: 
 
-Branson is not an acronym.
-
-Branson is a proxy application for parallel Monte Carlo transport.
-It contains a particle passing method for domain decomposition.
+https://github.com/lanl/branson
 
 Characteristics
 ===============
 
-Problems
---------
+Problem
+-------
 The benchmark performance problem is a single-node 3D hohlraum problem that is meant to be run with a 30 group build of Branson.
 It is in domain replicated mode which means the bulk of the work is the transport loop, with little MPI messaging.
-Four problem configurations are provided:
-
-#. Computing on the CPU, History based, Struct of Arrays (SoA)
-#. Computing on the GPU, History based, Struct of Arrays (SoA)
-#. Computing on the GPU, Event based, Struct of Arrays (SoA)
-#. Computing on the GPU, Event based, Array of Structs (AoS)
-
 For ATS-6, we use the History based configuration using Struct of Arrays
 
 Figure of Merit
@@ -221,11 +209,6 @@ number of particles will produce a slightly different answer, but the difference
 than 3% if one million or more particles are used. This test is sensitive to precision changes in
 Branson as propagating the energy correctly involves many small summations as particle's slowly
 lose their energy into the material.
-
-
-Example Scalability Results
-===========================
-
 
 Memory Usage
 ============
