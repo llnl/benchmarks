@@ -7,6 +7,9 @@ See the :doc:`Branson benchmark documentation
 <../20_branson/branson>` for the benchmark description, build instructions,
 run instructions, and problem definitions.
 
+Problem
+-------
+
 Priority 2 problem is multi-node.  The ``inputs`` folder contains the 3D, 
 load-balanced hohlraum input file for multi-node: ``3D_lb_holhraum.xml``
 This input should also be run with a 30 group build of Branson, 
@@ -28,3 +31,5 @@ allocated for each neighbor of a a domain. The memory used by MPI buffers on a r
 number of neighbors multiplied by the particle message size (which is in number of particles)
 multiplied by the size of a particle.
 
+Scaling on El Capitan
+=====================
