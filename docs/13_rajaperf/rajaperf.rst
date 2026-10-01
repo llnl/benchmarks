@@ -245,8 +245,7 @@ is specified at the RAJA Performance Suite level. Generically, the process for
 specifying a configuration and generating a build space involves creating a build
 directory and running CMake in it with the proper options. For example::
 
-  $ pwd
-  path/to/RAJAPerf
+  $ cd path/to/RAJAPerf
   $ mkdir my-build
   $ cd my-build
   $ cmake <cmake args> ..
