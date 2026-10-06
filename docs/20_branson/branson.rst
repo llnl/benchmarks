@@ -108,8 +108,8 @@ Running
 For Priority 1, we focus on single node performance. 
 We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
 and run with a 30 group build of Branson, which is the default in the ats-6 branch.
-To ensure we load the node, we will run 1 MPI rank per GPU, which will replicate the domains,
-meaning each GPU will be performing the same work.
+To ensure we load the node, we will run 1 MPI rank per device, which will replicate the domains,
+meaning each device will be performing the same work.
 
 Use the following command to run:
 
