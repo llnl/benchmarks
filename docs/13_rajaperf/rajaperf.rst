@@ -35,6 +35,16 @@ to their respective GitHub repos:
 
   * `RAJA GitHub repo <https://github.com/LLNL/RAJAPerf>`_
 
+.. important:: The latest version of the RAJA Performance Suite Benchmark uses:
+
+                 * Version ``v2026.07.0`` of the RAJA Performance Suite, which in turn uses
+                 * Version ``v2026.07.1`` of RAJA
+                 * All code needed for the latest version of the Benchmark is available in the
+                   version ``v2026.10.0`` version of the
+                   `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_ 
+                 * Details are provided in the :ref:`rajaperf_build-label` section of this
+                   documentation, along with build and run instructions including compilers and
+                   versions.
 
 Purpose
 =======
