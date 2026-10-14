@@ -54,9 +54,9 @@ All applications that use RAJA follow the *MPI + X* parallel application
 paradigm. That is, MPI is used for coarse-grained, distributed memory parallelism
 and X, which is RAJA in this case, supports fine-grained parallelism within each MPI
 rank. Typically, we run the Benchmark with multiple MPI ranks. When this is done, the
-same code executes on each rank and the only synchronization and communication among ranks
-involves each rank sending execution timing information to rank zero for reporting
-purposes. The included run scripts launch multiple MPI ranks, one for each GPU on a node
+same code executes on each rank and synchronization and communication are only done
+to collect and send execution timing information to rank zero for reporting purposes.
+The included run scripts launch multiple MPI ranks, one for each GPU on a node
 for each architecture so that the node is *fully subscribed* when the Benchmark is run.
 
 While the RAJA Performance Suite can be run in myriad ways via command-line options
