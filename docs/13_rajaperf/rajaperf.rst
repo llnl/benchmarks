@@ -788,20 +788,6 @@ take away from this since the memory usage of kernels like those in the Suite
 will be determined by the application context in which they are used.
 
 
-Strong Scaling on El Capitan
-============================
-
-The RAJA Performance Suite is primarily a single-node and compiler assessment
-tool. Thus, strong scaling is not part of the Benchmark.
-
-
-Weak Scaling on El Capitan
-==========================
-
-The RAJA Performance Suite is primarily a single-node and compiler assessment
-tool. Thus, weak scaling is not part of the Benchmark.
-
-
 References
 ==========
 
