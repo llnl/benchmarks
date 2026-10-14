@@ -57,7 +57,7 @@ rank. Typically, we run the Benchmark with multiple MPI ranks. When this is done
 same code executes on each rank and the only synchronization and communication among ranks
 involves each rank sending execution timing information to rank zero for reporting
 purposes. The included run scripts launch multiple MPI ranks, one for each GPU on a node
-for each architecture so that the node is *fully subscribed* when the benchmark is run.
+for each architecture so that the node is *fully subscribed* when the Benchmark is run.
 
 While the RAJA Performance Suite can be run in myriad ways via command-line options
 and arguments, the RAJA Performance Suite Benchmark is run in a specific fashion to generate
@@ -197,8 +197,8 @@ and FOM information. Script usage is described in :ref:`rajaperf_run-label`.
 Source code modifications
 =========================
 
-Please see :ref:`GlobalRunRules` for general guidance on allowed benchmark modifications.
-For the RAJA Performance Suite Benchmark, we restrtict source code modifications as follows:
+Please see :ref:`GlobalRunRules` for general guidance on allowed Benchmark modifications.
+For the RAJA Performance Suite Benchmark, we restrict source code modifications as follows:
 
 * Source code changes to the RAJA Performance Suite kernels and to RAJA
   may be proposed for improved performance.
@@ -229,7 +229,7 @@ To clone the repo::
   $ git clone --recursive git@github.com:llnl/RAJAPerf-Benchmark.git
 
 This will clone the repo into a local directory and put you on the ``main``
-branch of the benchmark repo, which is the default branch. To get a local copy
+branch of the Benchmark repo, which is the default branch. To get a local copy
 of the version used to generate the baselines in this document, execute the following
 commands::
 
@@ -269,7 +269,7 @@ it. Executing a script with no arguments will print a message indicating
 which arguments are required.
 
 These scripts were used to configure the Benchmark code for compilation to generate the
-benchmark baseline results described below.
+Benchmark baseline results described below.
 
 .. _rajaperf_build_mi300a-label:
 
@@ -782,14 +782,14 @@ Strong Scaling on El Capitan
 ============================
 
 The RAJA Performance Suite is primarily a single-node and compiler assessment
-tool. Thus, strong scaling is not part of the benchmark.
+tool. Thus, strong scaling is not part of the Benchmark.
 
 
 Weak Scaling on El Capitan
 ==========================
 
 The RAJA Performance Suite is primarily a single-node and compiler assessment
-tool. Thus, weak scaling is not part of the benchmark.
+tool. Thus, weak scaling is not part of the Benchmark.
 
 
 References
