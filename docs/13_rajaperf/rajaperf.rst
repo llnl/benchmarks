@@ -20,12 +20,12 @@ production applications that use RAJA.
 Important things to know about the RAJA Performance Suite Benchmark are:
 
   * The RAJA Performance Suite Benchmark exercises a small subset of kernels in the
-    RAJA Performance Suite. The subset is described in the :ref:`rajaperf_problems-label` section.
+    RAJA Performance Suite. The Benchmark subset is described in the :ref:`rajaperf_problems-label` section.
 
   * All code needed to generate the RAJA Performance Suite Benchmark results described in this
     document is included in the `RAJAPerf-Benchmark <https://github.com/llnl/RAJAPerf-Benchmark>`_
-    GitHub repo. The discussion herein refers to the contents of that repo. Instructions
-    for building the Benchmark code and running it to generate the figures of merit (FOMs) can be found
+    GitHub repo. The discussion in this document refers to the contents of that repo. Instructions
+    to build and run the Benchmark code and generate the figures of merit (FOM) can be found
     in the :ref:`rajaperf_build-label` and :ref:`rajaperf_run-label` sections.
 
 More information about RAJA and the RAJA Performance Suite is available in their documentation linked
@@ -35,14 +35,15 @@ to their respective GitHub repos:
 
   * `RAJA GitHub repo <https://github.com/LLNL/RAJAPerf>`_
 
-.. important:: The latest version of the RAJA Performance Suite Benchmark uses:
+.. important:: The results presented here are associated with the latest version of the RAJA Performance
+               Suite Benchmark, which uses:
 
                  * Version ``v2026.07.0`` of the RAJA Performance Suite, which in turn uses
                  * Version ``v2026.07.1`` of RAJA
                  * All code needed for the latest version of the Benchmark is available in the
                    version ``v2026.10.0`` version of the
                    `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_ 
-                 * Details are provided in the :ref:`rajaperf_build-label` section of this
+                 * More details are provided in the :ref:`rajaperf_build-label` section of this
                    documentation, along with build and run instructions including compilers and
                    versions.
 
@@ -50,10 +51,9 @@ Purpose
 =======
 
 The purpose of the RAJA Performance Suite Benchmark is for vendors and other collaborators
-to generate the FOMs, described in :ref:`rajaperf_fom-label`, for a subset of the RAJA
-Performance Suite Benchmark kernel subset. The Benchmark kernels have been identified by
-RAJA developers as representing important computations in production applications using RAJA
-at Lawrence Livermore National Laboratory.
+to generate the FOM, described in :ref:`rajaperf_fom-label`, for a subset of the RAJA
+Performance Suite kernels. The Benchmark kernels have been chosen by RAJA developers and users
+to representing important computations in production applications at Lawrence Livermore National Laboratory.
 
 
 Characteristics
@@ -64,15 +64,15 @@ All applications that use RAJA follow the *MPI + X* parallel application
 paradigm. That is, MPI is used for coarse-grained, distributed memory parallelism
 and X, which is RAJA in this case, supports fine-grained parallelism within each MPI
 rank. Typically, we run the Benchmark with multiple MPI ranks. When this is done, the
-same code executes on each rank and synchronization and communication are only done
+same code executes on each rank and synchronization and communication are performed only
 to collect and send execution timing information to rank zero for reporting purposes.
-The included run scripts launch multiple MPI ranks, one for each GPU on a node
+The Benchmark run scripts launch multiple MPI ranks, one for each GPU on a node
 for each architecture so that the node is *fully subscribed* when the Benchmark is run.
 
 While the RAJA Performance Suite can be run in myriad ways via command-line options
 and arguments, the RAJA Performance Suite Benchmark is run in a specific fashion to generate
 the results reported below. The `RAJAPerf-Benchmark <https://github.com/llnl/RAJAPerf-Benchmark>`_
-GitHub repo contains everything needed to build and run the RAJA Performance Suite Benchmark to
+GitHub repo contains everything needed to build and run the RAJA Performance Suite Benchmark and
 generate the FOM. This includes the RAJA Performance Suite and RAJA codes in Git submodules
 and scripts to build, run, and generate throughput plots and FOM data. Versions of the
 RAJA Performance Suite and RAJA dependencies are pinned to each version of the RAJA Performance
@@ -95,21 +95,20 @@ Problems
 --------
 
 The RAJA Performance Suite Benchmark consists of a subset of RAJA Performance
-Suite kernels that represent key computational patterns found in LLNL HPC
-applications. The Benchmark kernels are partitioned into two *tier* levels
-described below. A basic description of each kernel is provided along with RAJA
-features it exercises summarized in parentheses.
+Suite kernels. The Benchmark kernels are partitioned into two *tier* levels
+described below, where we provide a basic description of each kernel along with RAJA
+features it exercises.
 
 .. note:: In the RAJA Performance Suite repository, each kernel is implemented in
           multiple files. Source files include ``<kernel-name>.cpp`` (common code
-          independent of kernel variant) and ``<kernel-name>-<back-end>.cpp``
-          (variants that exercise a programming model *back-end*). The header file
+          independent of kernel variants) and ``<kernel-name>-<back-end>.cpp``
+          (variants that exercise the named programming model). A header file
           ``<kernel-name>.hpp`` contains a reference implementation of the kernel,
-          which is a C-style sequential version of the kernel. This simple non-parallel
-          version is used to generate the reference checksum against which to compare
-          parallel variants for correctness.
+          which is a C-style sequential version. This non-parallel version is used to
+          generate the kernel reference checksum against which we compare results of
+          all other variants for correctness.
 
-The RAJA Performance Suite Benchmark kernels in each tier level are described below.
+The RAJA Performance Suite Benchmark kernels in each tier level are described in the following two sections.
 
 
 Tier 1 kernels
@@ -161,8 +160,8 @@ zero derivative, and beyond which running a larger problem size yields no furthe
 increase in compute rate. Specifically, the FOM consists of 3 numerical values:
 
   * the saturation problem size (GB)
-  * the compute rate (GFLOP/sec) at the saturation problem size 
-  * the memory bandwidth (GB/sec) at the saturation problem size
+  * the compute rate (GFLOP/sec) achieved at the saturation problem size 
+  * the memory bandwidth (GB/sec) achieved at the saturation problem size
 
 .. important:: The scripts and their invocations described in :ref:`rajaperf_run-label`
                show how we determine the FOM values. Others are free to generate the
@@ -174,9 +173,9 @@ Ideally, such a curve is monotonically increasing and transitions to a flat,
 horizontal line. Then, the saturation point is the problem size at which the derivative
 of the throughput curve becomes zero. In reality, a measured throughput curve may be
 non-monotonic or not have a strictly zero derivative for all points beyond some problem
-size. Therefore, we apply a simple median based smoothing algorithm to the throughput
-curve data and use simple heuristics to estimate the saturation point based on the smoothed
-throughput curve. The details of our approach are documented in the Python script
+size. Therefore, we apply a simple median based smoothing algorithm to the computed throughput
+data points and use simple heuristics to estimate the saturation point based on a *smoothed*
+approximation of the throughput curve. The details of our approach are documented in the Python script
 ``process_data.py`` that lives in the `scripts` directory of the
 `RAJAPerf-Benchmark <https://github.com/llnl/RAJAPerf-Benchmark>`_ GitHub repo
 for the baseline set we are interested in. We describe the use of the script
@@ -190,15 +189,15 @@ in :ref:`rajaperf_results-label`.
 
 When the Suite is run, problem size, compute rate, memory bandwidth, result checksums, etc.
 are reported in various files in an output directory. We provide a Python script to traverse
-the contents of an output directory and generate summary files, throughput plots,
-and FOM information. Script usage is described in :ref:`rajaperf_run-label`.
+the contents of an output directory and generate a smaller set of summary files, throughput plots,
+and FOM information. We describe the exact Script usage in :ref:`rajaperf_run-label`.
 
-.. important:: For RAJA Performance Suite Benchmark execution on any multicore architecture,,
-               **MPI must be used** to run to ensure that all resources on a
-               compute node are being exercised so as to avoid misrepresentation
+.. important:: For RAJA Performance Suite Benchmark execution on a multicore architecture,
+               **multiple MPI ranks must be run** to ensure that all resources on a
+               compute node are being exercised to prevent misrepresentation
                of kernel and node performance. The scripts provided to run the Benchmark
                illustrate how this is done on the architectures for which we have provided 
-               baseline results. Specific commands used to invoke the scripts are shown in
+               baseline results. Specific script invocation is shown in
                :ref:`rajaperf_run-label`.
 
 
@@ -232,22 +231,22 @@ Getting the code
 All non-system software needed to compile and run the Benchmark is contained in the
 `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
 repository and its Git submodules. The ``v2026.10.0`` version of that repo
-was used to generate the baseline data described in the :ref:`rajaperf_results-label` section.
+was used to generate the baseline data described in the :ref:`rajaperf_results-label` section
+of this document.
 
 To clone the repo::
 
   $ git clone --recursive git@github.com:llnl/RAJAPerf-Benchmark.git
 
-This will clone the repo into a local directory and put you on the ``main``
-branch of the Benchmark repo, which is the default branch. To get a local copy
-of the version used to generate the baselines in this document, execute the following
-commands::
+This will make a copy of the repo in a local directory and put you on the ``main``
+branch of the Benchmark repo, which is the default branch. To get the version used to
+generate the baseline results presented below, execute the following commands::
 
   $ cd path/to/RAJAPerf-Benchmark
   $ git checkout v2026.10.0
   $ git submodule update --init --recursive
 
-This will assure that you have the proper version of the Benchmark code, including
+This will ensure that you have the proper version of the Benchmark code, including
 the RAJAPerf and RAJA submodules, in your local directory.
 
 
@@ -259,7 +258,7 @@ compilation. When building the code, RAJA and the RAJA
 Performance Suite are built together with the same configuration which
 is specified at the RAJA Performance Suite level. Generically, the process for
 specifying a configuration and generating a build space involves creating a build
-directory and running CMake in it with the proper options. For example::
+directory and running CMake in it with the desired options::
 
   $ cd path/to/RAJAPerf
   $ mkdir my-build
@@ -273,9 +272,8 @@ in ``RAJAPerf/scripts`` subdirectories for various builds. For example, the
 generate build configurations for machines in the Livermore Computing (LC)
 Center at Lawrence Livermore National Laboratory. These scripts are run from
 the top-level RAJAPerf directory. Each script creates a descriptively-named build
-space directory and runs CMake to generate a build space appropriate for the
-platform and compiler(s) indicated by the script name and arguments passed to
-it. Executing a script with no arguments will print a message indicating
+space directory and runs CMake to generate a build space in it. Executing a
+configuration script with no arguments will produce a message indicating
 which arguments are required.
 
 These scripts were used to configure the Benchmark code for compilation to generate the
@@ -283,48 +281,48 @@ Benchmark baseline results described below.
 
 .. _rajaperf_build_mi300a-label:
 
-MI300A architecture
---------------------
+AMD MI300A architecture
+------------------------
 
-To configure and build the code to generate baseline data on a system with 
-AMD MI300A processors (the ATS-4 (El Capitan) architecture) discussed in
-:ref:`rajaperf_results-label`, we ran the following commands::
+To configure and build the code to generate the AMD MI300A baseline results
+presented in :ref:`rajaperf_results-label`, we ran the following commands::
 
   $ cd path/to/RAJAPerf
   $ ./scripts/lc-builds/toss4_cray-mpich_amdclang.sh 9.0.1 6.4.3 gfx942
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
   $ make -j
 
-That is, we configured and compiled the code using version
-9.0.1 of the Cray MPICH MPI library and the AMD clang compiler with ROCm
-version 6.4.3 targeting GPU compute architecture gfx942.
+This was done on an ASC ATS-4 platform (El Capitan architecture) at LLNL.
+The commands generated an executable code built with version 9.0.1 of the Cray
+MPICH MPI library and the AMD clang compiler with ROCm version 6.4.3 targeting
+GPU compute architecture gfx942.
 
 .. note:: While newer ROCm compilers are available, version 6.4.3 was used
-          by all LLNL codes using RAJA for production builds when
+          by all LLNL codes using RAJA for production builds at the time
           we generated the baseline results. Thus, we use that version
           of the compiler here.
 
 .. _rajaperf_build_h100-label:
 
-H100 architecture
---------------------
+NVIDIA H100 architecture
+-------------------------
 
-To configure and build the code to generate baseline data on a system with
-NVIDIA H100 processors discussed in :ref:`rajaperf_results-label`, we ran the
-following commands::
+To configure and build the code to generate the NVIDIA H100 baseline results
+presented in :ref:`rajaperf_results-label`, we ran the following commands::
 
   $ cd path/to/RAJAPerf
   $ ./scripts/lc-builds/toss4_mvapich2_nvcc_gcc.sh 2.3.7 13.1.1 90 10.3.1
   $ cd build_lc_toss4-mvapich2-2.3.7-nvcc-13.1.1-90-gcc-10.3.1
   $ make -j
 
-That is, we configured and compiled the code using version
-2.3.7 of the MVAPICH2 MPI library, version 13.1.1 of the nvcc compiler for CUDA
-targeting GPU compute architecture sm_90, and version 10.3.1 of the GNU compiler
-for compiling host code.
+This was done on a Livermore Computing platform using 4th generation Intel
+Sapphire Rapids CPUs and NVIDIA H100 GPUs. The commands generated an executable
+code built with version 2.3.7 of the MVAPICH2 MPI library, version 13.1.1 of the
+nvcc CUDA compiler targeting GPU compute architecture sm_90, and version 10.3.1
+of the GNU compiler for host code.
 
 .. note:: The compiler and MPI versions we used were the system defaults on the
-          NVIDIA GPU based machine we had access to at LLNL when we generated the
+          the LC platform we had access to at LLNL when we generated the
           baseline results. 
 
 
@@ -333,38 +331,27 @@ for compiling host code.
 Running
 =======
 
-When the RAJA Performance Suite code is built using the procedure above, the executable
-will be generated in the ``bin`` subdirectory of the build space.
-
-To see full details about all the code execution options, use the *help option*::
-
-  $ cd path/to/RAJAPerf
-  $ cd my-build
-  $ ls bin
-  raja-perf.exe
-  $ ./bin/raja-perf.exe --help (or -h)
-
-This will print all available command-line arguments along with options
-and defaults. All arguments are optional. If none are specified, the suite will run all
-Suite kernels in their default configurations for the variants that are available based
-on the way the code was compiled.
+When the RAJA Performance Suite code is built using either of the procedure above, the
+executable will be generated in the ``bin`` subdirectory of the build space.
 
 .. important:: In :ref:`rajaperf_results-label`, we provide the exact commands we used to
                run the code and generate the baseline results for the Benchmark.
+
+To see information about other ways to run the RAJA Performance Suite code, please consult
+the user documentation linked to the `RAJA Performance Suite GitHub repo <https://github.com/LLNL/RAJAPerf>`_.
 
 .. _rajaperf_validation-label:
 
 Validation
 ==========
 
-Each kernel variant that is run produces a checksum value based on kernel output,
-such as a data array whose entries are computed by the kernel.
-Since a checksum value generally depends on the kernel problem size, the checksum is 
-computed at run time after kernel execution is complete. Results validation compares the
-checksum of the kernel variant run and a reference variant of the same kernel.
-For the Benchmark, the reference variant is the sequential (CPU) variant of each kernel.
-Thus, the Benchmark run scripts execute the baseline sequential variant in addition
-to the Benchmark variants we are interested in to validate kernel results.
+When each kernel variant is run, it produces a checksum value based on its output,
+such as a data array whose entries are computed by the kernel. Generally, such a
+checksum value depends on the kernel problem size which is why it is computed at run time.
+Kernel result validation compares the checksum of the kernel variant run and a reference
+variant of the same kernel. For the Benchmark, the reference variant is the sequential (CPU)
+variant. Thus, the Benchmark run scripts execute the baseline sequential variants although
+we are only interested in the Benchmark variants.
 
 Each kernel is annotated in the source code as to whether variant checksums
 are expected to match the reference checksum exactly, or to be within some tolerance
@@ -380,10 +367,8 @@ Benchmark Results
 
 As stated earlier, we are interested in single-node throughput
 with this Benchmark. To generate throughput curves and estimate
-saturation points, we use a bash shell script to run the code on each
-platform and a Python script to process the data to construct throughput
-plots, estimate saturation points, and make CSV files for tables of results.
-These scripts are available in the
+saturation points, we use a bash shell script to run the code
+and a Python script to process the data. These scripts are available in the
 `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
 in the ``RAJAPerf-Benchmark/RPB-v2026.10.0/scripts`` directory.
 
@@ -391,8 +376,9 @@ in the ``RAJAPerf-Benchmark/RPB-v2026.10.0/scripts`` directory.
                including FOM tables and throughput plots for the Tier 1
                kernels described above. For completeness, we also include a
                brief summary of results for Tier 2 kernels in less detail.
-               Data files containing results for all Benchmark kernels are included
-               in this LLNL Benchmarks repository for reference.
+               Data files and plots for all Benchmark kernels are included
+               in the ``baseline_data`` directory LLNL of this Benchmark
+               repository for reference.
 
 AMD MI300A throughput results (Tier 1 kernels)
 ----------------------------------------------------
@@ -414,7 +400,7 @@ to use ~400MB of allocated memory, which is about 1.5 times the MALL
 (256 * 1024 * 1024 = 268,435,456 bytes).
 
 Note that for two of the kernels, ``FEMSWEEP`` and ``MASS3DEA``, we ran a
-different problem size range because these kernels don't clearly saturate.
+different problem size range because they don't clearly saturate.
 For them, we chose the smallest problem to use ~3.2MB of allocated
 memory and the largest problem to use ~600MB memory, which is over twice as
 big as the MALL.
@@ -453,19 +439,19 @@ variants of each kernel and summarizes the FOM (described in
 SPX mode (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The process for generating results for the Tier 2 kernels is essentially
-the same as for the Tier 1 kernels just described. The only differences are
-that the command to run the kernels passes the ``tier2`` argument (instead of
+The process for generating results for the Tier 2 kernels is similar
+to the Tier 1 kernels just described. The only differences are that the
+command to run the kernels passes the ``tier2`` argument (instead of
 ``tier1``)::
 
   $ ./run_tier_mi300a.sh spx tier2
 
-and the results directories have ``tier1`` replaced by ``tier2`` in their names.
+and the results directories have ``tier2`` in their name instead of ``tier1``.
 
-For the Tier2 case, note that the two kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``
-do not perform any floating point operations; i.e., they have zero GFLOP/sec rates.
+Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
+do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
 They represent recurring computational patterns in our applications that are important despite not
-doing floating point operations. Thus, we consider bandwidth as the appropriate metric to consider.
+performing floating point operations. So, we consider bandwidth as an appropriate metric.
 We include the baseline data files for Tier 2 kernels run on the MI300A architecture in
 SPX mode in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX``.
 
@@ -493,7 +479,7 @@ Similar to the SPX mode description above, we run the ``Tier 1`` kernels in
 
   $ cd path/to/RAJAPerf
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
-  $ $ cp ../../RPB-v2026.10.0/scripts/run_tier_mi300a.sh .
+  $ cp ../../RPB-v2026.10.0/scripts/run_tier_mi300a.sh .
   $ ./run_tier_mi300a.sh cpx tier1
 
 This generates a directory named ``RPBenchmark_MI300A_tier1-CPX``, which
@@ -521,18 +507,18 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier1-CPX``.
 CPX mode (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Similar to SPX mode, the process for generating results for the Tier 2 kernels in
-CPX mode is essentially the same as for the Tier 1 kernels just described. The only
-differences are that the command to run the kernels passes the ``tier2`` argument (instead of
+The process for generating results for the Tier 2 kernels is similar
+to the Tier 1 kernels just described. The only differences are that the
+command to run the kernels passes the ``tier2`` argument (instead of
 ``tier1``)::
 
   $ ./run_tier_mi300a.sh cpx tier2
 
-and the results directories have ``tier1`` replaced by ``tier2`` in their names.
+and the results directories have ``tier2`` in their name instead of ``tier1``.
 
 As noted earlier, two of the kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not
 perform any floating point operations. So, we consider the bandwidth
-as the appropriate metric to consider. We include the baseline data files for Tier 2
+as the appropriate metric. We include the baseline data files for Tier 2
 kernels run on the MI300A architecture in CPX mode in this repo in the
 directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX``.
 
@@ -548,23 +534,25 @@ AMD MI300A throughput plots (Tier 1)
 This section contains throughput plots for each Tier 1 kernel run as described
 above on the MI300A architecture in SPX mode (left column) and CPX mode (right column).
 Each plot has multiple curves with GFLOP/sec (compute rate) plotted as a function of problem size
-(allocated bytes). The legend in each plot indicates the curves shown. Each plot includes:
+(allocated bytes).  Each plot includes:
 
   * Throughput curves for Base and RAJA variant(s) of the kernels. Solid line
     segments connect the dots, where the dots are actual GFLOP rates
-    determined from the kernel being run at a given problem size.
-  * Smoothed versions of the throughput curves (dashed lines), which are 
-    constructed from the dots. 
-  * Stars indicate approximate saturation points based on the smoothed
+    determined from the run data.
+  * Smoothed versions of the throughput curves, plotted as dashed lines,
+    which are computed using a median based smoothing algorithm.
+  * Stars indicating approximate saturation points based on the smoothed
     curves and computed using simple heuristics. The legend contains the (x, y)
     values for the saturation points.
+
+The legend in each plot indicates the curves shown.
 
 Most plots contain two variants, with the *Base* non-RAJA variant in blue and RAJA
 variant in orange. In each case, the throughput curves and saturation points are close,
 which indicates that the RAJA variants perform as well as the non-RAJA variants
 that are written directly in HIP with no RAJA abstractions. Two kernels
-(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
-These additional curves are included to show how kernel execution choices,
+``MASS3DEA`` and ``MASSVEC3DPA`` contain additional curves that show more variants.
+The additional curves are included to show how kernel execution choices,
 RAJA execution policies in particular, can have a significant impact on
 performance.
 
@@ -626,7 +614,7 @@ performance.
 NVIDIA H100 throughput results (Tier 1 kernels)
 ----------------------------------------------------
 
-For the H100 architecture, we present one set of throughput results, where we ran with
+For the NVIDIA H100 architecture, we present one set of throughput results, where we ran with
 4 MPI ranks on a node -- one for each H100 GPU. We ran each ``Tier 1``
 kernel over a sequence of problem sizes such that the saturation point is
 evident on its associated throughput curve.
@@ -634,10 +622,10 @@ evident on its associated throughput curve.
 We choose the smallest problem to use ~50,000 bytes of allocated memory and
 the largest problem to use ~150MB of allocated memory, which is about 3 times
 the L2 cache size on the H100 GPU.  The L2 cache is 50MB
-(50 * 1024 * 1024 = 52428800 bytes).
+(50 * 1024 * 1024 = 52,428,800 bytes).
 
-Again, we ran a different problem size range for the ``FEMSWEEP`` and ``MASS3DEA``
-kernels because they kernels don't clearly saturate. For them, we chose the smallest
+We ran a different problem size range for the ``FEMSWEEP`` and ``MASS3DEA``
+kernels because they don't clearly saturate. For them, we chose the smallest
 problem to use ~1.6MB of allocated memory and the largest problem to use ~300MB memory,
 which is about 6 times the L2 cache size.
 
@@ -672,20 +660,22 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier1``.
    :widths: auto
    :header-rows: 1
 
-H100 (Tier 2)
+NVIDIA H100 (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The process for generating results for the Tier 2 kernels is essentially
-the same as for the Tier 1 kernels just described. The only differences are that
-the command to run the kernels passes the ``tier2`` argument (instead of ``tier1``):
+The process for generating results for the Tier 2 kernels is similar
+to the Tier 1 kernels just described. The only differences are that the
+command to run the kernels passes the ``tier2`` argument (instead of
+``tier1``)::
 
-$ ./run_tier_h100.sh tier2
+  $ ./run_tier_h100.sh tier2
 
-and the results directories have ``tier1`` replaced by ``tier2`` in their names.
+and the results directories have ``tier2`` in their name instead of ``tier1``.
 
-For the Tier2 case, the ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` kernels
-do not perform any floating point operations, so they have zero GFLOP/sec rates.
-Thus, we consider the bandwidth as the appropriate metric to consider for them.
+Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
+do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
+They represent recurring computational patterns in our applications that are important despite not
+performing floating point operations. So, we consider bandwidth as an appropriate metric.
 We include the baseline data files for Tier 2 kernels run on the H100 architecture
 in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier2-SPX``.
 
@@ -698,27 +688,30 @@ in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H10
 NVIDIA H100 throughput plots (Tier 1)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following table contains throughput plots for each kernel run as described
-above for the H100 architecture. Each plot has multiple curves where GFLOP/sec
-(compute rate) is plotted as a function of problem size (allocated bytes). 
-The legend in each plot indicates the curves shown. Each plot includes:
+This section contains throughput plots for each Tier 1 kernel run as described
+above on the H100 architecture. Each plot has multiple curves with GFLOP/sec
+(compute rate) plotted as a function of problem size (allocated bytes).
+Each plot includes:
 
-  * Throughput curves for Base and RAJA variant(s) of the kernel (solid line
-    segments connecting the dots, where the dots are actual GFLOP rates
-    determined from the kernel being run at a given problem size).
-  * Smoothed versions of the throughput curves (dashed lines), which are
-    constructed from the dots.
-  * Stars that indicate approximate saturation points based on the smoothed
-    curves and computed using simple heuristics. The legend contains the
-    (x, y) values for the saturation points.
+  * Throughput curves for Base and RAJA variant(s) of the kernels. Solid line
+    segments connect the dots, where the dots are actual GFLOP rates
+    determined from the run data.
+  * Smoothed versions of the throughput curves, plotted as dashed lines,
+    which are computed using a median based smoothing algorithm.
+  * Stars indicating approximate saturation points based on the smoothed
+    curves and computed using simple heuristics. The legend contains the (x, y)
+    values for the saturation points.
+
+The legend in each plot indicates the curves shown.
 
 Most plots contain two variants, with the *Base* non-RAJA variant in blue and RAJA
-variant in orange. In these cases, the throughput and saturation are close,
+variant in orange. In each case, the throughput curves and saturation points are close,
 which indicates that the RAJA variants perform as well as the non-RAJA variants
-that are written directly in CUDA with no RAJA abstractions. Two kernels
-(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
-These additional curves were included to show how kernel execution choices,
-RAJA execution policies in particular, can have a noticeable impact on performance.
+that are written directly in HIP with no RAJA abstractions. Two kernels
+``MASS3DEA`` and ``MASSVEC3DPA`` contain additional curves that show more variants.
+The additional curves are included to show how kernel execution choices,
+RAJA execution policies in particular, can have a significant impact on
+performance.
 
 +-----------------------------------------------------------------------------------------------------+
 | Tier 1 Kernels H100 Node Throughput                                                                 |
