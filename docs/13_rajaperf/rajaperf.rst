@@ -25,7 +25,7 @@ Important things to know about the RAJA Performance Suite Benchmark are:
   * All code needed to generate the RAJA Performance Suite Benchmark results described in this
     document is included in the `RAJAPerf-Benchmark <https://github.com/llnl/RAJAPerf-Benchmark>`_
     GitHub repo. The discussion in this document refers to the contents of that repo. Instructions
-    to build and run the Benchmark code and generate the figures of merit (FOMs) can be found
+    to build and run the Benchmark code and generate the figures of merit (FOM) can be found
     in the :ref:`rajaperf_build-label` and :ref:`rajaperf_run-label` sections.
 
 More information about RAJA and the RAJA Performance Suite is available in their documentation linked
@@ -51,7 +51,7 @@ Purpose
 =======
 
 The purpose of the RAJA Performance Suite Benchmark is for vendors and other collaborators
-to generate the FOMs, described in :ref:`rajaperf_fom-label`, for a subset of the RAJA
+to generate the FOM, described in :ref:`rajaperf_fom-label`, for a subset of the RAJA
 Performance Suite kernels. The Benchmark kernels have been chosen by RAJA developers and users
 to representing important computations in production applications at Lawrence Livermore National Laboratory.
 
@@ -281,8 +281,8 @@ Benchmark baseline results described below.
 
 .. _rajaperf_build_mi300a-label:
 
-MI300A architecture
---------------------
+AMD MI300A architecture
+------------------------
 
 To configure and build the code to generate the AMD MI300A baseline results
 presented in :ref:`rajaperf_results-label`, we ran the following commands::
@@ -304,8 +304,8 @@ GPU compute architecture gfx942.
 
 .. _rajaperf_build_h100-label:
 
-H100 architecture
---------------------
+NVIDIA H100 architecture
+-------------------------
 
 To configure and build the code to generate the NVIDIA H100 baseline results
 presented in :ref:`rajaperf_results-label`, we ran the following commands::
@@ -451,7 +451,7 @@ and the results directories have ``tier2`` in their name instead of ``tier1``.
 Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
 do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
 They represent recurring computational patterns in our applications that are important despite not
-performing floating point operations. So, we consider bandwidth as an appropriate metric to consider.
+performing floating point operations. So, we consider bandwidth as an appropriate metric.
 We include the baseline data files for Tier 2 kernels run on the MI300A architecture in
 SPX mode in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX``.
 
@@ -518,7 +518,7 @@ and the results directories have ``tier2`` in their name instead of ``tier1``.
 
 As noted earlier, two of the kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not
 perform any floating point operations. So, we consider the bandwidth
-as the appropriate metric to consider. We include the baseline data files for Tier 2
+as the appropriate metric. We include the baseline data files for Tier 2
 kernels run on the MI300A architecture in CPX mode in this repo in the
 directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX``.
 
@@ -534,23 +534,25 @@ AMD MI300A throughput plots (Tier 1)
 This section contains throughput plots for each Tier 1 kernel run as described
 above on the MI300A architecture in SPX mode (left column) and CPX mode (right column).
 Each plot has multiple curves with GFLOP/sec (compute rate) plotted as a function of problem size
-(allocated bytes). The legend in each plot indicates the curves shown. Each plot includes:
+(allocated bytes).  Each plot includes:
 
   * Throughput curves for Base and RAJA variant(s) of the kernels. Solid line
     segments connect the dots, where the dots are actual GFLOP rates
-    determined from the kernel being run at a given problem size.
-  * Smoothed versions of the throughput curves (dashed lines), which are 
-    constructed from the dots. 
-  * Stars indicate approximate saturation points based on the smoothed
+    determined from the run data.
+  * Smoothed versions of the throughput curves, plotted as dashed lines,
+    which are computed using a median based smoothing algorithm.
+  * Stars indicating approximate saturation points based on the smoothed
     curves and computed using simple heuristics. The legend contains the (x, y)
     values for the saturation points.
+
+The legend in each plot indicates the curves shown.
 
 Most plots contain two variants, with the *Base* non-RAJA variant in blue and RAJA
 variant in orange. In each case, the throughput curves and saturation points are close,
 which indicates that the RAJA variants perform as well as the non-RAJA variants
 that are written directly in HIP with no RAJA abstractions. Two kernels
-(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
-These additional curves are included to show how kernel execution choices,
+``MASS3DEA`` and ``MASSVEC3DPA`` contain additional curves that show more variants.
+The additional curves are included to show how kernel execution choices,
 RAJA execution policies in particular, can have a significant impact on
 performance.
 
@@ -612,7 +614,7 @@ performance.
 NVIDIA H100 throughput results (Tier 1 kernels)
 ----------------------------------------------------
 
-For the H100 architecture, we present one set of throughput results, where we ran with
+For the NVIDIA H100 architecture, we present one set of throughput results, where we ran with
 4 MPI ranks on a node -- one for each H100 GPU. We ran each ``Tier 1``
 kernel over a sequence of problem sizes such that the saturation point is
 evident on its associated throughput curve.
@@ -620,9 +622,9 @@ evident on its associated throughput curve.
 We choose the smallest problem to use ~50,000 bytes of allocated memory and
 the largest problem to use ~150MB of allocated memory, which is about 3 times
 the L2 cache size on the H100 GPU.  The L2 cache is 50MB
-(50 * 1024 * 1024 = 52428800 bytes).
+(50 * 1024 * 1024 = 52,428,800 bytes).
 
-Again, we ran a different problem size range for the ``FEMSWEEP`` and ``MASS3DEA``
+We ran a different problem size range for the ``FEMSWEEP`` and ``MASS3DEA``
 kernels because they don't clearly saturate. For them, we chose the smallest
 problem to use ~1.6MB of allocated memory and the largest problem to use ~300MB memory,
 which is about 6 times the L2 cache size.
@@ -658,20 +660,22 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier1``.
    :widths: auto
    :header-rows: 1
 
-H100 (Tier 2)
+NVIDIA H100 (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The process for generating results for the Tier 2 kernels is essentially
-the same as for the Tier 1 kernels just described. The only differences are that
-the command to run the kernels passes the ``tier2`` argument (instead of ``tier1``)::
+The process for generating results for the Tier 2 kernels is similar
+to the Tier 1 kernels just described. The only differences are that the
+command to run the kernels passes the ``tier2`` argument (instead of
+``tier1``)::
 
   $ ./run_tier_h100.sh tier2
 
-and the results directories have ``tier1`` replaced by ``tier2`` in their names.
+and the results directories have ``tier2`` in their name instead of ``tier1``.
 
-For the Tier2 case, the ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` kernels
-do not perform any floating point operations, so they have zero GFLOP/sec rates.
-Thus, we consider the bandwidth as the appropriate metric to consider for them.
+Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
+do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
+They represent recurring computational patterns in our applications that are important despite not
+performing floating point operations. So, we consider bandwidth as an appropriate metric.
 We include the baseline data files for Tier 2 kernels run on the H100 architecture
 in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier2-SPX``.
 
@@ -684,27 +688,30 @@ in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H10
 NVIDIA H100 throughput plots (Tier 1)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following table contains throughput plots for each kernel run as described
-above for the H100 architecture. Each plot has multiple curves where GFLOP/sec
-(compute rate) is plotted as a function of problem size (allocated bytes). 
-The legend in each plot indicates the curves shown. Each plot includes:
+This section contains throughput plots for each Tier 1 kernel run as described
+above on the H100 architecture. Each plot has multiple curves with GFLOP/sec
+(compute rate) plotted as a function of problem size (allocated bytes).
+Each plot includes:
 
-  * Throughput curves for Base and RAJA variant(s) of the kernel (solid line
-    segments connecting the dots, where the dots are actual GFLOP rates
-    determined from the kernel being run at a given problem size).
-  * Smoothed versions of the throughput curves (dashed lines), which are
-    constructed from the dots.
-  * Stars that indicate approximate saturation points based on the smoothed
-    curves and computed using simple heuristics. The legend contains the
-    (x, y) values for the saturation points.
+  * Throughput curves for Base and RAJA variant(s) of the kernels. Solid line
+    segments connect the dots, where the dots are actual GFLOP rates
+    determined from the run data.
+  * Smoothed versions of the throughput curves, plotted as dashed lines,
+    which are computed using a median based smoothing algorithm.
+  * Stars indicating approximate saturation points based on the smoothed
+    curves and computed using simple heuristics. The legend contains the (x, y)
+    values for the saturation points.
+
+The legend in each plot indicates the curves shown.
 
 Most plots contain two variants, with the *Base* non-RAJA variant in blue and RAJA
-variant in orange. In these cases, the throughput and saturation are close,
+variant in orange. In each case, the throughput curves and saturation points are close,
 which indicates that the RAJA variants perform as well as the non-RAJA variants
-that are written directly in CUDA with no RAJA abstractions. Two kernels
-(MASS3DEA, MASSVEC3DPA) contain additional curves that show more variants.
-These additional curves were included to show how kernel execution choices,
-RAJA execution policies in particular, can have a noticeable impact on performance.
+that are written directly in HIP with no RAJA abstractions. Two kernels
+``MASS3DEA`` and ``MASSVEC3DPA`` contain additional curves that show more variants.
+The additional curves are included to show how kernel execution choices,
+RAJA execution policies in particular, can have a significant impact on
+performance.
 
 +-----------------------------------------------------------------------------------------------------+
 | Tier 1 Kernels H100 Node Throughput                                                                 |
