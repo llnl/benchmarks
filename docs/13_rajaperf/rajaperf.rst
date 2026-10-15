@@ -677,9 +677,9 @@ H100 (Tier 2)
 
 The process for generating results for the Tier 2 kernels is essentially
 the same as for the Tier 1 kernels just described. The only differences are that
-the command to run the kernels passes the ``tier2`` argument (instead of ``tier1``):
+the command to run the kernels passes the ``tier2`` argument (instead of ``tier1``)::
 
-$ ./run_tier_h100.sh tier2
+  $ ./run_tier_h100.sh tier2
 
 and the results directories have ``tier1`` replaced by ``tier2`` in their names.
 
