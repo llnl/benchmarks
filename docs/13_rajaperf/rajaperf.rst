@@ -637,7 +637,7 @@ the L2 cache size on the H100 GPU.  The L2 cache is 50MB
 (50 * 1024 * 1024 = 52428800 bytes).
 
 Again, we ran a different problem size range for the ``FEMSWEEP`` and ``MASS3DEA``
-kernels because they kernels don't clearly saturate. For them, we chose the smallest
+kernels because they don't clearly saturate. For them, we chose the smallest
 problem to use ~1.6MB of allocated memory and the largest problem to use ~300MB memory,
 which is about 6 times the L2 cache size.
 
