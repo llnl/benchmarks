@@ -8,7 +8,7 @@ Purpose
 =======
 
 For the ATS-6 procurement, we use the 3D hohlraum problem.
-Branson source code and documentation are on github: 
+Branson source code and documentation are on github:
 
 https://github.com/lanl/branson
 
@@ -23,8 +23,9 @@ For ATS-6, we use the History based configuration using Struct of Arrays
 
 Figure of Merit
 ---------------
-The Figure of Merit is defined as particles/second and is printed to the screen at the end of the simulation.
-This value is labeled "Photons Per Second (FOM):" in Branson's output.
+The Figure of Merit (FOM) is defined as particles/second and is printed to the screen at the end of the simulation.
+This value is labeled "Photons Per Second (FOM):" in Branson's output. Since the FOM is not normalized
+by the number of parallel resources it will ideally increase in weak and strong scaling studies.
 
 Source code modifications
 =========================
@@ -105,7 +106,7 @@ Testing the build:
 Running
 =======
 
-For Priority 1, we focus on single node performance. 
+For Priority 1, we focus on single node performance.
 We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
 and run with a 30 group build of Branson, which is the default in the ats-6 branch.
 To ensure we load the node, we will run 1 MPI rank per device, which will replicate the domains,
@@ -119,6 +120,20 @@ Use the following command to run:
 
 ..
 
+For Priority 2, a homogeneous, multi-node, optically thick problem is weak scaled. The single node
+input for four MPI ranks is the input file ``3D_homogeneous_1.xml`` in the ``inputs/weak_scaling``
+folder. For two nodes, use the ``3D_homogeneous_2.xml`` file in the same folder and so on for larger
+node counts. This problem is also run with a 30 group build of Branson. This simulation is
+domain-decomposed, meaning MPI ranks will exchange particles as they move off domains. In this problem the number of
+particles and cells are both increased in proportion to the computing resources. The input files
+specify a number of subdomains (MPI ranks) in each dimension. The input files are for a node that
+has 4 GPUs, but it can be changed to suit the parallel resources of any node by setting the
+``n_x_domains``, ``n_y_domains``, or ``n_z_domains`` fields in the ``common`` block of the Branson
+XML input file. The FOM for this problem will likely be much less than the single node input as
+there is considerably more transport work and MPI messaging in this problem. For this problem, the
+particle buffer size can be adjusted to improve performance for some cases, this parameter is the
+``particle_message_size`` (units are number of particles, not bytes), set in the ``common`` block
+in the Branson XML input file.
 
 Validation
 ==========
