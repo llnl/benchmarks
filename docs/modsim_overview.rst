@@ -44,7 +44,7 @@ or other properties that are important to the Laboratories.
      | kernels found in HPC applications
    - C++
    - | MPI+RAJA
-     | /CUDA/HIP/OpenMP
+     | /CUDA/HIP
    - RAJA
  * - Branson
    - Implicit Monte Carlo transport
