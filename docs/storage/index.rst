@@ -13,10 +13,9 @@
 ******************
 Benchmark Overview
 ******************
-   
+
 .. toctree::
    :maxdepth: 1
-   :numbered:
 
    ../80_io500/io500
    ../81_mlpstor/mlpstor
