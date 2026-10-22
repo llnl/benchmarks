@@ -65,7 +65,7 @@ paradigm. That is, MPI is used for coarse-grained, distributed memory parallelis
 and X, which is RAJA in this case, supports fine-grained parallelism within each MPI
 rank. Typically, we run the Benchmark with multiple MPI ranks. When this is done, the
 same code executes on each rank and synchronization and communication are performed only
-to collect and send execution timing information to rank zero for reporting purposes.
+to collect execution timing information on rank zero for reporting purposes.
 The Benchmark run scripts launch multiple MPI ranks, one for each GPU on a node
 for each architecture so that the node is *fully subscribed* when the Benchmark is run.
 
@@ -163,9 +163,10 @@ increase in compute rate. Specifically, the FOM consists of 3 numerical values:
   * the compute rate (GFLOP/sec) achieved at the saturation problem size 
   * the memory bandwidth (GB/sec) achieved at the saturation problem size
 
-.. important:: The scripts and their invocations described in :ref:`rajaperf_run-label`
-               show how we determine the FOM values. Others are free to generate the
-               values by other means if they prefer.
+In the Benchmark, problem size is computed for each kernel based on the memory
+allocated for the requested problem size to run. The notion of problem size
+can depend on what one is trying to measure. For our perspective on this topic,
+please see the `Problem Size section <https://rajaperf.readthedocs.io/en/develop/sphinx/user_guide/output.html#notes-about-problem-size>`_ of the RAJA Performance Suite User Guide.
 
 Computational throughput may be visualized on a plot where compute rate
 (vertical axis) is plotted as a function of problem size (horizontal axis).
@@ -181,25 +182,19 @@ approximation of the throughput curve. The details of our approach are documente
 for the baseline set we are interested in. We describe the use of the script
 in :ref:`rajaperf_results-label`.
 
-.. note:: In the Benchmark, problem size is computed for each kernel based on the 
-          memory allocated for the requested problem size to run. The notion of
-          problem size is subjective and depends on what one is trying to measure.
-          For our perspective on this topic, please see the
-          `Problem Size section <https://rajaperf.readthedocs.io/en/develop/sphinx/user_guide/output.html#notes-about-problem-size>`_ of the RAJA Performance Suite User Guide.
+.. note:: The saturation point for all kernels, except two, is estimated based on
+          compute rate data. The Tier 2 kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``
+          perform no floating point operations. Thus, we estimate the saturation point for
+          those kernels based on memory bandwidth data.
 
 When the Suite is run, problem size, compute rate, memory bandwidth, result checksums, etc.
 are reported in various files in an output directory. We provide a Python script to traverse
 the contents of an output directory and generate a smaller set of summary files, throughput plots,
 and FOM information. We describe the exact Script usage in :ref:`rajaperf_run-label`.
 
-.. important:: For RAJA Performance Suite Benchmark execution on a multicore architecture,
-               **multiple MPI ranks must be run** to ensure that all resources on a
-               compute node are being exercised to prevent misrepresentation
-               of kernel and node performance. The scripts provided to run the Benchmark
-               illustrate how this is done on the architectures for which we have provided 
-               baseline results. Specific script invocation is shown in
-               :ref:`rajaperf_run-label`.
-
+.. important:: The scripts and their invocations described in :ref:`rajaperf_run-label`
+               show how we determine the FOM values. Others are free to generate the
+               values by other means if they prefer.
 
 .. _rajaperf_codemod-label:
 
