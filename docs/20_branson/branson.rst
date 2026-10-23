@@ -120,21 +120,6 @@ Use the following command to run:
 
 ..
 
-For Priority 2, a homogeneous, multi-node, optically thick problem is weak scaled. The single node
-input for four MPI ranks is the input file ``3D_homogeneous_1.xml`` in the ``inputs/weak_scaling``
-folder. For two nodes, use the ``3D_homogeneous_2.xml`` file in the same folder and so on for larger
-node counts. This problem is also run with a 30 group build of Branson. This simulation is
-domain-decomposed, meaning MPI ranks will exchange particles as they move off domains. In this problem the number of
-particles and cells are both increased in proportion to the computing resources. The input files
-specify a number of subdomains (MPI ranks) in each dimension. The input files are for a node that
-has 4 GPUs, but it can be changed to suit the parallel resources of any node by setting the
-``n_x_domains``, ``n_y_domains``, or ``n_z_domains`` fields in the ``common`` block of the Branson
-XML input file. The FOM for this problem will likely be much less than the single node input as
-there is considerably more transport work and MPI messaging in this problem. For this problem, the
-particle buffer size can be adjusted to improve performance for some cases, this parameter is the
-``particle_message_size`` (units are number of particles, not bytes), set in the ``common`` block
-in the Branson XML input file.
-
 Validation
 ==========
 
