@@ -227,6 +227,46 @@ This can be obtained on a CPU system using the following (while the application 
 Throughput on El Capitan
 ========================
 
+El Capitan
+----------
+
+Throughput performance of Branson on AMD Epyc + AMD MI300A on a single node (4 GPUs) is provided within the following table and figure.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Photons/Node
+     - FOM (Photons/s)
+   * - 10000000
+     - 7.76E+06
+   * - 20000000
+     - 8.09E+06
+   * - 40000000
+     - 8.31E+06
+   * - 80000000
+     - 8.65E+06
+   * - 100000000
+     - 8.73E+06
+   * - 160000000
+     - 8.81E+06
+   * - 200000000
+     - 8.83E+06
+   * - 320000000
+     - 8.86E+06
+   * - 400000000
+     - 8.87E+06
+   * - 640000000
+     - 8.88E+06
+   * - 800000000
+     - 8.86E+06
+   * - 1000000000
+     - 8.85E+06
+   * - 1280000000
+     - 8.91E+06
+
+.. image:: rocm_throughput.png
+   :align: center
+
 
 References
 ==========
