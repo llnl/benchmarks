@@ -2,10 +2,10 @@
 RAJA Performance Suite Tier 2 Kernels
 *************************************
 
-This section provides information specific to the Tier 2 kernels in the RAJA Performance Suite.
 The main :doc:`RAJA Performance Suite Benchmark documentation
 <../13_rajaperf/rajaperf>` provides general information that applies to all kernels in the Benchmark,
-both Tier 1 **and** Tier2, such as the purpose of the Benchmark, its characteristics, FOM, etc.
+both Tier 1 **and** Tier2, such as purpose and characteristics, FOM, how to build and run, etc.
+This section provides information specific to the Tier 2 kernels in the RAJA Performance Suite Benchmark.
 
 .. _rajaperf2_problems-label:
 
@@ -41,37 +41,14 @@ For Tier 2 kernels, the saturation point is estimated based on compute rate data
 ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``. Those kernels perform no floating point operations, so
 we estimate the saturation point for them based on memory bandwidth data.
 
-.. _rajaperf2_codemod-label:
-
-Source code modifications
-=========================
-
-Restrictions on source code modifications for Tier 2 kernels is identical to what is described in
-:ref:`rajaperf_codemod-label`.
-
-.. _rajaperf2_build-label:
-
-Building, Running, Validation
-==============================
-
-Instructions for obtaining the Benchmark code for Tier 2 kernels, building it, running it, and validation are
-the same as what is described in :ref:`rajaperf_build-label`, :ref:`rajaperf_run-label`, and 
-:ref:`rajaperf_validation-label`, respectively.
-
 .. _rajaperf2_results-label:
 
 Benchmark Results for Tier 2 Kernels
-====================================
+------------------------------------
 
-The process of running the Tier 2 Benchmark kernels and generating FOM for them is essentially the
+The process of running the Tier 2 kernels and generating FOM for them is essentially the
 same as what is described in :ref:`_rajaperf_results-label` for the Tier 1 kernels. Here, we 
 summarize the process as it applies to the Tier 2 kernels. 
-
-.. important:: In the following sections, we present detailed results,
-               including FOM tables and throughput plots for the Tier 2
-               kernels described above. Data and plot files are included
-               in the ``baseline_data`` directory of this benchmark
-               repository for reference.
 
 AMD MI300A throughput results (Tier 2 kernels)
 ----------------------------------------------------
@@ -80,25 +57,24 @@ For the MI300A architecture, we present two sets of throughput results. One is
 run in ``SPX mode`` where we use 4 MPI ranks on a node, one for each MI300A APU,
 thus treating each APU as a single GPU. The other is run in ``CPX mode`` where
 we run with 24 MPI ranks on a node, six for each MI300A APU, treating each APU as
-6 GPUs (i.e., one GPU = 1 XCD). For each mode, we run each kernel over a sequence
-of problem sizes so that the saturation point is evident on its associated throughput curve.
+6 GPUs (i.e., one GPU = 1 XCD).
 
 SPX mode (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-For SPX mode (1 MPI rank per APU on a node), we choose the smallest
-problem to use ~100,000 bytes of allocated memory and the largest problem
-to use ~400MB of allocated memory, which is about 1.5 times the MALL
+For SPX mode (1 MPI rank per APU on a node), we chose we chose the problem size range
+such that the smallest problem allocates ~100,000 bytes of memory and the largest
+problem allocates ~400MB of memory. The largest size is about 1.5 times the MALL
 (Memory Attached Last-Level cache) size on the MI300A. The MALL is 256MB
 (256 * 1024 * 1024 = 268,435,456 bytes).
 
-Note that the two Tier 2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
+Note that two Tier 2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
 do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
 They represent recurring computational patterns in our applications that are important despite not
 performing floating point operations. So, we consider bandwidth as an appropriate metric.
 
 After building the code as described in :ref:`rajaperf_build_mi300a-label`, we
-ran the ``Tier 2`` kernels in **SPX mode** as follows::
+ran the ``Tier 2`` kernels in **SPX mode** using the following commands::
 
   $ cd path/to/RAJAPerf
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
@@ -106,9 +82,9 @@ ran the ``Tier 2`` kernels in **SPX mode** as follows::
   $ ./run_tier_mi300a.sh spx tier2
 
 This generates a directory named ``RPBenchmark_MI300A_tier2-SPX`` containing
-output files for each kernel run over its range of problem sizes.
+output files for each kernel.
 
-Then, we processed the data to generate more concise baseline results
+Then, we processed the data to generate FOM and throughput plots
 by running a Python script we provide::
 
   $ cd path/to/RAJAPerf
@@ -132,30 +108,26 @@ CPX mode (Tier 2)
 ^^^^^^^^^^^^^^^^^^^^^^
 
 For CPX mode (run with 6 MPI ranks per APU on a node), we choose the
-smallest problem to use ~50,000 bytes of allocated memory and the largest
-problem to use ~75MB of allocated memory, which is slightly less than 1/3
-the MALL size.
+smallest problem to allocate ~50,000 bytes of memory and the largest
+problem to allocate ~75MB of memory, which is slightly less than 1/3 the MALL size.
 
 As noted earlier, two of the kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not
 perform any floating point operations. So, we consider the bandwidth
-as the appropriate metric. We include the baseline data files for Tier 2
-kernels run on the MI300A architecture in CPX mode in this repo in the
-directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX``.
+as the appropriate metric for them.
 
 Similar to the SPX mode description above, we run the ``Tier 2`` kernels in
-**CPX mode** as follows::
+**CPX mode** using the following commands::
 
   $ cd path/to/RAJAPerf
   $ cd build_lc_toss4-cray-mpich-9.0.1-amdclang-6.4.3-gfx942
   $ cp ../../RPB-v2026.10.0/scripts/run_tier_mi300a.sh .
   $ ./run_tier_mi300a.sh cpx tier2
 
-This generates a directory named ``RPBenchmark_MI300A_tier2-CPX``, which
-contains all the results files for each kernel run over its range of problem
-sizes.
+This generates a directory named ``RPBenchmark_MI300A_tier2-CPX`` containing
+output files for each kernel.
 
-Then, we process the data for reporting the results here in a concise
-form by running a Python script we provide::
+Then, we processed the data to generate FOM and throughput plots
+by running a Python script we provide::
 
   $ cd path/to/RAJAPerf
   $ cp ../../RPB-v2026.10.0/scripts/process_data.py .
@@ -163,7 +135,7 @@ form by running a Python script we provide::
 
 This generates throughput curve files for ``Base_HIP`` and ``RAJA_HIP``
 variants of each kernel and summarizes the FOM (described in
-:ref:`rajaperf_fom-label`) in a CSV file. These files are included in this repo in the
+:ref:`rajaperf_fom-label`) in a CSV file. We include these files in this repo in the
 directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX``.
 
 .. csv-table:: FOM results for Tier 2 kernels run on MI300A in CPX mode
@@ -210,7 +182,7 @@ The legend in each plot indicates the curves shown.
 |    :align: center                                                                                                    |    :align: center                                                                                                    |
 +----------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                      |                                                                                                                      |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX/figures/Apps_MATVEC_3D_STENCIL_flops.png       | .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX/figures/Apps_MMATVEC_3D_STENCIL_flops.png      |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX/figures/Apps_MATVEC_3D_STENCIL_flops.png       | .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX/figures/Apps_MATVEC_3D_STENCIL_flops.png       |
 |    :width: 100 %                                                                                                     |    :width: 100 %                                                                                                     |
 |    :align: center                                                                                                    |    :align: center                                                                                                    |
 +----------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
@@ -225,7 +197,7 @@ The legend in each plot indicates the curves shown.
 |    :align: center                                                                                                    |    :align: center                                                                                                    |
 +----------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                      |                                                                                                                      |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX/figures/Basic_REDUCE_STRUCT_flops.png          | .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX/figures/Basic_NREDUCE_STRUCT_flops.png         |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX/figures/Basic_REDUCE_STRUCT_flops.png          | .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX/figures/Basic_REDUCE_STRUCT_flops.png          |
 |    :width: 100 %                                                                                                     |    :width: 100 %                                                                                                     |
 |    :align: center                                                                                                    |    :align: center                                                                                                    |
 +----------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
@@ -240,28 +212,27 @@ NVIDIA H100 throughput results (Tier 2 kernels)
 ----------------------------------------------------
 
 For the NVIDIA H100 architecture, we present one set of throughput results, where we ran with
-4 MPI ranks on a node -- one for each H100 GPU. We ran each ``Tier 1``
-kernel over a sequence of problem sizes such that the saturation point is
-evident on its associated throughput curve.
+4 MPI ranks on a node -- one for each H100 GPU.
 
-We choose the smallest problem to use ~50,000 bytes of allocated memory and
-the largest problem to use ~150MB of allocated memory, which is about 3 times
-the L2 cache size on the H100 GPU.  The L2 cache is 50MB
-(50 * 1024 * 1024 = 52,428,800 bytes).
+Similar to our methodology for the MI300A architecture, we ran each kernel and variant
+over a range of problem sizes to expose the saturation point. Specifically, we chose the
+smallest problem to allocate ~50,000 bytes of memory and the largest problem to allocate
+~150MB of memory, which is about 3 times the L2 cache size on the H100 GPU.  The L2 cache
+is 50MB (50 * 1024 * 1024 = 52,428,800 bytes).
 
 After building the code as described in :ref:`rajaperf_build_h100-label`, we
-run the ``Tier 2`` kernels as follows::
+run the ``Tier 2`` kernels using the following commands::
 
   $ cd path/to/RAJAPerf
   $ cd build_lc_toss4-mvapich2-2.3.7-nvcc-13.1.1-90-gcc-10.3.1
   $ cp ../../RPB-v2026.10.0/scripts/run_tier_h100.sh .
   $ ./run_tier_h100.sh tier2
 
-This generates a directory named ``RPBenchmark_H100_tier2``, which contains
-the results files for each kernel run over its range of problem sizes.
+This generates a directory named ``RPBenchmark_H100_tier2`` containing
+results files for each kernel run.
 
-Then, we process the data for reporting the results here in a concise form
-by running the Python script we provide::
+Then, we processed the data to generate FOM and throughput plots
+by running a Python script we provide::
 
   $ cd path/to/RAJAPerf
   $ cd build_lc_toss4-mvapich2-2.3.7-nvcc-13.1.1-90-gcc-10.3.1
@@ -320,32 +291,32 @@ size (allocated bytes). The legend in each plot indicates the curves shown.
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_INTSC_HEXRECT_flops.png              |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_MASS3DPA_flops.png                   |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_MASS3DEA_flops.png                   |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_MATVEC_3D_STENCIL_flops.png          |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_MASS3DPA_ATOMIC_flops.png            |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Basic_INDEXLIST_3LOOP_bandwidth.png       |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/baseline_data/RPBenchmark_H100_tier2/figures/Apps_MASSVEC3DPA_flops.png  |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Basic_MULTI_REDUCE_flops.png              |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_NODAL_ACCUMULATION_3D_flops.png      |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Basic_REDUCE_STRUCT_flops.png             |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                   |
-| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Apps_VOL3D_flops.png                      |
+| .. figure:: ../13_rajaperf/baseline_data/RPBenchmark_H100_tier2/figures/Comm_HALO_PACKING_FUSED_bandwidth.png     |
 |    :width: 100 %                                                                                                  |
 |    :align: center                                                                                                 |
 +-------------------------------------------------------------------------------------------------------------------+
