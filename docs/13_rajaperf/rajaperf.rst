@@ -88,6 +88,11 @@ Instructions for getting the RAJA Performance Suite Benchmark code, building it,
 and running it are described in the :ref:`rajaperf_build-label` and :ref:`rajaperf_run-label`
 sections.
 
+When the Suite is run, problem size, compute rate, memory bandwidth, result checksums, etc.
+are reported in various files in an output directory. We provide a Python script to traverse
+the contents of an output directory and generate a smaller set of summary files, throughput plots,
+and FOM information. We describe the exact Script usage in :ref:`rajaperf_run-label`.
+
 
 .. _rajaperf_problems-label:
 
@@ -95,9 +100,12 @@ Problems
 --------
 
 The RAJA Performance Suite Benchmark consists of a subset of RAJA Performance
-Suite kernels. The Benchmark kernels are partitioned into two *tier* levels
-described below, where we provide a basic description of each kernel along with RAJA
-features it exercises.
+Suite kernels. The Benchmark kernels are partitioned into two *Tier* (i.e., Priority) levels.
+
+  * Descriptions of Tier 1 kernels, how they are built, run, and assessed for the Benchmark are
+    provided below.
+  * Similar information for Tier 2 kernels can be found in :doc:`RAJA Performance Suite Tier 2 Kernels`
+    <../modsim/rajaperf_priority2>.
 
 .. note:: In the RAJA Performance Suite repository, each kernel is implemented in
           multiple files. Source files include ``<kernel-name>.cpp`` (common code
@@ -108,13 +116,12 @@ features it exercises.
           generate the kernel reference checksum against which we compare results of
           all other variants for correctness.
 
-The RAJA Performance Suite Benchmark kernels in each tier level are described in the following two sections.
-
 
 Tier 1 kernels
 ^^^^^^^^^^^^^^^^^^^
 
-*Tier 1* kernels are most important. They are located in the
+*Tier 1* kernels are most important. The following list describes the computational patterns/algorithms that they
+represent and which RAJA features they exercise. In the RAJA Performance Suite repo, they are located in the
 ``RAJAPerf/src/apps`` sub-directory:
 
    #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
@@ -127,25 +134,6 @@ Tier 1 kernels
    #. **MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
    #. **NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a contribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
    #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
-
-
-Tier 2 kernels
-^^^^^^^^^^^^^^^^^^^
-
-*Tier 2* kernels are also important, but less so than the *Tier 1*
-kernels listed above. *Tier 2* kernels are located in ``RAJAPerf/src`` sub-directories
-noted below (i.e., ``RAJAPerf/src/<subdir>/<kernel>``):
-
-   #. **apps/CONVECTION3DPA** element-wise action of a 3D finite element volume convection operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **apps/DEL_DOT_VEC_2D** divergence of a vector field at a set of points on a mesh *(single loop, data access via indirection array, RAJA::forall API)*
-   #. **apps/INTSC_HEXHEX** intersection between two 24-sided hexahedra, including volume and moment calculations *(multiple single-loop operations in sequence, RAJA::forall API)*
-   #. **apps/LTIMES** one step of the source-iteration technique for solving the steady-state linear Boltzmann equation, multi-dimensional matrix product *(nested loops, RAJA::kernel API)*
-   #. **apps/MASS3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **apps/MATVEC_3D_STENCIL** matrix-vector product based on a 3D mesh stencil *(single loop, data access via indirection array, RAJA::forall API)*
-   #. **basic/MULTI_REDUCE** multiple reductions in a kernel, where number of reductions is set at run time *(single loop, irregular atomic contention, RAJA::forall API)*
-   #. **basic/REDUCE_STRUCT** multiple reductions in a kernel, where number of reductions (6) is known at compile time *(single loop, multiple reductions, RAJA::forall API)*
-   #. **basic/INDEXLIST_3LOOP** construction of set of indices used in other kernel executions *(single loops, vendor scan implementations, RAJA::forall API)*
-   #. **comm/HALO_PACKING_FUSED** packing and unpacking MPI message buffers for point-to-point distributed memory halo data exchange for mesh-based codes *(overhead of launching many small kernels, GPU variants use RAJA::Workgroup concepts to execute multiple kernels with one launch)* 
 
 
 .. _rajaperf_fom-label:
@@ -182,19 +170,10 @@ approximation of the throughput curve. The details of our approach are documente
 for the baseline set we are interested in. We describe the use of the script
 in :ref:`rajaperf_results-label`.
 
-.. note:: The saturation point for all kernels, except two, is estimated based on
-          compute rate data. The Tier 2 kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``
-          perform no floating point operations. Thus, we estimate the saturation point for
-          those kernels based on memory bandwidth data.
-
-When the Suite is run, problem size, compute rate, memory bandwidth, result checksums, etc.
-are reported in various files in an output directory. We provide a Python script to traverse
-the contents of an output directory and generate a smaller set of summary files, throughput plots,
-and FOM information. We describe the exact Script usage in :ref:`rajaperf_run-label`.
-
-.. important:: The scripts and their invocations described in :ref:`rajaperf_run-label`
-               show how we determine the FOM values. Others are free to generate the
-               values by other means if they prefer.
+.. important:: * The scripts and their invocations described in :ref:`rajaperf_run-label`
+                 show how we determine the FOM values. Others are free to generate the
+                 values by other means if they prefer.
+               * In any case, the saturation point for all Tier 1 kernels should be estimated based on compute rate data.
 
 .. _rajaperf_codemod-label:
 
@@ -369,10 +348,8 @@ in the ``RAJAPerf-Benchmark/RPB-v2026.10.0/scripts`` directory.
 
 .. important:: In the following sections, we present detailed results,
                including FOM tables and throughput plots for the Tier 1
-               kernels described above. For completeness, we also include a
-               brief summary of results for Tier 2 kernels in less detail.
-               Data files and plots for all Benchmark kernels are included
-               in the ``baseline_data`` directory LLNL of this Benchmark
+               kernels described above. Data and plot files are included
+               in the ``baseline_data`` directory of this benchmark
                repository for reference.
 
 AMD MI300A throughput results (Tier 1 kernels)
@@ -431,31 +408,6 @@ variants of each kernel and summarizes the FOM (described in
    :widths: auto
    :header-rows: 1
 
-SPX mode (Tier 2)
-^^^^^^^^^^^^^^^^^^^^^^
-
-The process for generating results for the Tier 2 kernels is similar
-to the Tier 1 kernels just described. The only differences are that the
-command to run the kernels passes the ``tier2`` argument (instead of
-``tier1``)::
-
-  $ ./run_tier_mi300a.sh spx tier2
-
-and the results directories have ``tier2`` in their name instead of ``tier1``.
-
-Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
-do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
-They represent recurring computational patterns in our applications that are important despite not
-performing floating point operations. So, we consider bandwidth as an appropriate metric.
-We include the baseline data files for Tier 2 kernels run on the MI300A architecture in
-SPX mode in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-SPX``.
-
-.. csv-table:: FOM results for Tier 2 kernels run on MI300A in SPX mode
-   :file: ./baseline_data/RPBenchmark_MI300A_tier2-SPX/FOM/combined_fom.csv
-   :align: center
-   :widths: auto
-   :header-rows: 1
-
 CPX mode (Tier 1) 
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -497,31 +449,8 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier1-CPX``.
    :file: ./baseline_data/RPBenchmark_MI300A_tier1-CPX/FOM/combined_fom.csv
    :align: center
    :widths: auto
-   :header-rows: 1
-
-CPX mode (Tier 2)
-^^^^^^^^^^^^^^^^^^^^^^
-
-The process for generating results for the Tier 2 kernels is similar
-to the Tier 1 kernels just described. The only differences are that the
-command to run the kernels passes the ``tier2`` argument (instead of
-``tier1``)::
-
-  $ ./run_tier_mi300a.sh cpx tier2
-
-and the results directories have ``tier2`` in their name instead of ``tier1``.
-
-As noted earlier, two of the kernels ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED`` do not
-perform any floating point operations. So, we consider the bandwidth
-as the appropriate metric. We include the baseline data files for Tier 2
-kernels run on the MI300A architecture in CPX mode in this repo in the
-directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier2-CPX``.
-
-.. csv-table:: FOM results for Tier 2 kernels run on MI300A in CPX mode
-   :file: ./baseline_data/RPBenchmark_MI300A_tier2-CPX/FOM/combined_fom.csv
-   :align: center
-   :widths: auto
-   :header-rows: 1
+  :header-rows: 1
+ 
 
 AMD MI300A throughput plots (Tier 1)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -655,30 +584,6 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier1``.
    :widths: auto
    :header-rows: 1
 
-NVIDIA H100 (Tier 2)
-^^^^^^^^^^^^^^^^^^^^^^
-
-The process for generating results for the Tier 2 kernels is similar
-to the Tier 1 kernels just described. The only differences are that the
-command to run the kernels passes the ``tier2`` argument (instead of
-``tier1``)::
-
-  $ ./run_tier_h100.sh tier2
-
-and the results directories have ``tier2`` in their name instead of ``tier1``.
-
-Note that the two Tier2 kernels, ``INDEXLIST_3LOOP`` and ``HALO_PACKING_FUSED``,
-do not perform any floating point operations; thus, they have zero GFLOP/sec rates.
-They represent recurring computational patterns in our applications that are important despite not
-performing floating point operations. So, we consider bandwidth as an appropriate metric.
-We include the baseline data files for Tier 2 kernels run on the H100 architecture
-in this repo in the directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_H100_tier2-SPX``.
-
-.. csv-table:: FOM results for Tier 2 kernels run on H100
-   :file: ./baseline_data/RPBenchmark_H100_tier2/FOM/combined_fom.csv
-   :align: center
-   :widths: auto
-   :header-rows: 1
 
 NVIDIA H100 throughput plots (Tier 1)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
