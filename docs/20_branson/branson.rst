@@ -230,41 +230,19 @@ Throughput on El Capitan
 El Capitan
 ----------
 
-Throughput performance of Branson on AMD Epyc + AMD MI300A on a single node (4 GPUs) is provided within the following table and figure.
+Throughput performance of Branson on a single node - 4 GPUs - of El Capitan (AMD Epyc + AMD MI300A) is provided within the following table and figure.
 
-.. list-table::
+.. csv-table::
    :header-rows: 1
-
-   * - Photons/Node
-     - FOM (Photons/s)
-   * - 10000000
-     - 7.76E+06
-   * - 20000000
-     - 8.09E+06
-   * - 40000000
-     - 8.31E+06
-   * - 80000000
-     - 8.65E+06
-   * - 100000000
-     - 8.73E+06
-   * - 160000000
-     - 8.81E+06
-   * - 200000000
-     - 8.83E+06
-   * - 320000000
-     - 8.86E+06
-   * - 400000000
-     - 8.87E+06
-   * - 640000000
-     - 8.88E+06
-   * - 800000000
-     - 8.86E+06
-   * - 1000000000
-     - 8.85E+06
-   * - 1280000000
-     - 8.91E+06
+   :align: center
+   :file: branson_rocm_throughput.csv
 
 .. image:: rocm_throughput.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: branson_caliper_rocm_throughput.png
    :align: center
 
 
