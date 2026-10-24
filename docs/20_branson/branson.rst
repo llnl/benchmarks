@@ -224,8 +224,44 @@ This can be obtained on a CPU system using the following (while the application 
 ..
 
 
-Throughput on El Capitan
-========================
+Throughput
+==========
+
+El Capitan
+----------
+
+Throughput performance of Branson on a single node - 4 GPUs - of El Capitan (AMD Epyc + AMD MI300A) is provided within the following table and figure.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: branson_rocm_throughput.csv
+
+.. image:: branson_rocm_throughput.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: branson_caliper_rocm_throughput.png
+   :align: center
+
+Intel(R) Xeon(R) + NVIDIA H100
+------------------------------
+
+Throughput performance of Branson on a single node - 4 GPUs - of Intel(R) Xeon(R) + NVIDIA H100 is provided within the following table and figure.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: branson_cuda_throughput.csv
+
+.. image:: branson_cuda_throughput.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: branson_caliper_cuda_throughput.png
+   :align: center
 
 
 References
