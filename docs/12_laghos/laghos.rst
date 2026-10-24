@@ -324,6 +324,60 @@ Sample CPU and GPU memory usage on a single El Capitan node are shown below.
 
    GPU memory use on El Capitan with 4 ranks on a single node per DOF
 
+Weak Scaling on El Capitan
+==========================
+
+Weak scaling performance of Laghos on El Capitan (AMD Epyc + AMD MI300A) for each order is provided as follows.
+
+Linear (Q1Q0)
+-------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_linear_weak_rocm.csv
+
+.. image:: plots/laghos_linear_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_linear_weak_rocm.png
+   :align: center
+
+Quadratic (Q2Q1)
+----------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_quadratic_weak_rocm.csv
+
+.. image:: plots/laghos_quadratic_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_quadratic_weak_rocm.png
+   :align: center
+
+Cubic (Q3Q2)
+------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_cubic_weak_rocm.csv
+
+.. image:: plots/laghos_cubic_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_cubic_weak_rocm.png
+   :align: center
+
+
 References
 ==========
 

@@ -104,14 +104,23 @@ Memory Usage
 ============
 
 
-Strong Scaling
-==============
-
-Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
-
-
 Weak Scaling on El Capitan
 ==========================
+
+Weak scaling performance of Kripke on El Capitan (AMD Epyc + AMD MI300A) is provided as follows.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/kripke_weak_rocm.csv
+
+.. image:: plots/kripke_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/kripke_caliper_weak_rocm.png
+   :align: center
 
 
 References
