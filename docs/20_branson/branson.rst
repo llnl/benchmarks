@@ -8,7 +8,7 @@ Purpose
 =======
 
 For the ATS-6 procurement, we use the 3D hohlraum problem.
-Branson source code and documentation are on github: 
+Branson source code and documentation are on github:
 
 https://github.com/lanl/branson
 
@@ -23,8 +23,9 @@ For ATS-6, we use the History based configuration using Struct of Arrays
 
 Figure of Merit
 ---------------
-The Figure of Merit is defined as particles/second and is printed to the screen at the end of the simulation.
-This value is labeled "Photons Per Second (FOM):" in Branson's output.
+The Figure of Merit (FOM) is defined as particles/second and is printed to the screen at the end of the simulation.
+This value is labeled "Photons Per Second (FOM):" in Branson's output. Since the FOM is not normalized
+by the number of parallel resources it will ideally increase in weak and strong scaling studies.
 
 Source code modifications
 =========================
@@ -105,7 +106,7 @@ Testing the build:
 Running
 =======
 
-For Priority 1, we focus on single node performance. 
+For Priority 1, we focus on single node performance.
 We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
 and run with a 30 group build of Branson, which is the default in the ats-6 branch.
 To ensure we load the node, we will run 1 MPI rank per device, which will replicate the domains,
@@ -118,7 +119,6 @@ Use the following command to run:
    mpirun -n <gpus_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_single_node.xml>
 
 ..
-
 
 Validation
 ==========
@@ -224,8 +224,44 @@ This can be obtained on a CPU system using the following (while the application 
 ..
 
 
-Throughput on El Capitan
-========================
+Throughput
+==========
+
+El Capitan
+----------
+
+Throughput performance of Branson on a single node - 4 GPUs - of El Capitan (AMD Epyc + AMD MI300A) is provided within the following table and figure.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: branson_rocm_throughput.csv
+
+.. image:: branson_rocm_throughput.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: branson_caliper_rocm_throughput.png
+   :align: center
+
+Intel(R) Xeon(R) + NVIDIA H100
+------------------------------
+
+Throughput performance of Branson on a single node - 4 GPUs - of Intel(R) Xeon(R) + NVIDIA H100 is provided within the following table and figure.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: branson_cuda_throughput.csv
+
+.. image:: branson_cuda_throughput.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: branson_caliper_cuda_throughput.png
+   :align: center
 
 
 References

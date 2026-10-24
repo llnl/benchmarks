@@ -1,4 +1,4 @@
 Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
-Apps_VOL3D-Base_Seq-default,512.0,15.6567,7.02031
-Apps_VOL3D-Base_HIP-block_256,35937.0,546.86,231.35
-Apps_VOL3D-RAJA_HIP-block_256,35937.0,615.301,260.304
+Apps_VOL3D-Base_Seq-default,512.0,15.981,7.16574
+Apps_VOL3D-Base_HIP-block_256,79507.0,626.699,263.825
+Apps_VOL3D-RAJA_HIP-block_256,35937.0,614.464,259.95
