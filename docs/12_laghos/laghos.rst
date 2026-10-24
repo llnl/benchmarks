@@ -58,12 +58,12 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 For Laghos we define the following restrictions on source code modifications:
 
-* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
+* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results shown in :ref:`ValidateLaghos`.
 * Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built with "CUDA" or "HIP" device backends.
 * The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
 * Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
 * `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get an accurate FOM.
-* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
+* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision regardless of the precision Laghos simulations are computed in.
 
 Building
 ========
@@ -211,24 +211,25 @@ HIP:
 Running
 =======
 
-Benchmark runs should target approximately 4194304 (`4x1024x1024`) quadrature points per "compute device" (i.e. one GPU).
-The `-epm` parameter will generate a domain which has the specified number of elements/zones per MPI rank and equally distribute them to all ranks.
-The following table has the number of quadrature points per zone for various orders, and `-epm` values for each MPI rank being assigned one GPU.
+Benchmark runs should aim to maximize the FOM by choosing an appropriate `-epm` (element per mpi rank) value.
+To ensure domains are well shaped and minimize the impact of MPI communications it is recommended to set `-epm` to either a power of 2, or something of the form `b*2^a`, where b is small and a is large.
+Note that MFEM/Laghos currently does not support more than 32-bit local indexing so avoid choosing epm values which can result in more than `2^31-1` quadrature points per rank.
+You can compute the number of rank local quadrature points by multiplying the epm by the number of quadrature points per zone (tabulated below).
 
-.. table:: Elements per rank with one compute device per rank.
+.. table:: Quadrature points per zone.
    :align: center
 
-   +--------+----------------+--------+
-   | Order  |  QPts per zone | epm    |
-   +--------+----------------+--------+
-   | Q1Q0   |   8            | 524288 |
-   +--------+----------------+--------+
-   | Q2Q1   |   64           | 65536  |
-   +--------+----------------+--------+
-   | Q3Q2   |  216           | 19418  |
-   +--------+----------------+--------+
+   +--------+----------------+
+   | Order  |  QPts per zone |
+   +--------+----------------+
+   | Q1Q0   |   8            |
+   +--------+----------------+
+   | Q2Q1   |   64           |
+   +--------+----------------+
+   | Q3Q2   |  216           |
+   +--------+----------------+
 
-Run commands using the tabulated values for `-epm` are given below.
+Example run commands using `-epm` values to achieve 16 million quadrature points per rank are given below.
   
 .. code-block:: console
                 
@@ -287,7 +288,13 @@ The **Density L2 error** for other resolutions is shown in the following plot (f
 Example Scalability Results
 ===========================
 
-TODO
+The following figure shows how well Laghos weak scales for various orders on El Capitan along with the `-epm` values used for the scaling studies.
+
+.. figure:: plots/weak_scaling.png
+   :alt: El Capitan (MI300a) Weak scaling
+   :align: center
+
+   El Capitan (MI300a) Weak scaling
 
 Memory Usage
 ============
