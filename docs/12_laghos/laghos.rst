@@ -298,8 +298,7 @@ Example Scalability Results
 
 The following figure shows how well Laghos weak scales for various orders on El Capitan along with the `-epm` values used for the scaling studies.
 
-.. figure:: plots/weak_scaling.png
-   :alt: **El Capitan (MI300a)** weak scaling
+.. image:: plots/weak_scaling.png
    :align: center
 
    **El Capitan (MI300a)** weak scaling
