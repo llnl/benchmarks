@@ -120,6 +120,58 @@ accumulated time used to calculate the FOM.
 Work or delays within a timed epoch still contribute to the FOM, including data
 loading, compilation, and contention from any overlapping background activity.
 
+**Minibatch timing**
+
+``per_minibatch_median_time`` describes the time per full training minibatch, in
+seconds. Lower values indicate better performance. It measures a subset of the work
+included in the FOM, as detailed below. This metric summarizes typical full-batch execution
+time, while the FOM also reflects the number of epochs needed to reach convergence.
+
+The current implementation uses PyTorch GPU events. The start event is recorded after
+the dataloader supplies a batch and before its inputs and labels are transferred to
+the device. The end event is recorded after the training step and per-batch metric
+accumulation. Partial training batches are excluded from this timing, although they
+still contribute to the FOM.
+
+For each timed batch, ScaFFold takes the maximum duration across ranks. It then takes
+the median of those durations within each epoch and the median of the epoch medians
+for the run. The final value is logged as ``Median of epoch minibatch time medians``.
+
+.. list-table:: Minibatch timing relative to the FOM categories
+    :header-rows: 1
+
+    - - FOM category
+      - Included in minibatch timing
+      - Omitted relative to the FOM
+    - - Epoch setup
+      - None.
+      - Setting sampler epochs, selecting training mode, and clearing gradients
+        before the batch loop.
+    - - Data loading and transfers
+      - Device transfers and device-side tensor preparation for the supplied
+        training batch.
+      - Fetching the batch from the dataloader, including file reads, worker-side
+        preparation, and waits for data. All validation data loading and transfers.
+    - - Model training
+      - Forward passes, loss calculation, backward passes, gradient clipping,
+        optimizer updates, and per-batch metric accumulation for full batches.
+      - Training work for partial batches.
+    - - Validation
+      - None.
+      - Validation forward passes, loss calculation, and Dice-score evaluation.
+    - - Distributed communication
+      - Communication on the timed training batch's execution path, including
+        spatially sharded operations and gradient and loss reductions.
+      - Epoch-level aggregation of training metrics and validation communication.
+    - - Learning-rate scheduling
+      - None.
+      - The scheduler step after validation.
+    - - Other in-epoch overhead
+      - Device work and delays between the GPU events, including compilation or
+        host delays that leave the device waiting within that interval.
+      - Work outside the event interval, such as advancing the profiler schedule
+        after the batch's end event.
+
 ***************************
  Source code modifications
 ***************************
@@ -337,6 +389,43 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
      - 42
      - 154.5
 
+.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+   :align: center
+
+.. list-table:: Strong scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - per_minibatch_median_time
+   * - 384
+     - 13
+     - 0.67
+   * - 384
+     - 42
+     - 0.66
+   * - 384
+     - 101
+     - 0.65
+   * - 384
+     - 523
+     - 0.68
+   * - 384
+     - 1024
+     - 0.64
+   * - 768
+     - 13
+     - 0.46
+   * - 768
+     - 523
+     - 0.47
+   * - 1536
+     - 13
+     - 0.34
+   * - 1536
+     - 42
+     - 0.36
+
 ****************************
  Weak Scaling on El Capitan
 ****************************
@@ -382,6 +471,46 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
    * - 1536
      - 42
      - 154.5
+
+.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+   :align: center
+
+.. list-table:: Weak scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - per_minibatch_median_time
+   * - 384
+     - 13
+     - 0.29
+   * - 384
+     - 42
+     - 0.3
+   * - 384
+     - 101
+     - 0.28
+   * - 384
+     - 523
+     - 0.3
+   * - 384
+     - 1024
+     - 0.28
+   * - 768
+     - 13
+     - 0.31
+   * - 768
+     - 42
+     - 0.33
+   * - 768
+     - 523
+     - 0.33
+   * - 1536
+     - 13
+     - 0.34
+   * - 1536
+     - 42
+     - 0.36
 
 ************
  References
