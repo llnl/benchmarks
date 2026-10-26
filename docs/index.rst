@@ -23,11 +23,11 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    :maxdepth: 3
    :numbered:
    :caption: ModSim
-	     
+
    modsim/index
    modsim/priority1
    modsim/priority2
-	     
+
 .. toctree::
    :maxdepth: 3
    :numbered:
