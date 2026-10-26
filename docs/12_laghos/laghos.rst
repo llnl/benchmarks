@@ -77,6 +77,14 @@ Prerequisites:
 
 These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$CUDACC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
 
+The minimum required version of each library are:
+
+* Umpire: v2026.07.2
+* RAJA: v2026.07.1
+* Hypre: v3.2.0
+* MFEM: v4.10
+* Laghos: ats-6
+
 Umpire (required)
 -----------------
 
@@ -84,7 +92,7 @@ CUDA:
 
 .. code-block:: console
                 
-                git clone https://github.com/LLNL/Umpire.git
+                git clone --branch v2026.07.2 https://github.com/LLNL/Umpire.git
                 cd Umpire
                 mkdir build
                 cd build
@@ -95,7 +103,7 @@ HIP:
 
 .. code-block:: console
                 
-                git clone https://github.com/LLNL/Umpire.git
+                git clone --branch v2026.07.2 https://github.com/LLNL/Umpire.git
                 cd Umpire
                 mkdir build
                 cd build
@@ -109,7 +117,7 @@ CUDA:
 
 .. code-block:: console
                 
-                git clone https://github.com/LLNL/RAJA.git
+                git clone --branch v2026.07.1 https://github.com/LLNL/RAJA.git
                 cd RAJA
                 mkdir build
                 cd build
@@ -120,7 +128,7 @@ HIP:
 
 .. code-block:: console
                 
-                git clone https://github.com/LLNL/RAJA.git
+                git clone --branch v2026.07.1 https://github.com/LLNL/RAJA.git
                 cd RAJA
                 mkdir build
                 cd build
@@ -134,7 +142,7 @@ CUDA:
 
 .. code-block:: console
                 
-                git clone https://github.com/hypre-space/hypre.git
+                git clone --branch v3.2.0 https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
                 make -j install
@@ -145,7 +153,7 @@ HIP:
 
 .. code-block:: console
                 
-                git clone https://github.com/hypre-space/hypre.git
+                git clone --branch v3.2.0 https://github.com/hypre-space/hypre.git
                 cd hypre/build
                 cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
                 make -j install
@@ -159,7 +167,7 @@ CUDA:
 
 .. code-block:: console
                 
-                git clone https://github.com/mfem/mfem.git
+                git clone --branch v4.10 https://github.com/mfem/mfem.git
                 cd mfem
                 mkdir build
                 cd build
@@ -172,7 +180,7 @@ HIP:
 
 .. code-block:: console
                 
-                git clone https://github.com/mfem/mfem.git
+                git clone --branch v4.10 https://github.com/mfem/mfem.git
                 cd mfem
                 mkdir build
                 cd build
@@ -188,7 +196,7 @@ CUDA:
 
 .. code-block:: console
                 
-                git clone https://github.com/CEED/Laghos.git
+                git clone --branch ats-6 https://github.com/CEED/Laghos.git
                 cd Laghos
                 mkdir build
                 cd build
@@ -199,7 +207,7 @@ HIP:
 
 .. code-block:: console
                 
-                git clone https://github.com/CEED/Laghos.git
+                git clone --branch ats-6 https://github.com/CEED/Laghos.git
                 cd Laghos
                 mkdir build
                 cd build
@@ -284,17 +292,6 @@ The **Density L2 error** for other resolutions is shown in the following plot (f
    :align: center
 
    **Density L2 error** for an ``NxNxN`` zone domain
-
-Example Scalability Results
-===========================
-
-The following figure shows how well Laghos weak scales for various orders on El Capitan along with the `-epm` values used for the scaling studies.
-
-.. figure:: plots/weak_scaling.png
-   :alt: El Capitan (MI300a) Weak scaling
-   :align: center
-
-   El Capitan (MI300a) Weak scaling
 
 Memory Usage
 ============
