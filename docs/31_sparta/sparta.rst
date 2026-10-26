@@ -3,8 +3,7 @@ SPARTA
 ******
 
 .. note::
-   The documentation herein needs to be updated for current
-   performance.
+   There may be some gaps with the performance data.
 
 This is the documentation for the benchmark [SPARTA]_. The content
 herein was created by the following authors (in alphabetical order).
@@ -66,7 +65,8 @@ The command to clone is provided below.
 
 .. note::
    This version of SPARTA has been updated to include the full
-   inclusion of Kokkos 5.
+   inclusion of Kokkos 5 and the CMake build along with at-scale
+   performance enhancements.
 
 The script to clone can be downloaded from :download:`sparta_clone.sh
 <sparta_clone.sh>`. It can also be executed in place to clone into
@@ -83,6 +83,26 @@ The script to clone can be downloaded from :download:`sparta_clone.sh
 Problem
 -------
 
+This input sets up a SPARTA simulation of argon gas particles moving
+through a 3-D box. The particles collide with each other using a
+gas-physics collision model, so it represents collisional flow rather
+than free molecular flow. The gas starts at a temperature of 273.15 K
+with no overall flow velocity.
+ 
+This benchmark is relevant to production because it exercises the main
+costs of a DSMC simulation: particle movement, particle sorting into
+cells, and particle collisions. It has good weak-scaling
+characteristics, so it is useful for testing how well SPARTA performs
+as the problem size and processor count grow on large supercomputers.
+Although it has no surfaces, that still represents important
+production-style physics problems, such as Taylor–Green turbulent flow
+or Rayleigh–Taylor mixing, where the dominant work is in the
+gas-particle dynamics rather than surface interactions. Surface-heavy
+problems are often harder to use as clean benchmarks because load
+imbalance can grow as processor domains get smaller, making it
+difficult to separate algorithmic performance from geometry-induced
+imbalance.
+
 This problem models 2D hypersonic flow of nitrogen over a circle with
 periodic boundary conditions in the z dimension, which physically
 translates to 3D flow over a cylinder of infinite length. Particles
@@ -93,106 +113,100 @@ circle. The memory array used to hold particles is reordered by grid
 cell every 100 timesteps to improve data locality and cache access
 patterns.
 
-This problem is *mostly* present within the upstream SPARTA
-repository. The components of this problem are listed below (paths
+This problem is a modified version of an existing benchmark problem
+within the SPARTA repository. Adding it formally is being actively
+discussed. The components of this problem are listed below (paths
 given are within SPARTA repository). Each of these files will need to
 be copied into a run directory for the simulation.
 
-``examples/cylinder/in.cylinder``
+``in.collide_halt_balance``
    This is the default input file that controls the simulation. Some
    parameters within this file may need to be changed depending upon
-   what is being run (i.e., these parameters control how long this
-   simulation runs for and how much memory it uses). The modified
-   version of this within the template directory should be preferred;
-   more on this below.
-
-``examples/cylinder/circle_R0.5_P10000.surf``
-   This is the mesh file and will remain unchanged.
-
-``examples/cylinder/air.*``
-   These three files (i.e., ``air.species``, ``air.tce``, and
-   ``air.vss``) contain the composition and reactions inherent with
-   the air. These files, like the mesh file, are not to be edited.
-
-A template run directory was created to help ease performing a
-simulation; this directory is ``templatedir``. There are some key
-files within it.
-
-``templatedir/in.cylinder``
-   This is a modified version of the input file with some key parameters
-   changed to be more appropriate as a benchmark.
-
-``templatedir/sparta_ln.sh``
-   This file creates symbolic links to files and folders needed for
-   the simulation.
-
-``templatedir/sparta_batch_elcapitan.sh``
-   This is a batch script compatible with El Capitan. It has
-   capabilities for setting key job parameters from the command line;
-   more on that below.
+   what is being run (e.g., these parameters control how much memory
+   it uses). First, one scales the problem size on a single node to
+   match the needed memory characteristics via ``nloc``. Then, one
+   weak scales from a single node to an arbitrary number by changing
+   ``nscale``. Both of these parameters are defined via ``index``, so
+   they can be altered on the command line invocation of SPARTA.
 
 
 An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 6,11,17,23,26,29,32,34
+   :emphasize-lines: 18,32,35,38,39,48,49,55,56
 
+   # advect particles via VSS collisional flow on a uniform grid
+   # particles reflect off global box boundaries
+   #
+   # Balanced weak-scaling version.
+   #
+   # Assumptions:
+   #   nscale = number of nodes
+   #   4 MPI ranks / GPUs per node
+   #   total MPI ranks = 4*nscale
+   #   nscale must be a power of 2
+   #
+   # Goal:
+   #   Every MPI rank owns a cubic local grid:
+   #     nloc x nloc x nloc
+   #
+   # The global domain may be non-cubic.
+
+   variable            nscale index 1
+   variable            ppc index 10
+
+   global              optmove yes particle/reorder 10
+   # Help debug slow nodes...
+   # global              timer/rank yes timer/file timings.txt
+
+   # -------------------------------------------------------------------------
+   # Local grid size per MPI rank
+   #
+   # 305^3 = 28,372,625 cells/rank
+   # with ppc=10 -> 283,726,250 particles/rank
+   # -------------------------------------------------------------------------
+
+   variable            nloc index 305
    <snip>
-   ###################################
-   # Trajectory inputs
-   ###################################
+   stats_style         step cpu spcpu np nattempt ncoll
+   stats               10
+   stats_modify        flush yes
    <snip>
-   variable            L index 1.
-   <snip>
-   ###################################
-   # Simulation initialization standards
-   ###################################
-   variable            ppc equal 47
-   <snip>
-   #####################################
-   # Gas/Collision Model Specification #
-   #####################################
-   <snip>
-   collide_modify      vremax 100 yes vibrate no rotate smooth nearcp yes 10
+   timestep            7.00E-8
+   run                 30
    <snip>
    ###################################
    # Output
    ###################################
-   <snip>
-   stats               100
-   <snip>
-   # Some systems buffer extensively
-   stats_modify        flush yes
-   <snip>
-   # Stop after 11 minutes
-   fix 1 halt 10 tlimit > 660.0 message no
-   <snip>
-   # Print out the value of L for parsing ease
-   print "The value of L is $L" 
-   <snip>
-   run                 10000000
 
-These parameters are described below.
+   stats               0
 
-``L``
+   # Stop after 5.5 minutes
+   fix             1 halt 10 tlimit > 330.0 message no error continue
+   run             1000000
+
+   unfix           1
+   reset_timestep 0
+
+   # Stop after 5.5 minutes
+   fix             2 halt 10 tlimit > 330.0 message no
+   run             1000000
+
+   These parameters are described below.
+
+``nloc``
    This corresponds to the **l**\ ength scale factor. This will scale
    the x and y dimensions of the problem, e.g., a doubling of this
    parameter will result in a domain that is 4x larger. This is used
    to weak scale a problem, e.g., setting this to 32 would be
    sufficient to weak scale a single-node problem onto 1,024 nodes.
 
-``ppc``
+``nscale``
    This sets the **p**\ articles **p**\ er **c**\ ell variable. This
    variable controls the size of the problem and, accordingly, the
    amount of memory it uses. Adjust this if the initial memory size is
    too high and a value of ``L`` would need to be less than 1.0.
-
-``collide_modify``
-   The official documentation for this value is `here
-   <https://sparta.github.io/doc/collide_modify.html>`_. This resets
-   the number of collisions and attempts to enable consistent work for
-   each time step.
 
 ``stats``
    This sets the interval at which the output required to compute the
@@ -205,26 +219,23 @@ These parameters are described below.
 ``stats_modify flush yes``
    This enables the log output to buffer continuously on El Capitan.
 
-``fix 1 halt 10 tlimit > 660.0 message no``
-   This sets job termination to 660.0 seconds of wall time by checking
-   on progress every 10 steps.
+``run 30``
+   This sets the first sub-job to run for 30 steps at a large timestep
+   to unsort the particle array.
 
-``print "The value of L is $L"``
-   This line outputs the value of ``L`` in a way that is easy to parse
-   since it can be set external to the input file.
+``fix 1 halt 10 tlimit > 330.0 message no error continue``
+   This sets the second sub-job termination to 330.0 seconds of wall
+   time by checking on progress up to every 10 steps. This is the
+   transient period whose performance will be discarded.
 
-``run``
-   This sets how many iterations it will run for, which also controls
-   the wall time required for termination. If the ``fix 1 halt ...``
-   is used, then set this to a large number so it allows the ``halt``
-   to stop at the appropriate time.
+``fix 2 halt 10 tlimit > 330.0 message no``
+   This sets the third sub-job termination to 330.0 seconds of wall
+   time by checking on progress up to every 10 steps. This is the
+   period whose performance will be evaluated. The simulation will
+   stop afterwards.
 
-This problem exhibits different runtime characteristics whether or not
-Kokkos is enabled. Specifically, there is some work that is performed
-within Kokkos that helps to keep this problem as well behaved from a
-throughput perspective as possible. Ergo, Kokkos must be enabled for
-the simulations regardless of the hardware being used (the cases
-herein have configurations that enable it for reference). If Kokkos is
+Due to differences in how memory is allocated, Kokkos must be enabled
+for the simulation regardless of the hardware being used. If Kokkos is
 enabled, the following excerpts should be found within the log file.
 
 .. code-block::
@@ -248,44 +259,19 @@ end of this simulation is a block that resembles the following
 example.
 
 .. code-block::
-   :emphasize-lines: 8-12
 
-       Step          CPU         Np     Natt    Ncoll Maxlevel
-          0            0 1342895588        0        0        3 
-        100    55.100981 1342896690 30660997 24422279        3 
-        200    108.04593 1342894859 30715618 24465908        3 
-        300    162.82546 1342894246 30765809 24505854        3 
-        400    217.92144 1342895598 30812328 24539812        3 
-        500    274.18419 1342897827 30854579 24573110        3 
-        600    330.94615 1342897254 30902088 24612675        3 
-        700    387.95385 1342893864 30939073 24640919        3 
-        800    445.66487 1342885429 30978764 24674696        3 
-        900    505.13571 1342886863 31014395 24701985        3 
-       1000    564.62459 1342883798 31050409 24731144        3 
-       1100    624.14498 1342885848 31083875 24756941        3 
-       1200    683.65841 1342884461 31116135 24780002        3 
-   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
+       Step          CPU        S/CPU         Np      Natt     Ncoll
+          0            0            0 9079240000 903884280 641603306
+        200    24.009253    8.3301203 9079240000 903879874 641591530
+   Loop time of 24.3716 on 32 procs for 200 steps with 9079240000 particles
+   Performance: 8.206 timesteps/s, 74.507 Gparticle-step/s
 
-The quantity of interest (QOI) is "Mega particle steps per second,"
-which can be computed from the above table by multiplying the third
-column (no. of particles) by the first (no. of steps), dividing the
-result by the second column (elapsed time in seconds), and finally
-dividing by 1,000,000 (normalize). The number of steps must be large
-enough so the times mentioned in the second column exceed 600 (i.e.,
-so it runs for at least 10 minutes).
-
-The Figure of Merit (**FOM**) is the harmonic mean of the QOI computed
-from the times between 300 and 600 seconds and then divided by the
-number of nodes, i.e., "Mega particle steps per second per node." A
-Python script (:download:`sparta_fom.py <sparta_fom.py>`) is included
-within the repository to aid in computing this quantity. Pass it the
-``-h`` command line argument to view its help page for additional
-information.
-
-It is desired to capture the FOM for varying problem sizes that
-encompass utilizing 35% to 75% of available memory (when all PEs are
-utilized). The ultimate goal is to maximize this throughput FOM while
-utilizing at least 50% of available memory.
+The quantity of interest (QOI) is "Gparticle-step/s", which can be
+directly extracted from the last line of the 3rd sub-job's performance
+output (which resembles the block above). The Figure of Merit
+(**FOM**) is QOI divided by the number of nodes. The ultimate goal is
+to maximize this throughput FOM while utilizing at least 50% of
+available memory.
 
 
 .. _SPARTACorrectness:
@@ -297,23 +283,12 @@ The aforementioned relevant block of output within "log.sparta" is
 replicated below.
 
 .. code-block::
-   :emphasize-lines: 8-12
 
-       Step          CPU         Np     Natt    Ncoll Maxlevel
-          0            0 1342895588        0        0        3 
-        100    55.100981 1342896690 30660997 24422279        3 
-        200    108.04593 1342894859 30715618 24465908        3 
-        300    162.82546 1342894246 30765809 24505854        3 
-        400    217.92144 1342895598 30812328 24539812        3 
-        500    274.18419 1342897827 30854579 24573110        3 
-        600    330.94615 1342897254 30902088 24612675        3 
-        700    387.95385 1342893864 30939073 24640919        3 
-        800    445.66487 1342885429 30978764 24674696        3 
-        900    505.13571 1342886863 31014395 24701985        3 
-       1000    564.62459 1342883798 31050409 24731144        3 
-       1100    624.14498 1342885848 31083875 24756941        3 
-       1200    683.65841 1342884461 31116135 24780002        3 
-   Loop time of 683.659 on 4 procs for 1200 steps with 1342884461 particles
+       Step          CPU        S/CPU         Np      Natt     Ncoll
+          0            0            0 9079240000 903884280 641603306
+        200    24.009253    8.3301203 9079240000 903879874 641591530
+   Loop time of 24.3716 on 32 procs for 200 steps with 9079240000 particles
+   Performance: 8.206 timesteps/s, 74.507 Gparticle-step/s
 
 There are several columns of interest regarding correctness; these are
 listed below.
@@ -323,6 +298,11 @@ listed below.
 
 ``CPU``
    This is the elapsed time and is the second column.
+
+``S/CPU``
+   This is the number of steps per CPU. It is a simulation rate that
+   allows one to view relative performance across different output
+   steps.
 
 ``Np``
    This is the number of particles and is the third column.
@@ -345,15 +325,6 @@ to a value of 1 so fine-grained output is generated; if this is
 significantly slowing down computation, then it can be increased to a
 value of 10. Then, produce output from SPARTA\ :sub:`unmod` with the
 same ``run`` and ``stats`` settings.
-
-.. note::
-   The example above is generating output every 100 time steps, which
-   is also what the value of ``collide_modify`` is set to. This has
-   the side effect of having low attempt and collision values since it
-   is outputting on the reset step. The final value shown at a time
-   step of 4,346 has values that are more inline with the actual
-   problem. This is why output, for this correctness step, needs to
-   occur at each time step.
 
 The **second** step is to compute the absolute differences between
 modified and unmodified SPARTA for ``Np``, ``Natt``, and ``Ncoll`` for
@@ -430,6 +401,8 @@ how to build SPARTA for the following systems:
 * Generic (see :ref:`BuildSpartaGeneric`)
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`BuildSpartaATS4`)
+* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
+  known as Hops (see :ref:`BuildSpartaCTS2GPU`)
 
 
 .. _BuildSpartaGeneric:
@@ -463,6 +436,28 @@ reference.
    :language: bash
 
 
+.. _BuildSpartaCTS2GPU:
+
+Hops
+----
+
+Instructions for building on Hops are provided below. These
+instructions assume this repository has been cloned and that the
+current working directory is at the top level of this repository.
+
+.. code-block:: bash
+
+   cd docs/31_sparta
+   ./sparta_build_hops.sh
+
+The script discussed above is :download:`sparta_build_hops.sh
+<sparta_build_hops.sh>` and is produced below for convenience and
+reference.
+
+.. literalinclude:: sparta_build_elcapitan.sh
+   :language: bash
+
+
 Running
 =======
 
@@ -473,6 +468,10 @@ systems:
   :ref:`SPARTARunATS4`)
   * Profiling with Kokkos Tools on El Capitan (see
     :ref:`SPARTAProfileKokkosToolsElCapitan`)
+* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
+  known as Hops (see :ref:`SpartaRunCTS2GPU`)
+  * Profiling with Kokkos Tools on Hops (see
+    :ref:`SPARTAProfileKokkosToolsHops`)
 
 
 .. _SPARTARunATS4:
@@ -480,12 +479,7 @@ systems:
 El Capitan
 ----------
 
-.. note::
-
-   This section will be updated with some more content soon.
-
-An example for performing simulations on El Capitan is
-provided below.
+An example for performing simulations on El Capitan is provided below.
 
 .. code-block:: bash
 
@@ -496,13 +490,13 @@ provided below.
    cd useful
 
    # submit job and set parameters on command line if desired
-   #   this example sets L (aka sparta_len) to 2.5
+   #   this example sets nloc (aka sparta_nloc) to 355
    #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
    #   this example runs on 1 node (aka --nodes=1)
-   sparta_len=2.5 is_kokkos_tools=1 flux batch --nodes=1 sparta_batch_elcapitan.s
+   sparta_nloc=355 is_kokkos_tools=1 flux batch --nodes=1 sparta_batch_elcapitan.sh
 
 
-.. _SPARTAProfileKokkosTools:
+.. _SPARTAProfileKokkosToolsElCapitan:
 
 Profiling with Kokkos Tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -535,6 +529,61 @@ GPU.
    MAX MEMORY ALLOCATED: 82222221.9 kB
 
 
+.. _SPARTARunCTS2GPU:
+
+Hops
+----
+
+An example for performing simulations on Hops is provided below.
+
+.. code-block:: bash
+
+   # first, copy templatedir into something useful
+   cp -a templatedir useful
+
+   # next, go into the run folder
+   cd useful
+
+   # submit job and set parameters on command line if desired
+   #   this example sets nloc (aka sparta_nloc) to 355
+   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
+   #   this example runs on 1 node (aka --nodes=1)
+   sparta_nloc=355 is_kokkos_tools=1 sbatch --nodes=1 sparta_batch_hops.sh
+
+
+.. _SPARTAProfileKokkosToolsHops:
+
+Profiling with Kokkos Tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scripts are provided to clone and build Kokkos Tools. The steps to do
+both are provided below.
+
+.. code-block:: bash
+
+   # go into the SPARTA documentation folder
+   cd docs/31_sparta
+
+   # clone Kokkos Tools
+   ./kokkos_tools_clone.sh
+
+   # build Kokkos Tools' Space Time
+   ./kokkos_tools_build_hops.sh
+
+Once built, the command line variable ``is_kokkos_tools`` can be set
+to ``1`` for the batch script to turn it on. After a successful run,
+it will output additional memory information. An example of this (for
+``L`` equal to 2.0 and ``ppc`` equal to 47) on El Capitan is provided
+below that shows approximately 82.2 GB of memory allocated on each
+GPU.
+
+.. code-block::
+
+   KOKKOS CUDA SPACE:
+   ===================
+   MAX MEMORY ALLOCATED: 82222221.9 kB
+
+
 .. _SPARTAResults:
 
 Verification of Results
@@ -561,26 +610,8 @@ Multi-node results from SPARTA are provided on the following system(s):
 Compute Figure of Merit
 -----------------------
 
-A script (``sparta_fom.py``) is provided to compute the figure of
-merit (FOM). A single-node example of it is below on El Capitan
-showcasing 2,408 Mega particle steps per second per node. Its default
-values are to always run ``--all``, to set 4 MPI ranks per node, and
-to look for a file named "log.sparta" meaning the arguments in the
-example were unnecessary.
-
-.. code-block::
-   :emphasize-lines: 2
-
-   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
-   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
-   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
-   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
-   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
-   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
-   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
-   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
-   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
-   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
+As stated in :ref:`SPARTAFigureOfMerit`, the FOM is the QOI directly
+extracted from the SPARTA log file divided by the number of nodes.
 
 
 .. _ResultsSpartaATS4:

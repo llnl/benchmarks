@@ -43,8 +43,8 @@ module list
 pushd "${dir_build}"
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
-    -DPKG_FFT=on \
-    -DBUILD_MPI=on \
+    -D SPARTA_DEFAULT_CXX_COMPILE_FLAGS="-DSPARTA_BIGBIG" \
+    -D BUILD_MPI=on \
     ../cmake
 /usr/bin/time --verbose -- \
     nice -n 1 \

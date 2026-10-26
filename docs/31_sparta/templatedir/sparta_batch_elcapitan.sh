@@ -9,14 +9,17 @@
 #flux: --setattr=thp=always
 #flux: --setattr=hugepages=512GB
 
-# e.g., to set the L parameter to a different value: sparta_len=2.0    flux batch sparta_batch.sh
-# e.g., to turn on Kokkos Tools Space Time:          is_kokkos_tools=1 flux batch sparta_batch.sh
+# e.g., to set the nloc parameter to a different value: sparta_nloc=355    flux batch sparta_batch.sh
+# e.g., to turn on Kokkos Tools Space Time:             is_kokkos_tools=1  flux batch sparta_batch.sh
 
 # define runtime params
-sparta_len=${sparta_len:-1}
+sparta_nloc=${sparta_nloc:-305}
+sparta_nscale=${sparta_nscale:-1}
 is_kokkos_tools=${is_kokkos_tools:-0}
 flux_job_nodes=${flux_job_nodes:-`flux resource list -s up -no {nnodes}`}
-echo "sparta_len=${sparta_len}"
+test ! ${sparta_nscale} -eq ${flux_job_nodes} && sparta_nscale=${flux_job_nodes}
+echo "sparta_nloc=${sparta_nloc}"
+echo "sparta_nscale=${sparta_nscale}"
 echo "is_kokkos_tools=${is_kokkos_tools}"
 echo "flux_job_nodes=${flux_job_nodes}"
 
@@ -24,7 +27,7 @@ echo "flux_job_nodes=${flux_job_nodes}"
 dir_base="` pwd -P `"
 
 # set up environment appropriately
-. sparta_env_elcapitan.sh
+. ../sparta_env_elcapitan.sh
 test ${is_kokkos_tools} -eq 1 && . kokkos_tools_env_elcapitan.sh
 
 # run on 4 GPUs per node
@@ -39,7 +42,8 @@ flux run \
      -o cpu-affinity=off \
      -o gpu-affinity=off \
      -o mpibind=on,smt:1,verbose:0 \
-     "${dir_base}/sparta/_build/src/spa_elcapitan_kokkos" \
+     "${dir_base}/../sparta/_build/src/spa_elcapitan_kokkos" \
          -sf kk -k on g 1 \
-         -in in.cylinder \
-         -var L ${sparta_len}
+         -in in.collide_halt_balance \
+         -var nloc ${sparta_nloc} \
+         -var nscale ${sparta_nscale} 
