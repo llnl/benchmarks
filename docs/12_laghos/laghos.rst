@@ -293,16 +293,6 @@ The **Density L2 error** for other resolutions is shown in the following plot (f
 
    **Density L2 error** for an ``NxNxN`` zone domain
 
-Example Scalability Results
-===========================
-
-The following figure shows how well Laghos weak scales for various orders on El Capitan along with the `-epm` values used for the scaling studies.
-
-.. image:: plots/weak_scaling.png
-   :align: center
-
-   **El Capitan (MI300a)** weak scaling
-
 Memory Usage
 ============
 
