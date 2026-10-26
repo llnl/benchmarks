@@ -7,3 +7,4 @@ pyyaml
 sphinxcontrib-programoutput
 docutils
 pillow
+matplotlib
