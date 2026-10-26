@@ -12,7 +12,8 @@ Full source code and documentation is available on `GitHub
 .. important::
 
     ScaFFold supports configurable problem sizes. This benchmark is for *one* particular
-    configuration (although others may be useful for prototyping).
+    configuration, specified in :ref:`scaffold-run-parameters` (although others may be
+    useful for prototyping).
 
 *********
  Purpose
@@ -44,26 +45,16 @@ be a validation Dice score of at least 0.95.
 Problems
 ========
 
-The task is a ScaFFold training problem of scale 10. The benchmark configuration is to
-otherwise use the default values, subject to the source code modifications below.
+The task is a ScaFFold training problem of scale 10. See
+:ref:`scaffold-run-parameters` for the required benchmark configuration.
 
 Figure of Merit
 ===============
 
 The Figure of Merit is the time (in seconds) to train the ScaFFold model to convergence
 (validation Dice score of at least 0.95), inclusive of all I/O and other overheads (but
-excluding dataset generation). Note that since the FOM depends on convergence, a given
-FOM is specific to multiple problem and learning rate specification parameters. For
-example, a FOM from a run at ``target_dice=0.9`` is not comparable to a FOM from a run
-at ``target_dice=0.95``.
-
-FOM constraints:
-
-- The current requirements for parameters that cannot be varied for comparable FOMs is
-  logged directly after the FOM is printed in the benchmark.
-- FOM's must be reported as the median from at least 3 different ``seed``
-  configurations.
-- FOM must be reported from ``dataset_seed: 523``.
+excluding dataset generation). See :ref:`scaffold-run-parameters` for the FOM
+comparability and reporting requirements.
 
 ***************************
  Source code modifications
@@ -73,18 +64,12 @@ See :ref:`GlobalRunRules` for general guidance on allowed modifications. For Sca
 we permit the following modifications:
 
 - In ``ScaFFold/configs/benchmark_default.yml``, any "External/user-facing" parameters
-  may be freely changed.
-- Changes to "External problem specification" and "External learning rate specification"
-  from ``ScaFFold/configs/benchmark_default.yml`` may impact convergence and results may
-  be incomparable to the baseline data we provide.
+  may be changed subject to the requirements in :ref:`scaffold-run-parameters`.
 - The datatypes used may be changed.
 
-We also explicitly note the following constraints:
-
-- The training framework must be PyTorch.
-- In the config ``ScaFFold/configs/benchmark_default.yml``, Parameters marked
-  "Internal/dev use only" may not be changed.
-- The random seed may not be fixed.
+The framework and configuration constraints, including the effect of changes to problem
+and learning rate specifications on FOM comparability, are collected in
+:ref:`scaffold-run-parameters`.
 
 **********
  Building
@@ -104,7 +89,8 @@ See the `ScaFFold README
 <https://github.com/LBANN/ScaFFold/blob/main/README.md#running-the-benchmark>`__ for
 full documentation.
 
-In short, a benchmark run configuration file is first defined.
+First, define a benchmark run configuration file using the requirements in
+:ref:`scaffold-run-parameters`.
 
 Then the synthetic dataset is generated in advance:
 
@@ -118,25 +104,53 @@ Once the dataset is generated, the benchmark can be run:
 
     scaffold benchmark -c /path/to/config.yml
 
+.. _scaffold-run-parameters:
+
 ****************
  Run Parameters
 ****************
 
-These are the parameters from ``ScaFFold/configs/benchmark_default.yml`` that are used
-for the baseline data, aside from the "Internal/dev use only" parameters which should
-not be modified.
+All ScaFFold-specific requirements for configuring runs, performing scaling studies,
+and reporting results are collected here. Start with
+``ScaFFold/configs/benchmark_default.yml`` and otherwise use its default values, subject
+to the source code modifications permitted above.
 
-- n_categories = 5
-- n_instances_used_per_fractal: 145
-- optimizer: "ADAM"
-- starting_learning_rate: 0.001
-- min_learning_rate: 0.0001
-- T_0: 10
-- T_mult: 2
-- disable_scheduler: 0
+**Required configuration and constraints**
 
-The following are the ``unet_bottleneck_dim`` values that should be used at each
-``problem_scale``
+- Use ``problem_scale: 10`` and ``unet_bottleneck_dim: 5``.
+- Use ``target_dice: 0.95``. Training is successful when the validation Dice score is
+  at least 0.95.
+- Use ``dataset_seed: 523`` for all reported runs.
+- The training framework must be PyTorch.
+- Parameters marked "Internal/dev use only" in
+  ``ScaFFold/configs/benchmark_default.yml`` must not be changed.
+- The training random seed (``training_seed``) must vary across the runs used to report a FOM,
+  as described below; the dataset seed remains fixed at 523.
+
+**Baseline parameters and comparability**
+
+The baseline data uses the following additional parameters from
+``ScaFFold/configs/benchmark_default.yml``:
+
+- ``n_categories: 5``
+- ``n_instances_used_per_fractal: 145``
+- ``optimizer: "ADAM"``
+- ``starting_learning_rate: 0.001``
+- ``min_learning_rate: 0.0001``
+- ``T_0: 10``
+- ``T_mult: 2``
+- ``disable_scheduler: 0``
+
+Changes to parameters marked "External problem specification" and "External learning
+rate specification" may affect convergence and make results incomparable to the
+baseline data. The benchmark logs the current requirements for parameters that cannot
+be varied for comparable FOMs directly after printing the FOM. A FOM is specific to
+these problem and learning rate parameters; for example, a run at ``target_dice=0.9``
+is not comparable to a run at ``target_dice=0.95``.
+
+The following table gives the ``unet_bottleneck_dim`` values to use at each
+``problem_scale``. The scale 10 row applies to this benchmark; other scales may be
+useful for prototyping.
 
 .. list-table::
     :header-rows: 1
@@ -156,12 +170,33 @@ The following are the ``unet_bottleneck_dim`` values that should be used at each
     - - 12
       - 7
 
+**Run preparation and FOM reporting**
+
+- Generate the synthetic dataset before running the benchmark, using the commands in
+  `Running`_.
+- Measure the time in seconds to reach a validation Dice score of at least 0.95,
+  including all I/O and other overheads and excluding dataset generation.
+- Report the median FOM from at least three different ``training_seed`` configurations, each
+  using ``dataset_seed: 523``.
+
+**Scaling studies**
+
+- For strong scaling, decrease ``local_batch_size`` by 2x for each 2x increase in
+  resources to keep the global batch size constant. For example, use
+  ``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
+  ``local_batch_size=4`` at 256 ranks.
+- For weak scaling, keep ``local_batch_size`` constant as resources increase. The
+  global batch size then increases by 2x for each 2x increase in resources.
+- Keep the sharding configuration constant throughout each scaling study; changing it
+  affects the global batch size.
+
 ************
  Validation
 ************
 
-The training is considered successful if the validation Dice score is at least 0.95.
-ScaFFold will report this after each training epoch.
+ScaFFold reports the validation Dice score after each training epoch. The convergence
+threshold required for successful training is specified in
+:ref:`scaffold-run-parameters`.
 
 *****************************
  Example Scalability Results
@@ -175,15 +210,7 @@ ScaFFold will report this after each training epoch.
  Strong Scaling on El Capitan
 ******************************
 
-Perform strong scaling by decreasing ``local_batch_size`` by 2x for each 2x increase in
-resources. For example, if the highest number of resources is 1024 ranks,
-use ``local_batch_size=1``. Then at 512 ranks run ``local_batch_size=2``,
-at 256 ranks use ``local_batch_size=4``, etc. This will result in a constant global batch
-size.
-
-Keep the sharding configuration constant for a given scaling study, otherwise the global
-batch size will vary.
-
+See :ref:`scaffold-run-parameters` for strong-scaling requirements.
 
 .. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
    :align: center
@@ -192,7 +219,7 @@ batch size will vary.
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training_seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -226,12 +253,7 @@ batch size will vary.
  Weak Scaling on El Capitan
 ****************************
 
-Perform weak scaling by keeping the ``local_batch_size`` parameter constant as the
-number of resources increases. This results in the global batch size increasing by 2x
-for each 2x increase in resources.
-
-Keep the sharding configuration constant for a given scaling study, otherwise the global
-batch size will vary.
+See :ref:`scaffold-run-parameters` for weak-scaling requirements.
 
 .. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
    :align: center
@@ -240,7 +262,7 @@ batch size will vary.
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training_seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
