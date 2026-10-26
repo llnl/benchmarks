@@ -276,3 +276,5 @@ batch size will vary.
 ************
  References
 ************
+
+* LLNL ScaFFold repository: https://github.com/LBANN/ScaFFold
