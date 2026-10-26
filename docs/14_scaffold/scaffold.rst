@@ -22,7 +22,7 @@ ScaFFold is a proxy application and benchmark representative of deep learning su
 models that are trained on large, high-resolution, three-dimensional numerical
 simulations. It is meant to support benchmarking at a variety of system scales and be
 adaptable to future deep learning systems innovations. ScaFFold exercises much of the
-deep learning systems stack: I/O, compute, fine- and coarse-grained communication, and
+deep learning systems stack: I/O, compute, fine and coarse-grained communication, and
 their integration in a framework.
 
 *****************
@@ -44,7 +44,7 @@ be a validation Dice score of at least 0.95.
 Problems
 ========
 
-The task is a ScaFFold training problem of scale 11. The benchmark configuration is to
+The task is a ScaFFold training problem of scale 10. The benchmark configuration is to
 otherwise use the default values, subject to the source code modifications below.
 
 Figure of Merit
@@ -63,6 +63,7 @@ FOM constraints:
   logged directly after the FOM is printed in the benchmark.
 - FOM's must be reported as the median from at least 3 different ``seed``
   configurations.
+- FOM must be reported from ``dataset_seed: 523``.
 
 ***************************
  Source code modifications
@@ -92,6 +93,8 @@ We also explicitly note the following constraints:
 See the `ScaFFold README
 <https://github.com/LBANN/ScaFFold/blob/main/README.md#setup>`__ for build and setup
 instructions.
+
+For our results, we use ScaFFold version ``42d5577c1d1e775dca9dd453fd85384405c7c686`` from https://github.com/LBANN/ScaFFold.
 
 *********
  Running
@@ -128,8 +131,9 @@ not be modified.
 - optimizer: "ADAM"
 - starting_learning_rate: 0.001
 - min_learning_rate: 0.0001
-- T_0: 100
+- T_0: 10
 - T_mult: 2
+- disable_scheduler: 0
 
 The following are the ``unet_bottleneck_dim`` values that should be used at each
 ``problem_scale``
@@ -173,12 +177,50 @@ ScaFFold will report this after each training epoch.
 
 Perform strong scaling by decreasing ``local_batch_size`` by 2x for each 2x increase in
 resources. For example, if the highest number of resources is 1024 ranks,
-``local_batch_size=1``. Then at 512 ranks, run ``local_batch_size=2``,
-``local_batch_size=4`` for 256 ranks, etc. This will result in a constant global batch
+use ``local_batch_size=1``. Then at 512 ranks run ``local_batch_size=2``,
+at 256 ranks use ``local_batch_size=4``, etc. This will result in a constant global batch
 size.
 
 Keep the sharding configuration constant for a given scaling study, otherwise the global
 batch size will vary.
+
+
+.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
+   :align: center
+
+.. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001 (FOM in 1/Megaseconds)
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - FOM (1/Megaseconds)
+   * - 384
+     - 13
+     - 79.47
+   * - 384
+     - 42
+     - 81.82
+   * - 384
+     - 101
+     - 91.2
+   * - 384
+     - 523
+     - 74.55
+   * - 384
+     - 1024
+     - 82.7
+   * - 768
+     - 13
+     - 93.93
+   * - 768
+     - 523
+     - 131.3
+   * - 1536
+     - 13
+     - 158.9
+   * - 1536
+     - 42
+     - 154.5
 
 ****************************
  Weak Scaling on El Capitan
@@ -190,6 +232,46 @@ for each 2x increase in resources.
 
 Keep the sharding configuration constant for a given scaling study, otherwise the global
 batch size will vary.
+
+.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
+   :align: center
+
+.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001 (FOM in 1/Megaseconds)
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - FOM (1/Megaseconds)
+   * - 384
+     - 13
+     - 190.1
+   * - 384
+     - 42
+     - 182.9
+   * - 384
+     - 101
+     - 218.8
+   * - 384
+     - 523
+     - 166
+   * - 384
+     - 1024
+     - 179.4
+   * - 768
+     - 13
+     - 192
+   * - 768
+     - 42
+     - 140.9
+   * - 768
+     - 523
+     - 127.6
+   * - 1536
+     - 13
+     - 158.9
+   * - 1536
+     - 42
+     - 154.5
 
 ************
  References
