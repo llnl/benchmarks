@@ -51,10 +51,74 @@ The task is a ScaFFold training problem of scale 10. See
 Figure of Merit
 ===============
 
-The Figure of Merit is the time (in seconds) to train the ScaFFold model to convergence
-(validation Dice score of at least 0.95), inclusive of all I/O and other overheads (but
-excluding dataset generation). See :ref:`scaffold-run-parameters` for the FOM
-comparability and reporting requirements.
+The Figure of Merit is the inverse of the accumulated epoch time needed to train the
+ScaFFold model to convergence (validation Dice score of at least 0.95). Higher values
+indicate better performance. Report the FOM in inverse megaseconds (1/Megaseconds).
+See :ref:`scaffold-run-parameters` for the run and reporting requirements.
+
+The FOM includes the elapsed time within each epoch through the epoch that reaches
+convergence. Each interval starts before epoch setup and ends after validation metric
+reduction and the learning-rate scheduler step.
+
+.. list-table:: Work included in the FOM
+    :header-rows: 1
+
+    - - Included work
+      - What it involves
+    - - Epoch setup
+      - Setting the training and validation sampler epochs, selecting training mode,
+        and clearing gradients before processing batches.
+    - - Data loading and transfers
+      - Loading training and validation batches, preparing their tensors, waiting
+        for data, and transferring inputs and labels to the compute devices during
+        the timed epoch.
+    - - Model training
+      - Forward passes, loss calculation, backward passes, gradient clipping, and
+        optimizer updates for all training batches, including partial batches.
+    - - Validation
+      - Forward passes over the validation set and calculation of validation loss
+        and Dice scores, including the validation pass that establishes convergence.
+    - - Distributed communication
+      - Communication required by spatially sharded operations, gradient reduction,
+        and aggregation of training and validation metrics during the epoch.
+    - - Learning-rate scheduling
+      - Updating the learning-rate scheduler after validation.
+    - - Other in-epoch overhead
+      - Compilation, memory allocation, logging, profiling, synchronization, and
+        delays from resource contention that occur within the timed interval.
+
+The following work occurs outside the epoch timers and is excluded from the
+accumulated time used to calculate the FOM.
+
+.. list-table:: Work excluded from the FOM
+    :header-rows: 1
+
+    - - Excluded work
+      - What it involves
+    - - Dataset generation
+      - Creating fractal categories and instances, assembling volumes and masks,
+        and writing the dataset files.
+    - - Initialization
+      - Starting distributed communication, constructing and placing the model,
+        preparing dataloaders and the optimizer, and reading training masks to
+        estimate loss weights.
+    - - Warmup
+      - Running training and validation batches before timed training to initialize
+        kernels, compile code, tune algorithms, and prepare runtime resources.
+        The model, optimizer, scheduler, and random-number state are restored
+        after warmup.
+    - - Between-epoch reporting
+      - Collecting minibatch timing statistics, printing epoch summaries, and
+        writing the training statistics CSV.
+    - - Checkpointing
+      - Saving model parameters, optimizer state, and other information needed to
+        restart training. Checkpointing is disabled by default.
+    - - Final processing
+      - Generating plots, exporting profiler traces, and performing final
+        synchronization and cleanup after training.
+
+Work or delays within a timed epoch still contribute to the FOM, including data
+loading, compilation, and contention from any overlapping background activity.
 
 ***************************
  Source code modifications
@@ -67,9 +131,8 @@ we permit the following modifications:
   may be changed subject to the requirements in :ref:`scaffold-run-parameters`.
 - The datatypes used may be changed.
 
-The framework and configuration constraints, including the effect of changes to problem
-and learning rate specifications on FOM comparability, are collected in
-:ref:`scaffold-run-parameters`.
+The framework constraints and required problem and learning rate specifications are
+collected in :ref:`scaffold-run-parameters`.
 
 **********
  Building
@@ -129,8 +192,8 @@ to the source code modifications permitted above.
 
 **Baseline parameters and comparability**
 
-The baseline data uses the following additional parameters from
-``ScaFFold/configs/benchmark_default.yml``:
+The following additional parameters from ``ScaFFold/configs/benchmark_default.yml``
+are required for all reported results and match the baseline configuration:
 
 - ``n_categories: 5``
 - ``n_instances_used_per_fractal: 145``
@@ -141,12 +204,37 @@ The baseline data uses the following additional parameters from
 - ``T_mult: 2``
 - ``disable_scheduler: 0``
 
-Changes to parameters marked "External problem specification" and "External learning
-rate specification" may affect convergence and make results incomparable to the
-baseline data. The benchmark logs the current requirements for parameters that cannot
-be varied for comparable FOMs directly after printing the FOM. A FOM is specific to
-these problem and learning rate parameters; for example, a run at ``target_dice=0.9``
-is not comparable to a run at ``target_dice=0.95``.
+Parameters marked "External problem specification" and "External learning rate
+specification" must use the prescribed values. The exception is ``local_batch_size``,
+which must follow the scaling rules below. Runs that change the prescribed problem
+or learning rate settings are invalid for reporting, even if they reach the validation
+Dice threshold. The benchmark logs the problem and learning rate settings alongside
+the FOM.
+
+The required configuration produces the following dataset. Volume counts refer to
+logical samples before spatial sharding.
+
+.. list-table:: Dataset for the required benchmark configuration
+    :header-rows: 1
+
+    - - Property
+      - Value
+    - - Logical volume dimensions
+      - :math:`1024 \times 1024 \times 1024`
+    - - Input channels
+      - 3
+    - - Foreground classes
+      - 5, plus background
+    - - Fractals per volume
+      - 3
+    - - Instances used per category
+      - 144 (the generator rounds the configured value of 145 down to a multiple of 3)
+    - - Total logical volumes
+      - 240
+    - - Training volumes
+      - 168
+    - - Validation volumes
+      - 72 (30% of the total)
 
 The following table gives the ``unet_bottleneck_dim`` values to use at each
 ``problem_scale``. The scale 10 row applies to this benchmark; other scales may be
@@ -185,7 +273,7 @@ useful for prototyping.
   resources to keep the global batch size constant. For example, use
   ``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
   ``local_batch_size=4`` at 256 ranks.
-- For weak scaling, keep ``local_batch_size`` constant as resources increase. The
+- For weak scaling, use ``local_batch_size=1`` at every resource count. The
   global batch size then increases by 2x for each 2x increase in resources.
 - Keep the sharding configuration constant throughout each scaling study; changing it
   affects the global batch size.
