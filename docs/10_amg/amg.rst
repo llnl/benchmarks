@@ -459,6 +459,47 @@ Caliper files can be found in ``./doc/sphinx/02_amg/scaling/plots/Caliper``
    :alt: Percentage of AMG P2 time spent (exclusive) in each function/region.
 
 
+Weak Scaling on El Capitan
+==========================
+
+Weak scaling performance of AMG2023 problem 1 and problem 2 on El Capitan (AMD Epyc + AMD MI300A) is provided as follows.
+
+Problem 1
+---------
+
+For problem 1, a grid size of 210 x 210 x 210 is weak scaled on El Capitan
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/amg2023_problem1_weak_rocm.csv
+
+.. image:: plots/amg2023_problem1_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/amg2023_problem1_caliper_weak_rocm.png
+   :align: center
+
+Problem 2
+---------
+
+For problem 2, a grid size of 350 x 350 x 350 is weak scaled on El Capitan
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/amg2023_problem2_weak_rocm.csv
+
+.. image:: plots/amg2023_problem2_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/amg2023_problem2_caliper_weak_rocm.png
+   :align: center
+
 
 References
 ==========
