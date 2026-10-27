@@ -355,11 +355,11 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
 .. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
    :align: center
 
-.. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001 (FOM in 1/Megaseconds)
+.. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - training_seed
+     - seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -379,6 +379,9 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 768
      - 13
      - 93.93
+   * - 768
+     - 42
+     - 123.8
    * - 768
      - 523
      - 131.3
@@ -416,6 +419,9 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 768
      - 13
      - 0.46
+   * - 768
+     - 42
+     - 0.55
    * - 768
      - 523
      - 0.47
