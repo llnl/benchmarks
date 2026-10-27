@@ -61,7 +61,7 @@ For Laghos we define the following restrictions on source code modifications:
 * Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results shown in :ref:`ValidateLaghos`.
 * Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built with "CUDA" or "HIP" device backends.
 * The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
-* Hypre/MFEM/Laghos must be built with Umpire (https://github.com/LLNL/Umpire). The host memory allocator may be changed to any of the ones available in mfem. The device memory allocators must use Umpire pool(s), though the allocation strategy may be changed; for example: separate Umpire pools for Hypre and MFEM, using managed memory pools, etc.
+* Hypre/MFEM/Laghos may be built with Umpire (https://github.com/LLNL/Umpire).
 * `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get an accurate FOM.
 * Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision regardless of the precision Laghos simulations are computed in.
 
@@ -79,13 +79,13 @@ These instructions install all dependencies to a user-defined ``$INSTALLDIR`` us
 
 The minimum required version of each library are:
 
-* Umpire: v2026.07.2
+* Umpire: v2026.07.2 (optional)
 * RAJA: v2026.07.1
 * Hypre: v3.2.0
 * MFEM: v4.10
 * Laghos: ats-6
 
-Umpire (required)
+Umpire (optional)
 -----------------
 
 CUDA:
