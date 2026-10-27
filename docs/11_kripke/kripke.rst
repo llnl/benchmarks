@@ -92,17 +92,55 @@ Run Kripke with the desired problem parameters by doing:
 
         /path/to/kripke.exe --layout GDZ --groups 48 --quad 80
 
+Performance Projection
+======================
+
+To project Kripke performance for a Scalable Unit (SU), scale the spatial
+problem dimensions (``nxx``, ``nyy``, and ``nzz``) and the corresponding
+processor decomposition (``px``, ``py``, and ``pz``) to match the size of the
+SU. All other configuration options, including the number of groups, angles,
+and directions, must remain unchanged. Select the spatial problem size so that
+Kripke uses approximately 80% of the memory available on each node of the SU.
+
+Use the El Capitan results in :ref:`kripke-memory-usage` to select a problem
+size that meets the memory target and :ref:`kripke-weak-scaling` to project
+performance at the scale of the SU.
+
 Validation
 ==========
 
 
-Example Scalability Results
-===========================
-
+.. _kripke-memory-usage:
 
 Memory Usage
 ============
+Kripke uses CHAI and Umpire to manage GPU memory. During initialization, it
+estimates the memory required for the selected problem size and preallocates
+an Umpire device-memory pool accordingly. The ``--dev_pool_size`` runtime
+parameter can be used to override the estimated pool size. Its value is an
+integer number of gigabytes per rank.
 
+When Kripke is configured with
+``-DENABLE_DIRECT_UMPIRE_PLANE_STORAGE=ON``, it allocates the three plane-field
+arrays (``i``, ``j``, and ``k``) directly in GPU memory instead of from the
+primary Umpire pool. This optimization can improve performance for smaller problem
+sizes and is disabled by default.
+
+The output log reports the memory used by each Kripke data array, the total
+memory used, and the per-rank high-water mark of the Umpire device-memory pool.
+The table and figure below show Umpire memory usage for a single El Capitan
+node running four ranks (px=2, py=2, pz=1).
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/kripke_memory_usage_rocm.csv
+
+.. image:: plots/kripke_memory_usage_rocm.png
+   :align: center
+
+
+.. _kripke-weak-scaling:
 
 Weak Scaling on El Capitan
 ==========================
