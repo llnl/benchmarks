@@ -96,12 +96,32 @@ Validation
 ==========
 
 
-Example Scalability Results
-===========================
-
-
 Memory Usage
 ============
+Kripke uses CHAI and Umpire to manage GPU memory. During initialization, it
+estimates the memory required for the selected problem size and preallocates
+an Umpire device-memory pool accordingly. The ``--dev_pool_size`` runtime
+parameter can be used to override the estimated pool size. Its value is an
+integer number of gigabytes per rank.
+
+When Kripke is configured with
+``-DENABLE_DIRECT_UMPIRE_PLANE_STORAGE=ON``, it allocates the three plane-field
+arrays (``i``, ``j``, and ``k``) directly in GPU memory instead of from the
+primary Umpire pool. This optimization can improve performance for smaller problem
+sizes and is disabled by default.
+
+The output log reports the memory used by each Kripke data array, the total
+memory used, and the per-rank high-water mark of the Umpire device-memory pool.
+The table and figure below show Umpire memory usage for a single El Capitan
+node running four ranks.
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/kripke_memory_usage_rocm.csv
+
+.. image:: plots/kripke_memory_usage_rocm.png
+   :align: center
 
 
 Weak Scaling on El Capitan
