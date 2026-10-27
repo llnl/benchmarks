@@ -113,7 +113,7 @@ sizes and is disabled by default.
 The output log reports the memory used by each Kripke data array, the total
 memory used, and the per-rank high-water mark of the Umpire device-memory pool.
 The table and figure below show Umpire memory usage for a single El Capitan
-node running four ranks.
+node running four ranks (px=2, py=2, pz=1).
 
 .. csv-table::
    :header-rows: 1
