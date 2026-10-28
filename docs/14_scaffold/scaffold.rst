@@ -26,9 +26,9 @@ adaptable to future deep learning systems innovations. ScaFFold exercises much o
 deep learning systems stack: I/O, compute, fine and coarse-grained communication, and
 their integration in a framework.
 
-*****************
- Characteristics
-*****************
+*********
+ Problem
+*********
 
 ScaFFold trains a 3D U-Net to perform semantic segmentation on a synthetic dataset
 composed of 3D volumes containing different classes of fractals. The size of the problem
@@ -42,14 +42,12 @@ segmentation problem.
 The model is trained from a random initialization until convergence, which is defined to
 be a validation Dice score of at least 0.95.
 
-Problems
-========
-
 The task is a ScaFFold training problem of scale 10. See
 :ref:`scaffold-run-parameters` for the required benchmark configuration.
 
-Figure of Merit
-===============
+****************
+ Figure of Merit
+****************
 
 The Figure of Merit is the inverse of the accumulated epoch time needed to train the
 ScaFFold model to convergence (validation Dice score of at least 0.95). Higher values
@@ -220,15 +218,231 @@ Once the dataset is generated, the benchmark can be run:
     scaffold benchmark -c /path/to/config.yml
 
 .. _scaffold-run-parameters:
+Runtime parameters
+------------------
 
-****************
- Run Parameters
-****************
 
-All ScaFFold-specific requirements for configuring runs, performing scaling studies,
-and reporting results are collected here. Start with
-``ScaFFold/configs/benchmark_default.yml`` and otherwise use its default values, subject
-to the source code modifications permitted above.
+
+
+************
+ Validation
+************
+
+ScaFFold reports the validation Dice score after each training epoch. The convergence
+threshold required for successful training is specified in
+:ref:`scaffold-run-parameters`.
+
+**************
+ Memory usage
+**************
+
+************************
+ Baseline on El Capitan
+************************
+
+Keep the sharding configuration constant throughout each scaling study. Changing it affects the global batch size.
+
+Strong scaling
+--------------
+
+Decrease ``local_batch_size`` by 2x for each 2x increase in
+resources to keep the global batch size constant. For example, use
+``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
+``local_batch_size=4`` at 256 ranks. For hardware with large amounts of memory,
+scaling to larger ``local_batch_sizes`` (e.g. lower rank counts) will be possible.
+
+See :ref:`scaffold-run-parameters` for strong-scaling requirements.
+
+.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
+   :align: center
+
+.. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - FOM (1/Megaseconds)
+   * - 384
+     - 13
+     - 79.47
+   * - 384
+     - 42
+     - 81.82
+   * - 384
+     - 101
+     - 91.2
+   * - 384
+     - 523
+     - 74.55
+   * - 384
+     - 1024
+     - 82.7
+   * - 768
+     - 13
+     - 93.93
+   * - 768
+     - 42
+     - 123.8
+   * - 768
+     - 523
+     - 131.3
+   * - 1536
+     - 13
+     - 158.9
+   * - 1536
+     - 42
+     - 154.5
+   * - 1536
+     - 523
+     - 161.7
+
+.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+   :align: center
+
+.. list-table:: Strong scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - per_minibatch_median_time
+   * - 384
+     - 13
+     - 0.67
+   * - 384
+     - 42
+     - 0.66
+   * - 384
+     - 101
+     - 0.65
+   * - 384
+     - 523
+     - 0.68
+   * - 384
+     - 1024
+     - 0.64
+   * - 768
+     - 13
+     - 0.46
+   * - 768
+     - 42
+     - 0.55
+   * - 768
+     - 523
+     - 0.47
+   * - 1536
+     - 13
+     - 0.34
+   * - 1536
+     - 42
+     - 0.36
+   * - 1536
+     - 523
+     - 0.36
+
+Weak Scaling
+------------
+
+Use a constant ``local_batch_size=B`` at every resource count. The
+global batch size then increases by 2x for each 2x increase in resources. The data
+shown is ``local_batch_size=1``, but performance of the largest
+``local_batch_size=B_max`` can be reported (this is likely optimal vs size 1).
+
+See :ref:`scaffold-run-parameters` for weak-scaling requirements.
+
+.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
+   :align: center
+
+.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - FOM (1/Megaseconds)
+   * - 384
+     - 13
+     - 190.1
+   * - 384
+     - 42
+     - 182.9
+   * - 384
+     - 101
+     - 218.8
+   * - 384
+     - 523
+     - 166
+   * - 384
+     - 1024
+     - 179.4
+   * - 768
+     - 13
+     - 192
+   * - 768
+     - 42
+     - 140.9
+   * - 768
+     - 523
+     - 127.6
+   * - 1536
+     - 13
+     - 158.9
+   * - 1536
+     - 42
+     - 154.5
+   * - 1536
+     - 523
+     - 161.7
+
+.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+   :align: center
+
+.. list-table:: Weak scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
+   :header-rows: 1
+
+   * - num_nodes
+     - seed
+     - per_minibatch_median_time
+   * - 384
+     - 13
+     - 0.29
+   * - 384
+     - 42
+     - 0.3
+   * - 384
+     - 101
+     - 0.28
+   * - 384
+     - 523
+     - 0.3
+   * - 384
+     - 1024
+     - 0.28
+   * - 768
+     - 13
+     - 0.31
+   * - 768
+     - 42
+     - 0.33
+   * - 768
+     - 523
+     - 0.33
+   * - 1536
+     - 13
+     - 0.34
+   * - 1536
+     - 42
+     - 0.36
+   * - 1536
+     - 523
+     - 0.36
+
+
+
+*************************
+ Performance projections
+*************************
+
+Start with ``ScaFFold/configs/benchmark_default.yml`` and otherwise use its default values, 
+subject to the source code modifications permitted above.
 
 **Required configuration and constraints**
 
@@ -319,219 +533,3 @@ useful for prototyping.
 - Report the median FOM from at least three different ``training_seed`` configurations, each
   using ``dataset_seed: 523``.
 
-*****************
- Scaling studies
-*****************
-
-Keep the sharding configuration constant throughout each scaling study. Changing it affects the global batch size.
-
-**Strong scaling**
-Decrease ``local_batch_size`` by 2x for each 2x increase in
-resources to keep the global batch size constant. For example, use
-``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
-``local_batch_size=4`` at 256 ranks. For hardware with large amounts of memory,
-scaling to larger ``local_batch_sizes`` (e.g. lower rank counts) will be possible.
-
-**Weak scaling**
-Use a constant ``local_batch_size=B`` at every resource count. The
-global batch size then increases by 2x for each 2x increase in resources. The data
-shown is ``local_batch_size=1``, but performance of the largest
-``local_batch_size=B_max`` can be reported (this is likely optimal vs size 1).
-
-************
- Validation
-************
-
-ScaFFold reports the validation Dice score after each training epoch. The convergence
-threshold required for successful training is specified in
-:ref:`scaffold-run-parameters`.
-
-******************************
- Strong Scaling on El Capitan
-******************************
-
-See :ref:`scaffold-run-parameters` for strong-scaling requirements.
-
-.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
-   :align: center
-
-.. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
-   :header-rows: 1
-
-   * - num_nodes
-     - seed
-     - FOM (1/Megaseconds)
-   * - 384
-     - 13
-     - 79.47
-   * - 384
-     - 42
-     - 81.82
-   * - 384
-     - 101
-     - 91.2
-   * - 384
-     - 523
-     - 74.55
-   * - 384
-     - 1024
-     - 82.7
-   * - 768
-     - 13
-     - 93.93
-   * - 768
-     - 42
-     - 123.8
-   * - 768
-     - 523
-     - 131.3
-   * - 1536
-     - 13
-     - 158.9
-   * - 1536
-     - 42
-     - 154.5
-   * - 1536
-     - 523
-     - 161.7
-
-.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
-   :align: center
-
-.. list-table:: Strong scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
-   :header-rows: 1
-
-   * - num_nodes
-     - seed
-     - per_minibatch_median_time
-   * - 384
-     - 13
-     - 0.67
-   * - 384
-     - 42
-     - 0.66
-   * - 384
-     - 101
-     - 0.65
-   * - 384
-     - 523
-     - 0.68
-   * - 384
-     - 1024
-     - 0.64
-   * - 768
-     - 13
-     - 0.46
-   * - 768
-     - 42
-     - 0.55
-   * - 768
-     - 523
-     - 0.47
-   * - 1536
-     - 13
-     - 0.34
-   * - 1536
-     - 42
-     - 0.36
-   * - 1536
-     - 523
-     - 0.36
-
-****************************
- Weak Scaling on El Capitan
-****************************
-
-See :ref:`scaffold-run-parameters` for weak-scaling requirements.
-
-.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
-   :align: center
-
-.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
-   :header-rows: 1
-
-   * - num_nodes
-     - seed
-     - FOM (1/Megaseconds)
-   * - 384
-     - 13
-     - 190.1
-   * - 384
-     - 42
-     - 182.9
-   * - 384
-     - 101
-     - 218.8
-   * - 384
-     - 523
-     - 166
-   * - 384
-     - 1024
-     - 179.4
-   * - 768
-     - 13
-     - 192
-   * - 768
-     - 42
-     - 140.9
-   * - 768
-     - 523
-     - 127.6
-   * - 1536
-     - 13
-     - 158.9
-   * - 1536
-     - 42
-     - 154.5
-   * - 1536
-     - 523
-     - 161.7
-
-.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
-   :align: center
-
-.. list-table:: Weak scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
-   :header-rows: 1
-
-   * - num_nodes
-     - seed
-     - per_minibatch_median_time
-   * - 384
-     - 13
-     - 0.29
-   * - 384
-     - 42
-     - 0.3
-   * - 384
-     - 101
-     - 0.28
-   * - 384
-     - 523
-     - 0.3
-   * - 384
-     - 1024
-     - 0.28
-   * - 768
-     - 13
-     - 0.31
-   * - 768
-     - 42
-     - 0.33
-   * - 768
-     - 523
-     - 0.33
-   * - 1536
-     - 13
-     - 0.34
-   * - 1536
-     - 42
-     - 0.36
-   * - 1536
-     - 523
-     - 0.36
-
-************
- References
-************
-
-* LLNL ScaFFold repository: https://github.com/LBANN/ScaFFold
