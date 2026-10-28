@@ -319,16 +319,24 @@ useful for prototyping.
 - Report the median FOM from at least three different ``training_seed`` configurations, each
   using ``dataset_seed: 523``.
 
-**Scaling studies**
+*****************
+ Scaling studies
+*****************
 
-- For strong scaling, decrease ``local_batch_size`` by 2x for each 2x increase in
-  resources to keep the global batch size constant. For example, use
-  ``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
-  ``local_batch_size=4`` at 256 ranks.
-- For weak scaling, use ``local_batch_size=1`` at every resource count. The
-  global batch size then increases by 2x for each 2x increase in resources.
-- Keep the sharding configuration constant throughout each scaling study; changing it
-  affects the global batch size.
+Keep the sharding configuration constant throughout each scaling study. Changing it affects the global batch size.
+
+**Strong scaling**
+Decrease ``local_batch_size`` by 2x for each 2x increase in
+resources to keep the global batch size constant. For example, use
+``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
+``local_batch_size=4`` at 256 ranks. For hardware with large amounts of memory,
+scaling to larger ``local_batch_sizes`` (e.g. lower rank counts) will be possible.
+
+**Weak scaling**
+Use a constant ``local_batch_size=B`` at every resource count. The
+global batch size then increases by 2x for each 2x increase in resources. The data
+shown is ``local_batch_size=1``, but performance of the largest
+``local_batch_size=B_max`` can be reported (this is likely optimal vs size 1).
 
 ************
  Validation
@@ -337,14 +345,6 @@ useful for prototyping.
 ScaFFold reports the validation Dice score after each training epoch. The convergence
 threshold required for successful training is specified in
 :ref:`scaffold-run-parameters`.
-
-*****************************
- Example Scalability Results
-*****************************
-
-**************
- Memory Usage
-**************
 
 ******************************
  Strong Scaling on El Capitan
