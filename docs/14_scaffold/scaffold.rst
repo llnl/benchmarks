@@ -391,6 +391,9 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 1536
      - 42
      - 154.5
+   * - 1536
+     - 523
+     - 161.7
 
 .. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
    :align: center
@@ -431,6 +434,9 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 1536
      - 42
      - 0.36
+   * - 1536
+     - 523
+     - 0.36
 
 ****************************
  Weak Scaling on El Capitan
@@ -441,11 +447,11 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
 .. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
    :align: center
 
-.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001 (FOM in 1/Megaseconds)
+.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - training_seed
+     - seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -477,6 +483,9 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
    * - 1536
      - 42
      - 154.5
+   * - 1536
+     - 523
+     - 161.7
 
 .. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
    :align: center
@@ -516,6 +525,9 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
      - 0.34
    * - 1536
      - 42
+     - 0.36
+   * - 1536
+     - 523
      - 0.36
 
 ************
