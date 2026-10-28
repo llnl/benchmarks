@@ -9,7 +9,7 @@ Kripke source code is near-final at this point. The problem to run is yet to be 
 Purpose
 =======
 
-Kripke is a simple, scalable, 3D Sn deterministic particle transport code.
+Kripke is a scalable 3D Sn deterministic particle transport code.
 Its primary purpose is to research how data layout, programming paradigms and architectures affect the implementation and performance of Sn transport.
 A main goal of Kripke is to investigate how different data-layouts affect instruction, thread, and task level parallelism, and the implications on overall solver performance.
 
@@ -23,18 +23,16 @@ An asynchronous MPI-based parallel sweep algorithm is provided, which employs th
 As we explore new architectures and programming paradigms with Kripke, we will be able to incorporate these findings and ideas into our larger codes.
 The main advantages of using Kripke for this exploration is that it's light-weight (i.e. easily refactored and modified), and it gets us closer to the real question we want answered: "What is the best way to layout and traverse data in parallel in an Sn code on a given architecture+programming-model?" instead of the more commonly asked question "What is the best way to map my existing Sn code to a given architecture+programming-model?".
 
-Characteristics
-===============
 
 Problems
---------
+========
 
 The problem of interest for Kripke will be run with 48 energy groups, 80 angles, and a range of zones that are TBD. The problem will be run with a GDZ loop ordering, which means the kernels will run the dimensions of the problem in the following order from the outer-most to the inner-most loop: energy groups, directions (angles), and zones.
 
 Figure of Merit
----------------
+===============
 
-The figure of merit will be the grind time generated from the Kripke output. It measures the amount of time required per iteration to solve each unknown.
+The figure of merit (FOM) is the grind time generated from the Kripke output. It measures the amount of time required per iteration to solve each unknown.
 
 Source code modifications
 ==========================
@@ -92,23 +90,9 @@ Run Kripke with the desired problem parameters by doing:
 
         /path/to/kripke.exe --layout GDZ --groups 48 --quad 80
 
-Performance Projection
-======================
-
-To project Kripke performance for a Scalable Unit (SU), scale the spatial
-problem dimensions (``nxx``, ``nyy``, and ``nzz``) and the corresponding
-processor decomposition (``px``, ``py``, and ``pz``) to match the size of the
-SU. All other configuration options, including the number of groups, angles,
-and directions, must remain unchanged. Select the spatial problem size so that
-Kripke uses approximately 80% of the memory available on each node of the SU.
-
-Use the El Capitan results in :ref:`kripke-memory-usage` to select a problem
-size that meets the memory target and :ref:`kripke-weak-scaling` to project
-performance at the scale of the SU.
 
 Validation
 ==========
-
 
 .. _kripke-memory-usage:
 
@@ -142,11 +126,12 @@ node running four ranks (px=2, py=2, pz=1).
 
 .. _kripke-weak-scaling:
 
-Weak Scaling on El Capitan
-==========================
+Baseline on El Capitan
+======================
 
 Weak scaling performance of Kripke on El Capitan (AMD Epyc + AMD MI300A) is provided as follows.
 
+.. _table-weak-scaling:
 .. csv-table::
    :header-rows: 1
    :align: center
@@ -160,6 +145,19 @@ Timings were captured using Caliper and are presented below.
 .. image:: plots/kripke_caliper_weak_rocm.png
    :align: center
 
+Performance Projection
+======================
 
-References
-==========
+The last row of Table :numref:`table-weak-scaling` captures the baseline
+problem size and performance on a single Scalable Unit (SU) of El Capitan.
+
+To project Kripke performance for a Scalable Unit (SU), scale the spatial
+problem dimensions (``nxx``, ``nyy``, and ``nzz``) and the corresponding
+processor decomposition (``px``, ``py``, and ``pz``) to match the size of the
+SU. All other configuration options, including the number of groups, angles,
+and directions, must remain unchanged. Select the spatial problem size so that
+Kripke uses approximately 80% of the memory available on each node of the SU.
+
+Use the El Capitan results in :ref:`kripke-memory-usage` to select a problem
+size that meets the memory target and :ref:`kripke-weak-scaling` to project
+performance at the scale of the SU.
