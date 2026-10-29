@@ -10,7 +10,7 @@ with data_file.open(newline="") as stream:
     rows = list(csv.DictReader(stream))
 
 nodes = [int(row["Nodes"]) for row in rows]
-fom_per_gpu = [float(row["FOM (unknowns/second/iteration/GPU)"]) for row in rows]
+fom_per_gpu = [float(row["FOM/GPU"]) for row in rows]
 
 fig, ax = plt.subplots(figsize=(12, 5.6))
 ax.plot(
@@ -18,18 +18,18 @@ ax.plot(
     fom_per_gpu,
     color="#00ad55",
     marker="o",
-    label="FOM",
+    label="FOM/GPU",
 )
 ax.set_title("Kripke: Weak Scaling for 110x110x110 zones per GPU")
 ax.set_xlabel("Nodes")
-ax.set_ylabel("FOM\n[unknowns / second / iteration / GPU]")
+ax.set_ylabel("FOM/GPU\n[unknowns / second / iteration / GPU]")
 ax.set_xscale("log", base=2)
 ax.set_xticks(nodes)
 ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
 ax.set_ylim(0, 1.5e+09)
 ax.yaxis.set_major_formatter(FormatStrFormatter("%.2E"))
 ax.grid(True, alpha=0.35)
-ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False)
+ax.legend(loc="upper left", frameon=False)
 fig.tight_layout()
 fig.savefig(Path(__file__).parent / "plots" / "kripke_weak_rocm.png", dpi=150)
 plt.close(fig)
