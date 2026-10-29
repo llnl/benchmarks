@@ -336,6 +336,30 @@ least 0.95 using the required parameters in :ref:`scaffold-performance-projectio
  Memory usage
 **************
 
+Approximate memory usage for the El Capitan baseline, with 128 GiB available per GPU.
+The sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate
+applies to both strong and weak scaling.
+
+.. list-table:: Per-GPU memory usage
+    :header-rows: 1
+
+    - - problem_scale
+      - sharding
+      - local_batch_size
+      - Per GPU (GiB)
+    - - 10
+      - [4, 8, 8]
+      - 4
+      - ~90
+    - - 10
+      - [4, 8, 8]
+      - 2
+      - ~50
+    - - 10
+      - [4, 8, 8]
+      - 1
+      - ~30
+
 ************************
  Baseline on El Capitan
 ************************
