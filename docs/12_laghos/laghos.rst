@@ -218,7 +218,7 @@ Running
 Benchmark runs should aim to maximize the FOM by choosing an appropriate `-epm` (element per mpi rank) value.
 To ensure domains are well shaped and minimize the impact of MPI communications it is recommended to set `-epm` to either a power of 2, or something of the form `b*2^a`, where b is small and a is large.
 Note that MFEM/Laghos currently does not support more than 32-bit local indexing so avoid choosing epm values which can result in more than `2^31-1` quadrature points per rank.
-You can compute the number of rank local quadrature points by multiplying the epm by the number of quadrature points per zone (tabulated below).
+The number of rank local quadrature points can be computed by multiplying the epm by the number of quadrature points per zone (tabulated below).
 
 .. table:: Quadrature points per zone.
    :align: center
@@ -317,7 +317,7 @@ Sample CPU and GPU memory usage on a single El Capitan node are shown below.
 
    GPU memory use on El Capitan with 4 ranks on a single node per DOF
 
-Weak Scaling on El Capitan
+Baseline on El Capitan
 ==========================
 
 Weak scaling performance of Laghos on El Capitan (AMD Epyc + AMD MI300A) for each order is provided as follows.
@@ -369,6 +369,16 @@ Timings were captured using Caliper and are presented below.
 
 .. image:: plots/laghos_caliper_cubic_weak_rocm.png
    :align: center
+
+Performance Projection
+======================
+
+The last row of each table in the above baselines captures the performance on a single Scalable Unit (SU) of El Capitan (384 nodes, 1536 GPUs).
+
+To project Laghos performance for a Scalable Unit (SU), scale the number of MPI ranks to match the number of GPUs in the SU. There can be one or more MPI rank per GPU as long as each GPU have the same number of ranks. All other configuration options, including the `-epm`, must remain unchanged.
+
+Any `-epm` value which uses **at least** 10% of the memory available on each node of the SU may be used.
+See :ref:`RunningLaghos` for recommendations for selecting an appropriate `-epm` value.
 
 
 References
