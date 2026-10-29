@@ -375,7 +375,7 @@ Performance Projection
 
 The last row of each table in the above baselines captures the performance on a single Scalable Unit (SU) of El Capitan (384 nodes, 1536 GPUs).
 
-To project Laghos performance for a Scalable Unit (SU), scale the number of MPI ranks to match the number of GPUs in the SU. There can be one or more MPI rank per GPU as long as each GPU have the same number of ranks. All other configuration options, including the `-epm`, must remain unchanged.
+To project Laghos performance for a Scalable Unit (SU), scale the number of MPI ranks to match the number of GPUs in the SU. There can be one or more MPI rank per GPU as long as each GPU has the same number of ranks. All other configuration options, including `-epm`, must remain unchanged.
 
 Any `-epm` value which uses **at least** 10% of the memory available on each node of the SU may be used.
 See :ref:`RunningLaghos` for recommendations for selecting an appropriate `-epm` value.
