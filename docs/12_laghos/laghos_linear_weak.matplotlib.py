@@ -10,7 +10,7 @@ with data_file.open(newline="") as stream:
     rows = list(csv.DictReader(stream))
 
 nodes = [int(row["Nodes"]) for row in rows]
-fom_per_gpu = [float(row["FOM (megadofs x time steps / second / GPU)"]) for row in rows]
+fom_per_gpu = [float(row["FOM/GPU"]) for row in rows]
 
 fig, ax = plt.subplots(figsize=(12, 5.6))
 ax.plot(
