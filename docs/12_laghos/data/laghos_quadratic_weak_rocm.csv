@@ -1,4 +1,4 @@
-Nodes,GPUs,FOM (megadofs x time steps / second / GPU)
+Nodes,GPUs,FOM (megadofs x time steps / second), FOM/GPU
 1,4,11534.976,2883.744
 2,8,23342.104,2917.763
 4,16,42123.856,2632.741
