@@ -18,11 +18,11 @@ ax.plot(
     fom_per_gpu,
     color="#00ad55",
     marker="o",
-    label="FOM",
+    label="FOM/GPU",
 )
 ax.set_title("Laghos: Weak Q1Q0, epm=12582912")
 ax.set_xlabel("Nodes")
-ax.set_ylabel("FOM\n[megadofs x time steps / second / GPU]")
+ax.set_ylabel("FOM/GPU\n[megadofs x time steps / second / GPU]")
 ax.set_xscale("log", base=2)
 ax.set_xticks(nodes)
 ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
