@@ -204,7 +204,7 @@ Problem 1
 For problem 1, a grid size of 210 x 210 x 210 is weak scaled on El Capitan
 
 .. _table-p1-weak-scaling:
-.. csv-table::
+.. csv-table:: Problem 1 weak-scaling results on El Capitan
    :header-rows: 1
    :align: center
    :file: data/amg2023_problem1_weak_rocm.csv
@@ -226,7 +226,7 @@ Problem 2
 For problem 2, a grid size of 350 x 350 x 350 is weak scaled on El Capitan
 
 .. _table-p2-weak-scaling:
-.. csv-table::
+.. csv-table:: Problem 2 weak-scaling results on El Capitan
    :header-rows: 1
    :align: center
    :file: data/amg2023_problem2_weak_rocm.csv
