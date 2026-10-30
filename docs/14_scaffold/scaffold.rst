@@ -71,120 +71,9 @@ The figure of merit (FOM) is the inverse of the total epoch time needed to train
 model to convergence (a validation Dice score of at least 0.95). Report it in inverse
 megaseconds (1/Megaseconds); higher is better.
 
-The FOM sums the timed interval of every epoch, up to and including the epoch that
-reaches convergence. Each interval starts before epoch setup and ends after the
-validation metrics are reduced from all ranks.
-
-.. list-table:: Work included in the FOM
-    :header-rows: 1
-
-    - - Included work
-      - What it involves
-    - - Epoch setup
-      - Setting the training and validation sampler epochs, selecting training mode,
-        and clearing gradients before processing batches.
-    - - Data loading and transfers
-      - Loading training and validation batches, preparing their tensors, waiting
-        for data, and transferring inputs and labels to the compute devices during
-        the timed epoch.
-    - - Model training
-      - Forward passes, loss calculation, backward passes, gradient clipping, and
-        optimizer updates for all training batches, including partial batches.
-    - - Validation
-      - Forward passes over the validation set and calculation of validation loss
-        and Dice scores, including the validation pass that establishes convergence.
-    - - Distributed communication
-      - Communication required by spatially sharded operations, gradient reduction,
-        and aggregation of training and validation metrics during the epoch.
-    - - Learning-rate scheduling
-      - Updating the learning-rate scheduler after validation.
-    - - Other in-epoch overhead
-      - Compilation, memory allocation, logging, profiling, synchronization, and
-        delays from resource contention that occur within the timed interval.
-
-The following work happens outside the epoch timers and does not count toward the FOM.
-
-.. list-table:: Work excluded from the FOM
-    :header-rows: 1
-
-    - - Excluded work
-      - What it involves
-    - - Dataset generation
-      - Creating fractal categories and instances, assembling volumes and masks,
-        and writing the dataset files.
-    - - Initialization
-      - Starting distributed communication, constructing and placing the model,
-        preparing dataloaders and the optimizer, and reading training masks to
-        estimate loss weights.
-    - - Warmup
-      - Running training and validation batches before timed training to initialize
-        kernels, compile code, tune algorithms, and prepare runtime resources.
-        The model, optimizer, scheduler, and random-number state are restored
-        after warmup.
-    - - Between-epoch reporting
-      - Collecting minibatch timing statistics, printing epoch summaries, and
-        writing the training statistics CSV.
-    - - Checkpointing
-      - Saving model parameters, optimizer state, and other information needed to
-        restart training. Checkpointing is disabled by default.
-    - - Final processing
-      - Generating plots, exporting profiler traces, and performing final
-        synchronization and cleanup after training.
-
-Work and delays inside a timed epoch always count toward the FOM, including data
-loading, compilation, and contention from overlapping background activity.
-
-**Minibatch timing**
-
-``per_minibatch_median_time`` is the time, in seconds, to process one full
-training minibatch; lower is better. It covers only part of the work in the FOM, as the
-table below shows, and unlike the FOM it does not depend on how many epochs training
-needs to converge.
-
-ScaFFold measures ``per_minibatch_median_time`` with PyTorch GPU events. The start event is recorded after the
-data loader supplies a batch and before its inputs and labels are transferred to the
-device. The end event is recorded after the training step and per-batch metric
-accumulation. Partial batches are excluded from this metric but still count toward the
-FOM.
-
-For each timed batch, ScaFFold takes the maximum time across ranks, then the median of
-those times within each epoch, and finally the median of the epoch medians. The result
-is logged as ``Median of epoch minibatch time medians``.
-
-.. list-table:: Minibatch timing relative to the FOM categories
-    :header-rows: 1
-
-    - - FOM category
-      - Included in minibatch timing
-      - Omitted relative to the FOM
-    - - Epoch setup
-      - None.
-      - Setting sampler epochs, selecting training mode, and clearing gradients
-        before the batch loop.
-    - - Data loading and transfers
-      - Device transfers and device-side tensor preparation for the supplied
-        training batch.
-      - Fetching the batch from the dataloader, including file reads, worker-side
-        preparation, and waits for data. All validation data loading and transfers.
-    - - Model training
-      - Forward passes, loss calculation, backward passes, gradient clipping,
-        optimizer updates, and per-batch metric accumulation for full batches.
-      - Training work for partial batches.
-    - - Validation
-      - None.
-      - Validation forward passes, loss calculation, and Dice-score evaluation.
-    - - Distributed communication
-      - Communication on the timed training batch's execution path, including
-        spatially sharded operations and gradient and loss reductions.
-      - Epoch-level aggregation of training metrics and validation communication.
-    - - Learning-rate scheduling
-      - None.
-      - The scheduler step after validation.
-    - - Other in-epoch overhead
-      - Device work and delays between the GPU events, including compilation or
-        host delays that leave the device waiting within that interval.
-      - Work outside the event interval, such as advancing the profiler schedule
-        after the batch's end event.
+See :ref:`scaffold-fom-timing` for timing boundaries and the work included in
+or excluded from the FOM. The supplementary minibatch metric is described in
+:ref:`scaffold-minibatch-timing`.
 
 ***************************
  Source code modifications
@@ -336,29 +225,60 @@ least 0.95 using the required parameters in :ref:`scaffold-performance-projectio
  Memory usage
 **************
 
-Approximate memory usage for the El Capitan baseline, with 128 GiB available per GPU.
-The sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate
-applies to both strong and weak scaling.
+Approximate memory usage with the PyTorch GPU memory fraction set to ``0.8``.
+The El Capitan baseline has 128 GiB available per GPU and 512 GiB per node. The
+sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate applies
+to both strong and weak scaling.
 
-.. list-table:: Per-GPU memory usage
+.. list-table:: Memory usage by local batch size
     :header-rows: 1
 
     - - problem_scale
       - sharding
       - local_batch_size
-      - Per GPU (GiB)
-    - - 10
-      - [4, 8, 8]
-      - 4
-      - ~90
-    - - 10
-      - [4, 8, 8]
-      - 2
-      - ~50
+      - PyTorch actual per GPU (GiB)
+      - PyTorch reserved per GPU (GiB)
+      - Total GPU (GiB)
+      - Total node (GiB)
     - - 10
       - [4, 8, 8]
       - 1
-      - ~30
+      - 15
+      - 19–23
+      - 26–29
+      - 105–111
+    - - 10
+      - [4, 8, 8]
+      - 2
+      - ~23
+      - ~32
+      - ~39
+      - ~155
+    - - 10
+      - [4, 8, 8]
+      - 4
+      - ~40
+      - ~55
+      - ~62
+      - ~250
+    - - 10
+      - [4, 8, 8]
+      - 8
+      - ~73
+      - ~102
+      - ~108
+      - ~430
+    - - 10
+      - [4, 8, 8]
+      - 16
+      - ~139
+      - ~194
+      - ~200
+      - ~800
+
+``local_batch_size`` 8 does not fit on MI300A: with the default 80% limit PyTorch runs
+out of memory, and raising the limit leaves too little memory for the host
+processes on the node.
 
 ************************
  Baseline on El Capitan
@@ -605,3 +525,132 @@ Weak scaling
 
 You may also change any other "External/user-facing" parameter, such as
 ``dataloader_num_workers``, and the data types (see `Source code modifications`_).
+
+.. _scaffold-appendix:
+
+**********
+ Appendix
+**********
+
+.. _scaffold-fom-timing:
+
+FOM timing details
+------------------
+
+The FOM sums the timed interval of every epoch, up to and including the epoch that
+reaches convergence. Each interval starts before epoch setup and ends after the
+validation metrics are reduced from all ranks.
+
+.. list-table:: Work included in the FOM
+    :header-rows: 1
+
+    - - Included work
+      - What it involves
+    - - Epoch setup
+      - Setting the training and validation sampler epochs, selecting training mode,
+        and clearing gradients before processing batches.
+    - - Data loading and transfers
+      - Loading training and validation batches, preparing their tensors, waiting
+        for data, and transferring inputs and labels to the compute devices during
+        the timed epoch.
+    - - Model training
+      - Forward passes, loss calculation, backward passes, gradient clipping, and
+        optimizer updates for all training batches, including partial batches.
+    - - Validation
+      - Forward passes over the validation set and calculation of validation loss
+        and Dice scores, including the validation pass that establishes convergence.
+    - - Distributed communication
+      - Communication required by spatially sharded operations, gradient reduction,
+        and aggregation of training and validation metrics during the epoch.
+    - - Learning-rate scheduling
+      - Updating the learning-rate scheduler after validation.
+    - - Other in-epoch overhead
+      - Compilation, memory allocation, logging, profiling, synchronization, and
+        delays from resource contention that occur within the timed interval.
+
+The following work happens outside the epoch timers and does not count toward the FOM.
+
+.. list-table:: Work excluded from the FOM
+    :header-rows: 1
+
+    - - Excluded work
+      - What it involves
+    - - Dataset generation
+      - Creating fractal categories and instances, assembling volumes and masks,
+        and writing the dataset files.
+    - - Initialization
+      - Starting distributed communication, constructing and placing the model,
+        preparing dataloaders and the optimizer, and reading training masks to
+        estimate loss weights.
+    - - Warmup
+      - Running training and validation batches before timed training to initialize
+        kernels, compile code, tune algorithms, and prepare runtime resources.
+        The model, optimizer, scheduler, and random-number state are restored
+        after warmup.
+    - - Between-epoch reporting
+      - Collecting minibatch timing statistics, printing epoch summaries, and
+        writing the training statistics CSV.
+    - - Checkpointing
+      - Saving model parameters, optimizer state, and other information needed to
+        restart training. Checkpointing is disabled by default.
+    - - Final processing
+      - Generating plots, exporting profiler traces, and performing final
+        synchronization and cleanup after training.
+
+Work and delays inside a timed epoch always count toward the FOM, including data
+loading, compilation, and contention from overlapping background activity.
+
+.. _scaffold-minibatch-timing:
+
+Minibatch timing
+----------------
+
+``per_minibatch_median_time`` is the time, in seconds, to process one full
+training minibatch; lower is better. It covers only part of the work in the FOM, as the
+table below shows, and unlike the FOM it does not depend on how many epochs training
+needs to converge.
+
+ScaFFold measures ``per_minibatch_median_time`` with PyTorch GPU events. The start event is recorded after the
+data loader supplies a batch and before its inputs and labels are transferred to the
+device. The end event is recorded after the training step and per-batch metric
+accumulation. Partial batches are excluded from this metric but still count toward the
+FOM.
+
+For each timed batch, ScaFFold takes the maximum time across ranks, then the median of
+those times within each epoch, and finally the median of the epoch medians. The result
+is logged as ``Median of epoch minibatch time medians``.
+
+.. list-table:: Minibatch timing relative to the FOM categories
+    :header-rows: 1
+
+    - - FOM category
+      - Included in minibatch timing
+      - Omitted relative to the FOM
+    - - Epoch setup
+      - None.
+      - Setting sampler epochs, selecting training mode, and clearing gradients
+        before the batch loop.
+    - - Data loading and transfers
+      - Device transfers and device-side tensor preparation for the supplied
+        training batch.
+      - Fetching the batch from the dataloader, including file reads, worker-side
+        preparation, and waits for data. All validation data loading and transfers.
+    - - Model training
+      - Forward passes, loss calculation, backward passes, gradient clipping,
+        optimizer updates, and per-batch metric accumulation for full batches.
+      - Training work for partial batches.
+    - - Validation
+      - None.
+      - Validation forward passes, loss calculation, and Dice-score evaluation.
+    - - Distributed communication
+      - Communication on the timed training batch's execution path, including
+        spatially sharded operations and gradient and loss reductions.
+      - Epoch-level aggregation of training metrics and validation communication.
+    - - Learning-rate scheduling
+      - None.
+      - The scheduler step after validation.
+    - - Other in-epoch overhead
+      - Device work and delays between the GPU events, including compilation or
+        host delays that leave the device waiting within that interval.
+      - Work outside the event interval, such as advancing the profiler schedule
+        after the batch's end event.
