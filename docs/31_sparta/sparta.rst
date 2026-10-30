@@ -123,11 +123,7 @@ be copied into a run directory for the simulation.
    This is the default input file that controls the simulation. Some
    parameters within this file may need to be changed depending upon
    what is being run (e.g., these parameters control how much memory
-   it uses). First, one scales the problem size on a single node to
-   match the needed memory characteristics via ``nloc``. Then, one
-   weak scales from a single node to an arbitrary number by changing
-   ``nscale``. Both of these parameters are defined via ``index``, so
-   they can be altered on the command line invocation of SPARTA.
+   it uses). 
 
 
 An excerpt from this input file that has its key parameters is
@@ -234,6 +230,14 @@ provided below.
    period whose performance will be evaluated. The simulation will
    stop afterwards.
 
+.. note::
+
+   First, one scales the problem size on a single node to match the
+   needed memory characteristics via ``nloc``. Then, one weak scales
+   from a single node to an arbitrary number by changing
+   ``nscale``. Both of these parameters are defined via ``index``, so
+   they can be altered on the command line invocation of SPARTA.
+
 Due to differences in how memory is allocated, Kokkos must be enabled
 for the simulation regardless of the hardware being used. If Kokkos is
 enabled, the following excerpts should be found within the log file.
@@ -266,12 +270,12 @@ example.
    Loop time of 24.3716 on 32 procs for 200 steps with 9079240000 particles
    Performance: 8.206 timesteps/s, 74.507 Gparticle-step/s
 
-The quantity of interest (QOI) is "Gparticle-step/s", which can be
+The Figure of Merit (**FOM**) is "Gparticle-step/s", which can be
 directly extracted from the last line of the 3rd sub-job's performance
-output (which resembles the block above). The Figure of Merit
-(**FOM**) is QOI divided by the number of nodes. The ultimate goal is
-to maximize this throughput FOM while utilizing at least 50% of
-available memory.
+output (which resembles the block above). Sometimes it is useful to
+normalize the FOM by the number of nodes. The ultimate goal is to
+maximize this throughput FOM while utilizing at least 50% of available
+memory.
 
 
 .. _SPARTACorrectness:
@@ -389,6 +393,8 @@ described below.
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ElCapitanSystemDescription`)
+* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
+  known as Hops.
 
 
 Building
@@ -454,7 +460,7 @@ The script discussed above is :download:`sparta_build_hops.sh
 <sparta_build_hops.sh>` and is produced below for convenience and
 reference.
 
-.. literalinclude:: sparta_build_elcapitan.sh
+.. literalinclude:: sparta_build_hops.sh
    :language: bash
 
 
@@ -598,11 +604,15 @@ Single-node results from SPARTA are provided on the following systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsSpartaATS4`)
+* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
+  known as Hops (see :ref:`ResultsSpartaCTS2GPU`).
 
 Multi-node results from SPARTA are provided on the following system(s):
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsSpartaScaleATS4`)
+* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
+  known as Hops (see :ref:`ResultsSpartaScaleCTS2GPU`).
 
 
 .. _SPARTAComputeFOM:
@@ -620,26 +630,13 @@ El Capitan - Single Node
 ------------------------
 
 .. note::
+   This data is forthcoming.
 
-   This section will be updated with some more content soon.
+Hops - Single Node
+------------------
 
-A single-node example is below that showcases 2,408 Mega particle
-steps per second per node. The other relevant parameters are displayed
-as part of the output.
-
-.. code-block::
-   :emphasize-lines: 2
-
-   $ ./sparta_fom.py --all --numRanksPerNode 4 --file log.sparta
-   INFO - 2026-02-16 20:54:44,673 - FOM (M-particle-steps/sec/node) = 2407.678218234091
-   INFO - 2026-02-16 20:54:44,673 - No. Ranks = 4
-   INFO - 2026-02-16 20:54:44,673 - No. Nodes = 1
-   INFO - 2026-02-16 20:54:44,673 - Wall Time (sec) = 683.659
-   INFO - 2026-02-16 20:54:44,673 - No. Steps = 1200
-   INFO - 2026-02-16 20:54:44,673 - No. Particles = 1342884461
-   INFO - 2026-02-16 20:54:44,673 - Particles Per Cell [PPC] = 47
-   INFO - 2026-02-16 20:54:44,673 - Length Scaling Factor [L] = 2.0
-   INFO - 2026-02-16 20:54:44,673 - File = /path/to/llnl-benchmarks/docs/31_sparta/checks-10--nodes-001--L-2.0--ktst/log.sparta
+.. note::
+   This data is forthcoming.
 
 
 .. _ResultsSpartaScaleATS4:
@@ -647,60 +644,31 @@ as part of the output.
 El Capitan - Many Nodes
 -----------------------
 
+The weak-scaling data are provided in
+  :download:`elcapitan-weakscaling.csv <elcapitan-weakscaling.csv>`.
+
+  .. csv-table:: SPARTA weak-scaling results on El Capitan
+     :file: elcapitan-weakscaling.csv
+     :header-rows: 1
+     :widths: 15 30 30 25
+
+  .. figure:: elcapitan-weakscaling.png
+     :alt: SPARTA weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency
+  annotations.
+     :align: center
+     :width: 90%
+
+     SPARTA weak-scaling Figure of Merit on El Capitan. Point annotations show
+     the corresponding parallel efficiency at each node count.
+
+
+.. _ResultsSpartaScaleCTS2GPU:
+
+Hops - Many Nodes
+-----------------
+
 .. note::
-
-   This section will be updated with some more content soon.
-
-
-Timing Breakdown
-^^^^^^^^^^^^^^^^
-
-.. note::
-
-   This section will be updated with some more content soon.
-
-Timing breakdown information directly from SPARTA on El Capitan is
-provided for various node counts. SPARTA writes out a timer block that
-resembles the following.
-
-.. code-block::
-
-   Section |  min time  |  avg time  |  max time  |%varavg| %total
-   ---------------------------------------------------------------
-   Move    | 159.2      | 161.74     | 165.21     |  18.7 | 23.66
-   Coll    | 186.02     | 325.5      | 476.79     | 771.3 | 47.61
-   Sort    | 26.944     | 29.01      | 31.18      |  35.9 |  4.24
-   Comm    | 1.7542     | 1.762      | 1.7726     |   0.5 |  0.26
-   Modify  | 2.502      | 2.9416     | 3.3764     |  24.7 |  0.43
-   Output  | 0.049965   | 1.7761     | 3.441      | 124.6 |  0.26
-   Other   |            | 160.9      |            |       | 23.54
-
-A description of the work performed for each of the sections is
-provided below.
-
-``Move``
-   Particle advection through the mesh, i.e., particle push
-
-``Coll``
-   Particle collisions
-
-``Sort``
-   Particle sorting (i.e., make a list of all particles in each grid
-   cell) and reorder (i.e., reorder the particle array by grid cell)
-
-``Comm``
-   The bulk of the MPI communications
-
-``Modify``
-   Time spent in diagnostics like "fixes" or "computes"
-
-``Output``
-   Time spent writing statistical output to log, or other, file(s)
-
-``Other``
-   Leftover time not captured by the categories above; this can
-   include load imbalance (i.e., ranks waiting at a collective
-   operation)
+   This data is forthcoming.
 
 
 References
