@@ -1,4 +1,4 @@
-Nodes,QOI (Gparticle-step/s),FOM (Gparticle-step/s/node),Parallel Efficiency
+Nodes,FOM (Gparticle-step/s),FOM/node (Gparticle-step/s/node),Parallel Efficiency
 1,8.95167051,8.95167051,1.0
 8,67.5600477,8.44500596,0.9434
 64,526.845197,8.2319562,0.9196
