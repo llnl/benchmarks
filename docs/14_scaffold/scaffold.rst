@@ -336,29 +336,60 @@ least 0.95 using the required parameters in :ref:`scaffold-performance-projectio
  Memory usage
 **************
 
-Approximate memory usage for the El Capitan baseline, with 128 GiB available per GPU.
-The sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate
-applies to both strong and weak scaling.
+Approximate memory usage with the PyTorch GPU memory fraction set to ``0.8``.
+The El Capitan baseline has 128 GiB available per GPU and 512 GiB per node. The
+sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate applies
+to both strong and weak scaling.
 
-.. list-table:: Per-GPU memory usage
+.. list-table:: Memory usage by local batch size
     :header-rows: 1
 
     - - problem_scale
       - sharding
       - local_batch_size
-      - Per GPU (GiB)
-    - - 10
-      - [4, 8, 8]
-      - 4
-      - ~90
-    - - 10
-      - [4, 8, 8]
-      - 2
-      - ~50
+      - PyTorch actual per GPU (GiB)
+      - PyTorch reserved per GPU (GiB)
+      - Total GPU (GiB)
+      - Total node (GiB)
     - - 10
       - [4, 8, 8]
       - 1
-      - ~30
+      - 15
+      - 19–23
+      - 26–29
+      - 105–111
+    - - 10
+      - [4, 8, 8]
+      - 2
+      - ~23
+      - ~32
+      - ~39
+      - ~155
+    - - 10
+      - [4, 8, 8]
+      - 4
+      - ~40
+      - ~55
+      - ~62
+      - ~250
+    - - 10
+      - [4, 8, 8]
+      - 8
+      - ~73
+      - ~102
+      - ~108
+      - ~430
+    - - 10
+      - [4, 8, 8]
+      - 16
+      - ~139
+      - ~194
+      - ~200
+      - ~800
+
+``local_batch_size`` 8 does not fit on MI300A: with the default 80% limit PyTorch runs
+out of memory, and raising the limit leaves too little memory for the host
+processes on the node.
 
 ************************
  Baseline on El Capitan
