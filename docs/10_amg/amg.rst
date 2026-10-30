@@ -9,7 +9,7 @@ Purpose
 =======
 
 The AMG2023 benchmark consists of a driver (amg.c), a simple Makefile, and documentation. It is available at https://github.com/LLNL/AMG2023 . 
-It requires an installation of hypre 2.30.0 or higher. 
+It requires an installation of hypre v3.2.0 or higher. 
 It uses hypre's parallel algebraic multigrid (AMG) solver BoomerAMG in combination with a Krylov solver to solve 
 two linear systems arising from diffusion problems on a cuboid discretized by finite differences. 
 The problems are set up through hypre's linear-algebraic IJ interface. The problem sizes can be controlled from the command line.`. 
