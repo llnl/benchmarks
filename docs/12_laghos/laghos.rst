@@ -2,8 +2,6 @@
 Laghos
 ******
 
-Laghos source code is near-final at this point. The problems to run are yet to be finalized.
-
 Purpose
 =======
 
