@@ -158,24 +158,38 @@ The validation criteria for AMG2023 is defined as the convergence criteria for t
 Memory Usage
 ============
 
-AMG2023's memory needs are somewhat complicated to describe.  They are very dependent on the type of problem solved and the options used.  When turning on the '-printstats' option, memory complexities <mc> are displayed, which are defined by the sum of non-zeroes of all matrices (both system matrices and interpolation matrices on all levels) divided by the number of non-zeroes of the original matrix, i.e., at least about <mc> times as much space is needed.  However, this does not include memory needed for communication, vectors, auxiliary computations, etc. 
+AMG2023's memory requirements vary with the problem size and solver
+configuration. For GPU-enabled runs, the benchmark uses Umpire to manage
+device memory. The ``--dev_pool_size`` runtime parameter specifies the size of
+the device-memory pool allocated for each MPI rank. Its value is an integer
+number of gigabytes per rank, with a minimum size of 1 GB.
 
-The figure below provides information about approximate memory usage on 1 NVIDIA V-100 for Problem 1 (AMG-GMRES, 27pt stencil) and Problem 2 (AMG-PCG, 7pt stencil, with 1 level aggressive coarsening) for increasing problem sizes n x n x n, starting at 0.24 GB for each problem.
-The black dashed line indicates the GPU memory available on 1 GPU (V-100) on Lassen. 
+The ``-printstats`` option reports *memory complexity*: the total number of
+nonzeros in the system and interpolation matrices across all levels, divided
+by the number of nonzeros in the original matrix. A memory complexity of
+:math:`m_c` indicates that these matrices require approximately :math:`m_c`
+times as much storage as the original matrix. This metric excludes memory used
+for communication, vectors, and auxiliary computations. The output also
+includes the high-water mark of the Umpire device-memory pool for each rank.
 
-The second figure provides memory use on 1 node of CTS-1 (Quartz) using 4 MPI tasks with 9 OpenMP threads each for Problem 1 and Problem 2 for increasing problem size n x n x n per MPI task. 
+The tables and figure below summarize approximate node-level memory usage for
+Problem 1 (AMG-GMRES with a 27-point stencil) and Problem 2 (AMG-PCG, 7pt stencil,
+with 1 level aggressive coarsening) on a single El Capitan node with four AMD
+MI300A GPUs. The measurements cover increasingly large cubic problems of 
+size :math:`n \times n \times n` per GPU.
 
-.. figure:: plots/mem-J1.png
-   :alt: Approximate memory use for Problems 1 and 2 on V-100
+.. csv-table:: Problem 1: El Capitan Memory Usage on 1 Node (4 GPUs), problem size/GPU n x n x n
+   :header-rows: 1
    :align: center
-   
-   Approximate memory use for Problems 1 and 2 on V-100
+   :file: data/amg2023_problem1_memory_usage_rocm.csv
 
-.. figure:: plots/mem-J2.png
-   :alt: Approximate memory use for Problems 1 and 2 on CTS-1
+.. csv-table:: Problem 2: El Capitan Memory Usage on 1 Node (4 GPUs), problem size/GPU n x n x n
+   :header-rows: 1
    :align: center
-   
-   Approximate memory use for Problems 1 and 2 on CTS-1
+   :file: data/amg2023_problem2_memory_usage_rocm.csv
+
+.. image:: plots/amg2023_memory_usage_rocm.png
+   :align: center
 
 
 Weak Scaling on El Capitan
@@ -238,5 +252,3 @@ Allison Baker, Rob Falgout, Tzanio Kolev, and Ulrike Yang, "Multigrid Smoothers 
 Rui Peng Li, Bjorn Sjogreen, Ulrike Yang, "A New Class of AMG Interpolation Methods Based on Matrix-Matrix Multiplications", SIAM Journal on Scientific Computing, 43 (2021), pp. S540-S564, https://doi.org/10.1137/20M134931X 
 
 Rob Falgout, Rui Peng Li, Bjorn Sjogreen, Lu Wang, Ulrike Yang, "Porting hypre to Heterogeneous Computer Architectures: Strategies and Experiences", Parallel Computing, 108, (2021), a. 102840
-
-
