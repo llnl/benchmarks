@@ -1,0 +1,153 @@
+# advect particles via VSS collisional flow on a uniform grid
+# particles reflect off global box boundaries
+#
+# Balanced weak-scaling version.
+#
+# Assumptions:
+#   nscale = number of nodes
+#   4 MPI ranks / GPUs per node
+#   total MPI ranks = 4*nscale
+#   nscale must be a power of 2
+#
+# Goal:
+#   Every MPI rank owns a cubic local grid:
+#     nloc x nloc x nloc
+#
+# The global domain may be non-cubic.
+
+variable            nscale index 1
+variable            ppc index 10
+
+global              optmove yes particle/reorder 10
+# Help debug slow nodes...
+# global              timer/rank yes timer/file timings.txt
+
+# -------------------------------------------------------------------------
+# Local grid size per MPI rank
+#
+# 305^3 = 28,372,625 cells/rank
+# with ppc=10 -> 283,726,250 particles/rank
+# -------------------------------------------------------------------------
+
+variable            nloc index 305
+
+# -------------------------------------------------------------------------
+# Processor-grid construction for any power-of-2 nscale
+#
+# Let:
+#   nscale = 2^k
+#
+# Total MPI ranks:
+#   P = 4*nscale = 2^(k+2)
+#
+# Split exponent k+2 as evenly as possible over x/y/z:
+#
+#   ex = floor((k+2)/3)
+#   ey = floor((k+3)/3)
+#   ez = floor((k+4)/3)
+#
+# Then:
+#
+#   px = 2^ex
+#   py = 2^ey
+#   pz = 2^ez
+#
+# This guarantees:
+#
+#   px*py*pz = 4*nscale
+#
+# for power-of-2 nscale.
+# -------------------------------------------------------------------------
+
+variable            k equal round(log(${nscale})/log(2.0))
+variable            etot equal ${k}+2
+
+variable            ex equal floor(${etot}/3)
+variable            ey equal floor((${etot}+1)/3)
+variable            ez equal floor((${etot}+2)/3)
+
+variable            px equal round(2^${ex})
+variable            py equal round(2^${ey})
+variable            pz equal round(2^${ez})
+
+# Global grid dimensions.
+# Since each dimension is nloc * processor-count-in-that-dimension,
+# every processor owns exactly nloc^3 cells.
+
+variable            x equal ${nloc}*${px}
+variable            y equal ${nloc}*${py}
+variable            z equal ${nloc}*${pz}
+
+variable            lx equal ${x}*1.0e-5
+variable            ly equal ${y}*1.0e-5
+variable            lz equal ${z}*1.0e-5
+
+variable            n equal ${ppc}*${x}*${y}*${z}
+
+print               " Weak scaling factor nscale = ${nscale}"
+print               " Particles per cell ppc = ${ppc}"
+print               " Local grid per MPI rank = ${nloc} x ${nloc} x ${nloc}"
+print               " Processor grid = ${px} x ${py} x ${pz}"
+print               " Global grid = ${x} x ${y} x ${z}"
+print               " Global particle count = ${n}"
+
+seed                12345
+dimension           3
+
+global              gridcut 2.0e-5
+
+boundary            p p p
+#boundary            r r r
+
+create_box          0 ${lx} 0 ${ly} 0 ${lz}
+
+# Key command:
+# Use SPARTA's block assignment to force contiguous 3D processor sub-blocks.
+# Product px*py*pz must equal the actual MPI task count.
+create_grid         ${x} ${y} ${z} block ${px} ${py} ${pz}
+
+# Do not use RCB for this homogeneous benchmark.
+# The block assignment already gives equal cubic local domains.
+# balance_grid      rcb cell
+
+species             ar.species Ar
+mixture             air Ar vstream 0.0 0.0 0.0 temp 273.15
+
+global              nrho 7.07043E22
+global              fnum 7.07043E6
+
+collide             vss air ar.vss
+collide_modify     vremax 1000 yes
+
+create_particles    air n ${n}
+
+# first equilibrate with large timestep to unsort particles
+# then benchmark with normal timestep
+
+stats_style         step cpu spcpu np nattempt ncoll
+stats               10
+stats_modify        flush yes
+
+timestep            7.00E-8
+run                 30
+
+reset_timestep      0
+
+timestep            7.00E-9
+
+###################################
+# Output
+###################################
+
+stats               0
+
+# Stop after 5.5 minutes
+fix             1 halt 10 tlimit > 330.0 message no error continue
+run             1000000
+
+unfix           1
+reset_timestep 0
+
+# Stop after 5.5 minutes
+fix             2 halt 10 tlimit > 330.0 message no
+run             1000000

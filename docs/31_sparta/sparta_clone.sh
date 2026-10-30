@@ -1,2 +1,2 @@
 #!/bin/sh
-git clone -b new_cylinder git@github.com:sparta/sparta.git
+git clone --branch 27Aug2026 git@github.com:sparta/sparta.git
