@@ -40,11 +40,9 @@ Source code modifications
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 For Kripke, we define the following restrictions on source code modifications:
 
-* Kripke must use RAJA as the portability library, available at https://github.com/LLNL/RAJA . While source code changes to RAJA can be proposed, RAJA in Kripke may not be removed or replaced with any other library.
+* Kripke must use RAJA as the portability library, available at https://github.com/LLNL/RAJA . While source code changes to RAJA can be proposed, RAJA and its dependencies in Kripke may not be removed or replaced with any other library.
 
-* Kripke must use Camp, a compiler agnostic metaprogramming library providing concepts, type operations and tuples for C++, CUDA, and HIP. Available at https://github.com/llnl/camp .
-
-* Kripke must use Umpire, a portable memory management library that provides memory allocation, pooling, and data transfers across CPU and GPU memory spaces. Available at https://github.com/llnl/Umpire .
+* Kripke must use Umpire, a portable memory management library that provides memory allocation, pooling, and data transfers across CPU and GPU memory spaces, available at https://github.com/llnl/Umpire . While source code changes to Umpire can be proposed, Umpire and its dependencies in Kripke may not be removed or replaced with any other library.
 
 * Kripke should use CHAI as a copy-hiding array abstraction to automatically migrate data between memory spaces. CHAI is available at https://github.com/llnl/chai .
 
