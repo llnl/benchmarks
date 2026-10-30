@@ -152,6 +152,8 @@ Validation
 
 The validation criteria for AMG2023 is defined as the convergence criteria for the benchmark.
 
+.. _amg2023-memory-usage:
+
 
 Memory Usage
 ============
@@ -189,6 +191,7 @@ size :math:`n \times n \times n` per GPU.
 .. image:: plots/amg2023_memory_usage_rocm.png
    :align: center
 
+.. _amg2023-weak-scaling:
 
 Baseline on El Capitan
 ======================
@@ -200,10 +203,14 @@ Problem 1
 
 For problem 1, a grid size of 210 x 210 x 210 is weak scaled on El Capitan
 
+.. _table-p1-weak-scaling:
 .. csv-table::
    :header-rows: 1
    :align: center
    :file: data/amg2023_problem1_weak_rocm.csv
+
+The 384-node result in the table above is the baseline FOM for one El Capitan
+Scalable Unit.
 
 .. image:: plots/amg2023_problem1_weak_rocm.png
    :align: center
@@ -218,10 +225,14 @@ Problem 2
 
 For problem 2, a grid size of 350 x 350 x 350 is weak scaled on El Capitan
 
+.. _table-p2-weak-scaling:
 .. csv-table::
    :header-rows: 1
    :align: center
    :file: data/amg2023_problem2_weak_rocm.csv
+
+The 384-node result in the table above is the baseline FOM for one El Capitan
+Scalable Unit.
 
 .. image:: plots/amg2023_problem2_weak_rocm.png
    :align: center
@@ -230,6 +241,24 @@ Timings were captured using Caliper and are presented below.
 
 .. image:: plots/amg2023_problem2_caliper_weak_rocm.png
    :align: center
+
+Performance Projection
+======================
+
+The final rows of Tables :numref:`table-p1-weak-scaling` (Problem 1) and
+:numref:`table-p2-weak-scaling` (Problem 2) provide the baseline problem sizes
+and performance for one Scalable Unit (SU) of El Capitan.
+
+To project AMG2023 performance for an SU, choose the local spatial dimensions
+(``nx``, ``ny``, and ``nz``) so that :math:`nx \times ny \times nz` is the
+desired problem size per GPU. Choose the corresponding processor decomposition
+(``px``, ``py``, and ``pz``) to match the size of the SU. Select the per-GPU 
+problem size so that the benchmark uses 20% of the memory available on each node
+of the SU.
+
+Use the El Capitan memory measurements in :ref:`amg2023-memory-usage` to choose
+a problem size that meets this memory target. Then use the weak-scaling results
+in :ref:`amg2023-weak-scaling` to project performance at the scale of the SU.
 
 
 References
