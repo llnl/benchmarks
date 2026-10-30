@@ -2,63 +2,78 @@
  ScaFFold
 ##########
 
-ScaFFold is the Scale-free Fractal benchmark for deep learning.
+ScaFFold is the Scale-free Fractal benchmark for deep learning. The source code and
+documentation are on `GitHub <https://github.com/LBANN/ScaFFold>`_.
 
 The ScaFFold problem description and source are near-final.
 
-Full source code and documentation is available on `GitHub
-<https://github.com/LBANN/ScaFFold>`_.
-
 .. important::
 
-    ScaFFold supports configurable problem sizes. This benchmark is for *one* particular
-    configuration, specified in :ref:`scaffold-run-parameters` (although others may be
-    useful for prototyping).
+    ScaFFold supports a range of problem sizes, but the projections will be for one configuration,
+    given in :ref:`scaffold-performance-projections`. Other sizes may be useful for
+    prototyping.
 
 *********
  Purpose
 *********
 
 ScaFFold is a proxy application and benchmark representative of deep learning surrogate
-models that are trained on large, high-resolution, three-dimensional numerical
-simulations. It is meant to support benchmarking at a variety of system scales and be
-adaptable to future deep learning systems innovations. ScaFFold exercises much of the
-deep learning systems stack: I/O, compute, fine and coarse-grained communication, and
-their integration in a framework.
+models trained on large, high-resolution, three-dimensional numerical simulations. It is
+designed to support benchmarking at a range of system scales and to adapt to future
+innovations in deep learning systems. ScaFFold exercises much of the deep learning
+systems stack: I/O, compute, fine and coarse-grained communication, and their
+integration in a framework.
 
-*****************
- Characteristics
-*****************
+*********
+ Problem
+*********
 
-ScaFFold trains a 3D U-Net to perform semantic segmentation on a synthetic dataset
-composed of 3D volumes containing different classes of fractals. The size of the problem
-is controlled by a *scale* parameter, which varies the size and complexity of the
-volumes and the depth of the U-Net. The scale parameter is exponential: each increase
-roughly doubles the problem size; e.g., a scale 7 problem has a volume size of
-:math:`128^3` for each sample. Using fractals enables large datasets to be generated
-in-situ (rather than distributed) while ensuring a complex yet tractable semantic
-segmentation problem.
+ScaFFold trains a 3D U-Net to perform semantic segmentation on a synthetic dataset of
+3D volumes containing fractals of different classes. A *scale* parameter controls the
+size and complexity of the volumes and the depth of the U-Net. Each increment doubles
+the edge length of a volume; for example, a scale 7 sample is :math:`128^3` voxels.
+Because the fractals are generated procedurally, large datasets can be created in situ
+rather than distributed, and the segmentation problem is complex yet tractable.
 
-The model is trained from a random initialization until convergence, which is defined to
-be a validation Dice score of at least 0.95.
+The model is trained from a random initialization until it converges, which is defined
+as a validation Dice score of at least 0.95.
 
-Problems
-========
+The benchmark problem is scale 10. Volume counts below are logical samples, before
+spatial sharding.
 
-The task is a ScaFFold training problem of scale 10. See
-:ref:`scaffold-run-parameters` for the required benchmark configuration.
+.. list-table:: Dataset for the benchmark problem
+    :header-rows: 1
 
-Figure of Merit
-===============
+    - - Property
+      - Value
+    - - Logical volume dimensions
+      - :math:`1024 \times 1024 \times 1024`
+    - - Input channels
+      - 3
+    - - Foreground classes
+      - 5, plus background
+    - - Fractals per volume
+      - 3
+    - - Instances used per category
+      - 144 (the generator rounds the configured value of 145 down to a multiple of 3)
+    - - Total logical volumes
+      - 240
+    - - Training volumes
+      - 168
+    - - Validation volumes
+      - 72 (30% of the total)
 
-The Figure of Merit is the inverse of the accumulated epoch time needed to train the
-ScaFFold model to convergence (validation Dice score of at least 0.95). Higher values
-indicate better performance. Report the FOM in inverse megaseconds (1/Megaseconds).
-See :ref:`scaffold-run-parameters` for the run and reporting requirements.
+****************
+ Figure of Merit
+****************
 
-The FOM includes the elapsed time within each epoch through the epoch that reaches
-convergence. Each interval starts before epoch setup and ends after validation metric
-reduction and the learning-rate scheduler step.
+The figure of merit (FOM) is the inverse of the total epoch time needed to train the
+model to convergence (a validation Dice score of at least 0.95). Report it in inverse
+megaseconds (1/Megaseconds); higher is better.
+
+The FOM sums the timed interval of every epoch, up to and including the epoch that
+reaches convergence. Each interval starts before epoch setup and ends after the
+validation metrics are reduced from all ranks.
 
 .. list-table:: Work included in the FOM
     :header-rows: 1
@@ -87,8 +102,7 @@ reduction and the learning-rate scheduler step.
       - Compilation, memory allocation, logging, profiling, synchronization, and
         delays from resource contention that occur within the timed interval.
 
-The following work occurs outside the epoch timers and is excluded from the
-accumulated time used to calculate the FOM.
+The following work happens outside the epoch timers and does not count toward the FOM.
 
 .. list-table:: Work excluded from the FOM
     :header-rows: 1
@@ -117,25 +131,25 @@ accumulated time used to calculate the FOM.
       - Generating plots, exporting profiler traces, and performing final
         synchronization and cleanup after training.
 
-Work or delays within a timed epoch still contribute to the FOM, including data
-loading, compilation, and contention from any overlapping background activity.
+Work and delays inside a timed epoch always count toward the FOM, including data
+loading, compilation, and contention from overlapping background activity.
 
 **Minibatch timing**
 
-``per_minibatch_median_time`` describes the time per full training minibatch, in
-seconds. Lower values indicate better performance. It measures a subset of the work
-included in the FOM, as detailed below. This metric summarizes typical full-batch execution
-time, while the FOM also reflects the number of epochs needed to reach convergence.
+``per_minibatch_median_time`` is the time, in seconds, to process one full
+training minibatch; lower is better. It covers only part of the work in the FOM, as the
+table below shows, and unlike the FOM it does not depend on how many epochs training
+needs to converge.
 
-The current implementation uses PyTorch GPU events. The start event is recorded after
-the dataloader supplies a batch and before its inputs and labels are transferred to
-the device. The end event is recorded after the training step and per-batch metric
-accumulation. Partial training batches are excluded from this timing, although they
-still contribute to the FOM.
+ScaFFold measures ``per_minibatch_median_time`` with PyTorch GPU events. The start event is recorded after the
+data loader supplies a batch and before its inputs and labels are transferred to the
+device. The end event is recorded after the training step and per-batch metric
+accumulation. Partial batches are excluded from this metric but still count toward the
+FOM.
 
-For each timed batch, ScaFFold takes the maximum duration across ranks. It then takes
-the median of those durations within each epoch and the median of the epoch medians
-for the run. The final value is logged as ``Median of epoch minibatch time medians``.
+For each timed batch, ScaFFold takes the maximum time across ranks, then the median of
+those times within each epoch, and finally the median of the epoch medians. The result
+is logged as ``Median of epoch minibatch time medians``.
 
 .. list-table:: Minibatch timing relative to the FOM categories
     :header-rows: 1
@@ -177,120 +191,120 @@ for the run. The final value is logged as ``Median of epoch minibatch time media
 ***************************
 
 See :ref:`GlobalRunRules` for general guidance on allowed modifications. For ScaFFold,
-we permit the following modifications:
-
-- In ``ScaFFold/configs/benchmark_default.yml``, any "External/user-facing" parameters
-  may be changed subject to the requirements in :ref:`scaffold-run-parameters`.
-- The datatypes used may be changed.
-
-The framework constraints and required problem and learning rate specifications are
-collected in :ref:`scaffold-run-parameters`.
+the data types may be changed, but the training framework must remain PyTorch.
 
 **********
  Building
 **********
 
-See the `ScaFFold README
-<https://github.com/LBANN/ScaFFold/blob/main/README.md#setup>`__ for build and setup
-instructions.
+ScaFFold is a Python package. Installing it in a virtual environment provides the
+``scaffold`` executable and the ``torchrun-hpc`` launcher; see the `ScaFFold README
+<https://github.com/LBANN/ScaFFold/blob/main/README.md#setup>`__ for instructions.
 
-For our results, we use ScaFFold version ``42d5577c1d1e775dca9dd453fd85384405c7c686`` from https://github.com/LBANN/ScaFFold.
+Example scripts for installing for CUDA and ROCm can be found in the `ScaFFold repo <https://github.com/LBANN/ScaFFold/tree/main/scripts>`__.
+
+You must use ScaFFold commit ``42d5577c1d1e775dca9dd453fd85384405c7c686``.
 
 *********
  Running
 *********
 
-See the `ScaFFold README
-<https://github.com/LBANN/ScaFFold/blob/main/README.md#running-the-benchmark>`__ for
-full documentation.
+Running ScaFFold requires a YAML configuration file. A default file is provided
+``ScaFFold/configs/benchmark_default.yml`` which can be updated with the values required in
+:ref:`scaffold-performance-projections`. Or values set on the CLI will override values in the YAML file.
 
-First, define a benchmark run configuration file using the requirements in
-:ref:`scaffold-run-parameters`.
+The ScaFFold repository includes example
+job scripts for running on CUDA and ROCm in the `ScaFFold repo <https://github.com/LBANN/ScaFFold/tree/main/scripts>`__. 
+The `ScaFFold README
+<https://github.com/LBANN/ScaFFold/blob/main/README.md#running-the-benchmark>`__ has
+more detail.
 
-Then the synthetic dataset is generated in advance:
-
-::
-
-    scaffold generate_fractals -c /path/to/config.yml
-
-Once the dataset is generated, the benchmark can be run:
+First, generate the dataset using the ``generate_fractals`` subcommand for problem scale 10:
 
 ::
 
-    scaffold benchmark -c /path/to/config.yml
+    scaffold generate_fractals -c config.yml --problem-scale 10
+
+The fractals are written under ``fract_base_dir`` and can reused by later runs. Rerun this
+step only if you change ``problem_scale``, ``n_categories``, or ``dataset_seed``.
+
+Then run the benchmark. This example uses 384 nodes with four ranks per node:
+
+::
+
+    torchrun-hpc -N 384 -n 4 --gpus-per-proc 1 $(which scaffold) benchmark -c config.yml --problem-scale 10 --dc-num-shards 4 8 8
+
+.. list-table::
+    :header-rows: 1
+
+    - - Argument
+      - Meaning
+    - - ``torchrun-hpc``
+      - Launcher installed with ScaFFold. It starts the ranks through the system's
+        scheduler (Flux, Slurm, or LSF) and sets up the PyTorch distributed
+        environment on each one.
+    - - ``-N 384``
+      - Number of nodes.
+    - - ``-n 4``
+      - Ranks per node, normally one per GPU. The total number of ranks is the number
+        of nodes times this value (1,536 here).
+    - - ``--gpus-per-proc 1``
+      - GPUs per rank. Each ScaFFold rank uses one GPU.
+    - - ``$(which scaffold)``
+      - Full path to the ``scaffold`` executable in the active Python environment.
+        ``torchrun-hpc`` runs this script on every rank, so it needs the full path.
+    - - ``benchmark``
+      - ScaFFold subcommand that trains the model and reports the FOM.
+    - - ``-c config.yml``
+      - Configuration file (see :ref:`scaffold-run-parameters`).
+
+Each ``benchmark`` command performs one run in a new timestamped directory under
+``base_run_dir``. ScaFFold builds the dataset of volumes and masks under
+``dataset_dir``, or reuses a matching one from an earlier run, then warms up, trains
+until the validation Dice score reaches ``target_dice``, and prints the FOM. The run
+directory also holds the merged configuration (``config.yaml``) and per-epoch training
+statistics (``train_stats.csv``).
 
 .. _scaffold-run-parameters:
 
-****************
- Run Parameters
-****************
+Runtime parameters
+------------------
 
-All ScaFFold-specific requirements for configuring runs, performing scaling studies,
-and reporting results are collected here. Start with
-``ScaFFold/configs/benchmark_default.yml`` and otherwise use its default values, subject
-to the source code modifications permitted above.
+``benchmark_default.yml`` describes each parameter in a comment and sorts them into four
+groups: "External/user-facing", "External problem specification", "External learning
+rate specification", and "Internal/dev use only". The rules for changing them are in
+:ref:`scaffold-performance-projections`.
 
-**Required configuration and constraints**
+Set parameters in the configuration file, or override them with flags to ``scaffold
+benchmark``, such as ``--training-seed 13`` or ``--local-batch-size 2``. Flags take
+precedence over the file, and ``scaffold benchmark --help`` lists them all. You can also
+pass ``-c`` more than once; each file overrides the ones before it.
 
-- Use ``problem_scale: 10`` and ``unet_bottleneck_dim: 5``.
-- Use ``target_dice: 0.95``. Training is successful when the validation Dice score is
-  at least 0.95.
-- Use ``dataset_seed: 523`` for all reported runs.
-- The training framework must be PyTorch.
-- Parameters marked "Internal/dev use only" in
-  ``ScaFFold/configs/benchmark_default.yml`` must not be changed.
-- The training random seed (``training_seed``) must vary across the runs used to report a FOM,
-  as described below; the dataset seed remains fixed at 523.
+The number of ranks and the following parameters determine how the work is divided:
 
-**Baseline parameters and comparability**
+``dc_num_shards`` and ``dc_shard_dims``
+    Spatial parallelism with DistConv. ``dc_num_shards`` sets how many pieces each
+    sample is split into along each tensor dimension listed in ``dc_shard_dims`` (by
+    default, the three spatial dimensions). The ranks that share one sample form a
+    data-parallel replica, so the number of replicas is the number of ranks divided by
+    the product of the ``dc_num_shards`` entries.
 
-The following additional parameters from ``ScaFFold/configs/benchmark_default.yml``
-are required for all reported results and match the baseline configuration:
+``local_batch_size``
+    Samples per training step for each replica. The global batch size is
+    ``local_batch_size`` times the number of replicas, and it cannot exceed the number
+    of training or validation volumes (168 and 72 for the benchmark problem). For
+    example, 8 ranks with ``dc_num_shards: [1, 1, 2]`` form four replicas, and
+    ``local_batch_size: 2`` gives a global batch size of 8.
 
-- ``n_categories: 5``
-- ``n_instances_used_per_fractal: 145``
-- ``optimizer: "ADAM"``
-- ``starting_learning_rate: 0.001``
-- ``min_learning_rate: 0.0001``
-- ``T_0: 10``
-- ``T_mult: 2``
-- ``disable_scheduler: 0``
+``dataloader_num_workers``
+    Data loader worker processes per rank. More workers use more memory.
 
-Parameters marked "External problem specification" and "External learning rate
-specification" must use the prescribed values. The exception is ``local_batch_size``,
-which must follow the scaling rules below. Runs that change the prescribed problem
-or learning rate settings are invalid for reporting, even if they reach the validation
-Dice threshold. The benchmark logs the problem and learning rate settings alongside
-the FOM.
+``dataset_seed`` determines the dataset: fractal categories and instances, volume
+placement, and the train/validation split. ``training_seed`` determines model
+initialization and data order.
 
-The required configuration produces the following dataset. Volume counts refer to
-logical samples before spatial sharding.
-
-.. list-table:: Dataset for the required benchmark configuration
-    :header-rows: 1
-
-    - - Property
-      - Value
-    - - Logical volume dimensions
-      - :math:`1024 \times 1024 \times 1024`
-    - - Input channels
-      - 3
-    - - Foreground classes
-      - 5, plus background
-    - - Fractals per volume
-      - 3
-    - - Instances used per category
-      - 144 (the generator rounds the configured value of 145 down to a multiple of 3)
-    - - Total logical volumes
-      - 240
-    - - Training volumes
-      - 168
-    - - Validation volumes
-      - 72 (30% of the total)
-
-The following table gives the ``unet_bottleneck_dim`` values to use at each
-``problem_scale``. The scale 10 row applies to this benchmark; other scales may be
-useful for prototyping.
+Each ``problem_scale`` has a matching ``unet_bottleneck_dim``. The benchmark uses scale
+10; to prototype at other scales, use these pairs:
 
 .. list-table::
     :header-rows: 1
@@ -310,49 +324,53 @@ useful for prototyping.
     - - 12
       - 7
 
-**Run preparation and FOM reporting**
-
-- Generate the synthetic dataset before running the benchmark, using the commands in
-  `Running`_.
-- Measure the time in seconds to reach a validation Dice score of at least 0.95,
-  including all I/O and other overheads and excluding dataset generation.
-- Report the median FOM from at least three different ``training_seed`` configurations, each
-  using ``dataset_seed: 523``.
-
-*****************
- Scaling studies
-*****************
-
-Keep the sharding configuration constant throughout each scaling study. Changing it affects the global batch size.
-
-**Strong scaling**
-Decrease ``local_batch_size`` by 2x for each 2x increase in
-resources to keep the global batch size constant. For example, use
-``local_batch_size=1`` at 1024 ranks, ``local_batch_size=2`` at 512 ranks, and
-``local_batch_size=4`` at 256 ranks. For hardware with large amounts of memory,
-scaling to larger ``local_batch_sizes`` (e.g. lower rank counts) will be possible.
-
-**Weak scaling**
-Use a constant ``local_batch_size=B`` at every resource count. The
-global batch size then increases by 2x for each 2x increase in resources. The data
-shown is ``local_batch_size=1``, but performance of the largest
-``local_batch_size=B_max`` can be reported (this is likely optimal vs size 1).
-
 ************
  Validation
 ************
 
-ScaFFold reports the validation Dice score after each training epoch. The convergence
-threshold required for successful training is specified in
-:ref:`scaffold-run-parameters`.
+ScaFFold reports the validation Dice score after each epoch and stops training when it
+reaches ``target_dice``. A run is valid only if it reaches a validation Dice score of at
+least 0.95 using the required parameters in :ref:`scaffold-performance-projections`.
 
-******************************
- Strong Scaling on El Capitan
-******************************
+**************
+ Memory usage
+**************
 
-See :ref:`scaffold-run-parameters` for strong-scaling requirements.
+Approximate memory usage for the El Capitan baseline, with 128 GiB available per GPU.
+The sharding column gives ``dc_num_shards``. The ``local_batch_size=1`` estimate
+applies to both strong and weak scaling.
 
-.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-fom.png
+.. list-table:: Per-GPU memory usage
+    :header-rows: 1
+
+    - - problem_scale
+      - sharding
+      - local_batch_size
+      - Per GPU (GiB)
+    - - 10
+      - [4, 8, 8]
+      - 4
+      - ~90
+    - - 10
+      - [4, 8, 8]
+      - 2
+      - ~50
+    - - 10
+      - [4, 8, 8]
+      - 1
+      - ~30
+
+************************
+ Baseline on El Capitan
+************************
+
+Strong scaling
+--------------
+
+The global batch size is held constant: ``local_batch_size`` halves each time the
+number of nodes doubles. This data is ``local_batch_size=4`` at 384 nodes, ``local_batch_size=2`` at 768 nodes, and ``local_batch_size=1`` at 1536 nodes
+
+.. image:: plots/001-strong-scaling-on-el-capitan-fom.png
    :align: center
 
 .. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
@@ -391,8 +409,11 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 1536
      - 42
      - 154.5
+   * - 1536
+     - 523
+     - 161.7
 
-.. image:: plots/001-strong-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+.. image:: plots/001-strong-scaling-on-el-capitan-per-minibatch-time-median.png
    :align: center
 
 .. list-table:: Strong scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
@@ -431,21 +452,24 @@ See :ref:`scaffold-run-parameters` for strong-scaling requirements.
    * - 1536
      - 42
      - 0.36
+   * - 1536
+     - 523
+     - 0.36
 
-****************************
- Weak Scaling on El Capitan
-****************************
+Weak scaling
+------------
 
-See :ref:`scaffold-run-parameters` for weak-scaling requirements.
+``local_batch_size`` is 1 at every node count, so the global batch size doubles with the
+number of nodes.
 
-.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-fom.png
+.. image:: plots/002-weak-scaling-on-el-capitan-fom.png
    :align: center
 
-.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001 (FOM in 1/Megaseconds)
+.. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - training_seed
+     - seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -477,8 +501,11 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
    * - 1536
      - 42
      - 154.5
+   * - 1536
+     - 523
+     - 161.7
 
-.. image:: plots/002-weak-scaling-tuolumne-dice-target-mode-per-minibatch-time-stat-median.png
+.. image:: plots/002-weak-scaling-on-el-capitan-per-minibatch-time-median.png
    :align: center
 
 .. list-table:: Weak scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
@@ -517,9 +544,64 @@ See :ref:`scaffold-run-parameters` for weak-scaling requirements.
    * - 1536
      - 42
      - 0.36
+   * - 1536
+     - 523
+     - 0.36
 
-************
- References
-************
+.. _scaffold-performance-projections:
 
-* LLNL ScaFFold repository: https://github.com/LBANN/ScaFFold
+*************************
+ Performance projections
+*************************
+
+Project the FOM of the scale 10 problem on the proposed system for a strong-scaling
+study and a weak-scaling study. Report each FOM as the median of at least three runs
+with different ``training_seed`` values.
+
+Required parameters
+-------------------
+
+Start from ``ScaFFold/configs/benchmark_default.yml`` and use the following values. Only
+``problem_scale`` and ``unet_bottleneck_dim`` differ from the defaults.
+
+.. code-block:: yaml
+
+    problem_scale: 10
+    unet_bottleneck_dim: 5
+    target_dice: 0.95
+    dataset_seed: 523
+    n_categories: 5
+    n_instances_used_per_fractal: 145
+    optimizer: "ADAM"
+    starting_learning_rate: 0.001
+    min_learning_rate: 0.0001
+    T_0: 10
+    T_mult: 2
+    disable_scheduler: 0
+
+These are all of the "External problem specification" and "External learning rate
+specification" parameters except ``local_batch_size``, which follows the rules in
+`Scaling studies`_. A run that changes any of these values is invalid, even if it
+reaches the Dice target; ScaFFold prints them alongside the FOM so they can be checked.
+Do not change any parameter marked "Internal/dev use only".
+
+Scaling studies
+---------------
+
+Choose the number of nodes, ranks per node, and sharding (``dc_num_shards``) for the proposed system. Keep the sharding the same for every run in
+a study, since changing it changes the global batch size. In both studies, the global
+batch size cannot exceed 72, the number of validation volumes.
+
+Strong scaling
+    Keep the global batch size constant by halving ``local_batch_size`` each time the
+    number of ranks doubles; for example, 4 at 256 ranks, 2 at 512 ranks, and 1 at
+    1,024 ranks. With more memory per GPU, larger local batch sizes fit, so the study
+    can start at a smaller rank count.
+
+Weak scaling
+    Keep ``local_batch_size`` constant, so the global batch size doubles with the
+    number of ranks. The baseline uses 1; you may instead use the largest value that
+    fits in memory, which is likely to perform better.
+
+You may also change any other "External/user-facing" parameter, such as
+``dataloader_num_workers``, and the data types (see `Source code modifications`_).
