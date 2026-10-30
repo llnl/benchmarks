@@ -14,11 +14,9 @@ It uses hypre's parallel algebraic multigrid (AMG) solver BoomerAMG in combinati
 two linear systems arising from diffusion problems on a cuboid discretized by finite differences. 
 The problems are set up through hypre's linear-algebraic IJ interface. The problem sizes can be controlled from the command line.`. 
 
-Characteristics
-===============
 
 Problems
---------
+========
 
 * Problem 1 (default): The default problem is a 3D diffusion problem on a cuboid with a 27-point stencil.  It is solved with AMG-GMRES(100). 
 
@@ -28,7 +26,7 @@ The problem sizes for both problems can be set by the user from the command line
 
 
 Figure of Merit
----------------
+===============
 
 The figure of merit (FOM) is calculated using the total number of nonzeros for all system matrices and interpolation operators on all levels of AMG (NNZ), AMG setup wall clock time (Setup_time), and AMG solve phase wall clock time (Solve_time). 
 Since in time dependent problems the AMG preconditioner might be used for several solves before it needs to be reevaluated, a parameter k has also been included to simulate computation of a time dependent problem that reuses the preconditioner for an average of k time steps.
@@ -192,8 +190,8 @@ size :math:`n \times n \times n` per GPU.
    :align: center
 
 
-Weak Scaling on El Capitan
-==========================
+Baseline on El Capitan
+======================
 
 Weak scaling performance of AMG2023 problem 1 and problem 2 on El Capitan (AMD Epyc + AMD MI300A) is provided as follows.
 
