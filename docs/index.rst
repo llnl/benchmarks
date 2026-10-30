@@ -31,12 +31,10 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
 .. toctree::
    :maxdepth: 3
    :numbered:
-   :caption: AI4Sim
+   :caption: SI4Sim
 
-   ai4sim/index
-   ai4sim/priority1
-   ai4sim/priority2
-   ai4sim/collectives
+   si4sim/index
+   si4sim/priority1
 
 .. toctree::
    :maxdepth: 3
