@@ -76,14 +76,36 @@ The easiest way to get Kripke running, is to directly invoke CMake and take what
 *  Step 3: Now make Kripke:
          
         make -j8
-  
+
+*  GPU-aware MPI build options:
+
+   The CMake host-config files contain Kripke's standard combinations
+   of build options. ``ENABLE_MPI`` is turned on in nearly all of the
+   host configurations, and the following are additional MPI-related
+   options.
+
+   * ``ENABLE_GPU_AWARE_MPI``: Enable MPI communication directly
+     using GPU buffers. Requires MPI support, either CUDA or HIP
+     support, and an MPI installation that accepts device buffers.
+
+   * ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE``: Allocate the three
+     communication plane-field arrays (``i``, ``j``, and ``k``)
+     separately from the primary Umpire memory pool. This may help
+     optimize GPU-aware MPI buffering.
+     Requires ``ENABLE_GPU_AWARE_MPI=ON``.
+
 
 Running
 =======
 
-On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), the following environment variable need to be set:
+On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), the following environment variable needs to be set:
 
         export MPICH_GPU_SUPPORT_ENABLED=1
+
+Furthermore on a system similar to El Capitan, one of the following environment variables should be set if ``ENABLE_GPU_AWARE_MPI`` and/or ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE`` are on. Either of these may improve GPU-aware MPI performance, depending on the system being used:
+
+        export MPICH_NOLOCAL=1
+        export MPICH_GPU_IPC_CACHE_MAX_SIZE=1000
 
 Run Kripke with the desired problem parameters by doing:
 
