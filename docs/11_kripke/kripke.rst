@@ -40,11 +40,11 @@ Source code modifications
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 For Kripke, we define the following restrictions on source code modifications:
 
-* Kripke uses RAJA as the portability library, available at https://github.com/LLNL/RAJA . While source code changes to RAJA can be proposed, RAJA in Kripke may not be removed or replaced with any other library.
+* Kripke must use RAJA as the portability library, available at https://github.com/LLNL/RAJA . While source code changes to RAJA can be proposed, RAJA and its dependencies in Kripke may not be removed or replaced with any other library.
 
-* Kripke also uses CHAI as a copy-hiding array abstraction to automatically migrate data between memory spaces. CHAI is available at https://github.com/llnl/chai .
+* Kripke must use Umpire, a portable memory management library that provides memory allocation, pooling, and data transfers across CPU and GPU memory spaces, available at https://github.com/llnl/Umpire . While source code changes to Umpire can be proposed, Umpire and its dependencies in Kripke may not be removed or replaced with any other library.
 
-* Kripke also uses Camp, a compiler agnostic metaprogramming library providing concepts, type operations and tuples for C++ and cuda. Available at https://github.com/llnl/camp .
+* Kripke should use CHAI as a copy-hiding array abstraction to automatically migrate data between memory spaces. CHAI is available at https://github.com/llnl/chai .
 
 * Changes cannot be made to the loop ordering defined in the problem, i.e. GDZ must stay the same. However, tiling and other loop optimizations can be made provided that the loop ordering of GDZ remains unchanged.
 
@@ -76,15 +76,36 @@ The easiest way to get Kripke running, is to directly invoke CMake and take what
 *  Step 3: Now make Kripke:
          
         make -j8
-  
+
+*  GPU-aware MPI build options:
+
+   The CMake host-config files contain Kripke's standard combinations
+   of build options. ``ENABLE_MPI`` is turned on in nearly all of the
+   host configurations, and the following are additional MPI-related
+   options.
+
+   * ``ENABLE_GPU_AWARE_MPI``: Enable MPI communication directly
+     using GPU buffers. Requires MPI support, either CUDA or HIP
+     support, and an MPI installation that accepts device buffers.
+
+   * ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE``: Allocate the three
+     communication plane-field arrays (``i``, ``j``, and ``k``)
+     separately from the primary Umpire memory pool. This may help
+     optimize GPU-aware MPI buffering.
+     Requires ``ENABLE_GPU_AWARE_MPI=ON``.
+
 
 Running
 =======
 
-On a system similar to El Cap (Cray system with AMD CPUs and MI300A GPUs), the following environment variables need to be set:
+On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), the following environment variable needs to be set:
 
         export MPICH_GPU_SUPPORT_ENABLED=1
-        export HSA_XNACK=1
+
+Furthermore on a system similar to El Capitan, one of the following environment variables should be set if ``ENABLE_GPU_AWARE_MPI`` and/or ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE`` are on. Either of these may improve GPU-aware MPI performance, depending on the system being used:
+
+        export MPICH_NOLOCAL=1
+        export MPICH_GPU_IPC_CACHE_MAX_SIZE=1000
 
 Run Kripke with the desired problem parameters by doing:
 
@@ -99,16 +120,16 @@ Validation
 Memory Usage
 ============
 Kripke uses CHAI and Umpire to manage GPU memory. During initialization, it
-estimates the memory required for the selected problem size and preallocates
+calculates the memory required for the selected problem size and preallocates
 an Umpire device-memory pool accordingly. The ``--dev_pool_size`` runtime
-parameter can be used to override the estimated pool size. Its value is an
+parameter can be used to override the calculated pool size. Its value is an
 integer number of gigabytes per rank.
 
 When Kripke is configured with
 ``-DENABLE_DIRECT_UMPIRE_PLANE_STORAGE=ON``, it allocates the three plane-field
-arrays (``i``, ``j``, and ``k``) directly in GPU memory instead of from the
+arrays (``i``, ``j``, and ``k``) in a separate Umpire GPU memory allocation, instead of from the
 primary Umpire pool. This optimization can improve performance for smaller problem
-sizes and is disabled by default.
+sizes and is disabled by default, and requires GPU-aware MPI to be enabled via ``-DENABLE_GPU_AWARE_MPI=ON``.
 
 The output log reports the memory used by each Kripke data array, the total
 memory used, and the per-rank high-water mark of the Umpire device-memory pool.
@@ -156,7 +177,8 @@ problem dimensions (``nxx``, ``nyy``, and ``nzz``) and the corresponding
 processor decomposition (``px``, ``py``, and ``pz``) to match the size of the
 SU. All other configuration options, including the number of groups, angles,
 and directions, must remain unchanged. Select the spatial problem size so that
-Kripke uses approximately 80% of the memory available on each node of the SU.
+Kripke uses all available memory on each node of the SU, or as much as possible
+while completing the full benchmark run successfully.
 
 Use the El Capitan results in :ref:`kripke-memory-usage` to select a problem
 size that meets the memory target and :ref:`kripke-weak-scaling` to project
