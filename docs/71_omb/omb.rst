@@ -121,6 +121,14 @@ Allreduce
     srun -N 384 -n 32256 osu_allreduce
     srun -N 384 -n 1536 osu_allreduce -d openacc
 
+Reduce
+
+.. code-block:: bash
+
+    srun -N 384 -n 32256 osu_reduce
+    srun -N 384 -n 1536 osu_reduce -d openacc
+
+
 Scaling on El Capitan
 =====================
 
