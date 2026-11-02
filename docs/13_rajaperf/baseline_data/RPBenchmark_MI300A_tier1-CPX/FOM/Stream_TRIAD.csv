@@ -1,0 +1,4 @@
+Kernel,Sat Problem Size,Sat GFLOP/s,Sat B/W (GiB per sec.)
+Stream_TRIAD-Base_Seq-default,1066667.0,2.4509,27.391
+Stream_TRIAD-Base_HIP-block_256,66667.0,70.883,792.179
+Stream_TRIAD-RAJA_HIP-block_256,33334.0,47.0912,526.285
