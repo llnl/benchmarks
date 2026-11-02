@@ -121,20 +121,20 @@ these as *Tiers*.
 Tier 1 kernels
 ^^^^^^^^^^^^^^^^^^^
 
-Tier 1 are described in the following list, which includes the computational pattern/algorithm that each
-kernel represents and which RAJA features it exercises. In the RAJA Performance Suite repo, the kernel source
-code is located in files in the ``RAJAPerf/src/apps`` sub-directory:
+The following list describes the Tier 1 kernels and the RAJA features they exercise.
+In the RAJA Performance Suite repo, they are located in ``RAJAPerf/src`` sub-directories noted below (i.e., ``RAJAPerf/src/<subdir>/<kernel>``):
 
-   #. **DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
-   #. **ENERGY** internal energy calculation from an explicit hydrodynamics algorithm; *(multiple single-loop operations in sequence, conditional logic for correctness checks and cutoffs, RAJA::forall API)*
-   #. **FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport, with a register-heavy LU solver *(nested loops, RAJA::launch API)*
-   #. **INTSC_HEXRECT** intersection between a 24-sided hexahedron and a rectangular solid, including volume and moment calculations *(single loop, RAJA::forall API)*
-   #. **MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
-   #. **NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a contribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
-   #. **VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
+   #. **stream/TRIAD** common stream TRIAD kernel used to set an upper bound on realizable memory bandwidth *(RAJA::forall API)*
+   #. **apps/DIFFUSION3DPA** element-wise action of a 3D finite element volume diffusion operator via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **apps/EDGE3D** stiffness matrix assembly for a 3D MHD calculation *(single loop with included function call, RAJA::forall API)*
+   #. **apps/ENERGY** internal energy calculation from an explicit hydrodynamics algorithm; *(multiple single-loop operations in sequence, conditional logic for correctness checks and cutoffs, RAJA::forall API)*
+   #. **apps/FEMSWEEP** finite element implementation of linear sweep algorithm used in radiation transport, with a register-heavy LU solver *(nested loops, RAJA::launch API)*
+   #. **apps/INTSC_HEXRECT** intersection between a 24-sided hexahedron and a rectangular solid, including volume and moment calculations *(single loop, RAJA::forall API)*
+   #. **apps/MASS3DEA** element assembly of a 3D finite element mass matrix *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **apps/MASS3DPA_ATOMIC** action of a 3D finite element mass matrix on elements with shared DOFs via partial assembly and sum factorization *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **apps/MASSVEC3DPA** element-wise action of a 3D finite element mass matrix via partial assembly and sum factorization on a block vector *(nested loops, GPU shared memory, RAJA::launch API)*
+   #. **apps/NODAL_ACCUMULATION_3D** on a 3D structured hexahedral mesh, sum a contribution from each hex vertex (nodal value) to its centroid (zonal value) *(single loop, data access via indirection array, 8-way atomic contention, RAJA::forall API)*
+   #. **apps/VOL3D** on a 3D structured hexahedral mesh (faces are not necessarily planes), compute volume of each zone (hex) *(single loop, data access via indirection array, RAJA::forall API)*
 
 
 .. _rajaperf_fom-label:
@@ -481,6 +481,11 @@ impact on run time performance.
 | Tier 1 Kernels: MI300A Node Throughput (SPX Mode)                                                   | Tier 1 Kernels: MI300A Node Throughput (CPX Mode)                                                   |
 +-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
 |                                                                                                     |                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Stream_TRIAD_flops.png               | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Stream_TRIAD_flops.png               |
+|    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |    :align: center                                                                                   |
++-----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |                                                                                                     |
 | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-SPX/figures/Apps_DIFFUSION3DPA_flops.png         | .. figure:: baseline_data/RPBenchmark_MI300A_tier1-CPX/figures/Apps_DIFFUSION3DPA_flops.png         |
 |    :width: 100 %                                                                                    |    :width: 100 %                                                                                    |
 |    :align: center                                                                                   |    :align: center                                                                                   |
@@ -591,6 +596,11 @@ what is described in :ref:`rajaperf_results_mi300_throughput-label`.
 
 +-----------------------------------------------------------------------------------------------------+
 | Tier 1 Kernels H100 Node Throughput                                                                 |
++-----------------------------------------------------------------------------------------------------+
+|                                                                                                     |
+| .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Stream_TRIAD_flops.png                     |
+|    :width: 100 %                                                                                    |
+|    :align: center                                                                                   |
 +-----------------------------------------------------------------------------------------------------+
 |                                                                                                     |
 | .. figure:: baseline_data/RPBenchmark_H100_tier1/figures/Apps_DIFFUSION3DPA_flops.png               |
