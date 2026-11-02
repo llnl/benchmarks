@@ -100,8 +100,7 @@ Problems
 --------
 
 The RAJA Performance Suite Benchmark consists of a subset of RAJA Performance
-Suite kernels. The Benchmark kernels are partitioned into two Priority levels. Herein, we refer to
-these as *Tiers*.
+Suite kernels. The Benchmark kernels are partitioned into two Tiers.
 
   * Descriptions of Tier 1 kernels, how they are built, run, and assessed for the Benchmark are
     provided below.

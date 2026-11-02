@@ -17,7 +17,7 @@ Benchmark Overview
 ModSim benchmarks are features, components, performance characteristics,
 or other properties that are important to the Laboratories.  
 
-**ModSim Priority 1**
+**ModSim Tier 1**
 
 .. list-table::
 
@@ -58,7 +58,7 @@ or other properties that are important to the Laboratories.
    - Kokkos
 
      
-**ModSim Priority 2**
+**ModSim Tier 2**
 
 .. list-table::
 
@@ -91,7 +91,7 @@ or other properties that are important to the Laboratories.
    - MPI+Kokkos
    - Kokkos, Trillinos
 
-Please note that half of the RAJA kernels are Priority 1, and the other half are Priority 2.  Similarly, 2 of the Laghos problems are Priority 1, and the third is Priority 2.
+Please note that half of the RAJA kernels are Tier 1, and the other half are Tier 2.  Similarly, 2 of the Laghos problems are Tier 1, and the third is Tier 2.
 
 
 .. _GlobalRunRules:

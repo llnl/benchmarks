@@ -1,6 +1,6 @@
-**********
-Priority 1
-**********
+******
+Tier 1
+******
 
 .. toctree::
    :maxdepth: 1
