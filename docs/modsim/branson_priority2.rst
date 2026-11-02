@@ -2,7 +2,7 @@
 Branson
 *******
 
-The Branson benchmark defines both Priority 1 and Priority 2 problems.
+The Branson benchmark defines both Tier 1 and Tier 2 problems.
 See the :doc:`Branson benchmark documentation
 <../20_branson/branson>` for the benchmark description, build instructions,
 run instructions, and problem definitions.
@@ -10,7 +10,7 @@ run instructions, and problem definitions.
 Problem
 -------
 
-For Priority 2, a homogeneous, multi-node, optically thick problem is weak scaled. The single node
+For Tier 2, a homogeneous, multi-node, optically thick problem is weak scaled. The single node
 input for four MPI ranks is the input file ``3D_homogeneous_1.xml`` in the ``inputs/weak_scaling``
 folder. For two nodes, use the ``3D_homogeneous_2.xml`` file in the same folder and so on for larger
 node counts. This problem is also run with a 30 group build of Branson. This simulation is
