@@ -52,30 +52,71 @@ For Kripke, we define the following restrictions on source code modifications:
 
 Building
 ========
+To review the available Spack variants for Kripke, use
 
-The easiest way to get Kripke running, is to directly invoke CMake and take whatever system defaults you have for compilers and let CMake find MPI for you.
+.. code-block:: bash
 
-*  Step 1:  Create a build space (assuming you are starting in the Kripke root directory)
-        
-        mkdir build
+    spack info kripke
 
-*  Step 2: Run CMake in that build space
-        
-        cd build
-        cmake ..
+When Kripke is built using Spack, all the required dependencies
+are built automatically. For instructions on building Kripke
+dependencies without Spack, please refer to :ref:`package-dependencies`.
 
-        Load the particular compilation module suited for your system. On a system like El Capitan, load the following module:
+Example of a GPU build:
 
-        module load rocmcc/6.4.3-cce-20.0.2-magic
+With Spack:
 
-        For a number of platforms, we have CMake cache files that make things easier:
+.. code-block:: bash
 
-        cd build
-        cmake .. -C ../host-configs/llnl-toss4-MI300A-rocm6-adams.cmake -DCMAKE_BUILD_TYPE=Release
+    spack install kripke@1.2.8+caliper+chai+rocm
 
-*  Step 3: Now make Kripke:
-         
-        make -j8
+or
+
+.. code-block:: bash
+
+    spack install kripke@1.2.8+caliper+chai+cuda
+
+Without Spack:
+
+.. code-block:: bash
+
+    git clone --branch v1.2.8 --recurse-submodules https://github.com/LLNL/Kripke.git
+    cd Kripke
+    cmake -S . -B build \
+        -DCMAKE_CXX_COMPILER="${MPICXX}" \
+        -Dcamp_DIR="${CAMP_INSTALL_PREFIX}/lib/cmake/camp" \
+        -DRAJA_DIR="${RAJA_INSTALL_PREFIX}/lib/cmake/raja" \
+        -Dchai_DIR="${CHAI_INSTALL_PREFIX}/lib/cmake/chai" \
+        -Dumpire_DIR="${UMPIRE_INSTALL_PREFIX}/lib64/cmake/umpire" \
+        -Dadiak_DIR="${ADIAK_INSTALL_PREFIX}/lib/cmake/adiak" \
+        -Dcaliper_DIR="${CALIPER_INSTALL_PREFIX}/share/cmake/caliper" \
+        -DENABLE_MPI=ON -DENABLE_CALIPER=ON -DENABLE_CHAI=ON \
+        -DENABLE_HIP=ON -DHIP_ROOT_DIR=${ROCM_PATH} \
+        -DCMAKE_HIP_ARCHITECTURES=${ROCM_ARCH} \
+        -DHIP_HIPCC_FLAGS=--amdgpu-target=${ROCM_ARCH}
+    cmake --build build -j
+
+or
+
+.. code-block:: bash
+
+    git clone --branch v1.2.8 --recurse-submodules https://github.com/LLNL/Kripke.git
+    cd Kripke
+    cmake -S . -B build \
+        -DCMAKE_CXX_COMPILER="${MPICXX}" \
+        -DCMAKE_CUDA_HOST_COMPILER="${MPICXX}" \
+        -DCMAKE_CUDA_COMPILER="${NVCC}" \
+        -Dcamp_DIR="${CAMP_INSTALL_PREFIX}/lib/cmake/camp" \
+        -DRAJA_DIR="${RAJA_INSTALL_PREFIX}/lib/cmake/raja" \
+        -Dchai_DIR="${CHAI_INSTALL_PREFIX}/lib/cmake/chai" \
+        -Dumpire_DIR="${UMPIRE_INSTALL_PREFIX}/lib64/cmake/umpire" \
+        -Dadiak_DIR="${ADIAK_INSTALL_PREFIX}/lib/cmake/adiak" \
+        -Dcaliper_DIR="${CALIPER_INSTALL_PREFIX}/share/cmake/caliper" \
+        -DENABLE_MPI=ON -DENABLE_CALIPER=ON -DENABLE_CHAI=ON \
+        -DENABLE_CUDA=ON \
+        -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
+        -DCMAKE_CUDA_FLAGS="--extended-lambda"
+    cmake --build build -j
 
 *  GPU-aware MPI build options:
 
@@ -100,16 +141,24 @@ Running
 
 On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), the following environment variable needs to be set:
 
+.. code-block:: bash
+
         export MPICH_GPU_SUPPORT_ENABLED=1
 
 Furthermore on a system similar to El Capitan, one of the following environment variables should be set if ``ENABLE_GPU_AWARE_MPI`` and/or ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE`` are on. Either of these may improve GPU-aware MPI performance, depending on the system being used:
 
+.. code-block:: bash
+
         export MPICH_NOLOCAL=1
         export MPICH_GPU_IPC_CACHE_MAX_SIZE=1000
 
-Run Kripke with the desired problem parameters by doing:
+Run Kripke with the desired problem parameters as follows:
 
-        /path/to/kripke.exe --layout GDZ --groups 48 --quad 80
+.. code-block:: bash
+
+        kripke.exe --layout GDZ --groups 48 --quad 80 --zones 200,200,100 --procs 2,2,1 --dev_pool_size 64
+
+Scale the problem by modifying ``--zones <nzx,nzy,nzz>`` and ``--procs <px,py,pz>``.
 
 
 Validation
@@ -173,7 +222,7 @@ The last row of Table :numref:`table-weak-scaling` captures the baseline
 problem size and performance on a single Scalable Unit (SU) of El Capitan.
 
 To project Kripke performance for a Scalable Unit (SU), scale the spatial
-problem dimensions (``nxx``, ``nyy``, and ``nzz``) and the corresponding
+problem dimensions (``nzx``, ``nzy``, and ``nzz``) and the corresponding
 processor decomposition (``px``, ``py``, and ``pz``) to match the size of the
 SU. All other configuration options, including the number of groups, angles,
 and directions, must remain unchanged. Select the spatial problem size so that
