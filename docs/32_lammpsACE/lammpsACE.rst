@@ -107,7 +107,7 @@ files within it.
    This is a modified version of the input file with some key
    parameters changed to be more appropriate as a benchmark. It is
    designed to run for approximately 11 minutes in 2 phases of 5.5
-   minutes each. SPARTA already directly computes the FOM and outputs
+   minutes each. LAMMPS already directly computes the FOM and outputs
    it for each of the phases. This second phase of 5.5 minutes is the
    FOM that is to be tracked.
 
@@ -376,10 +376,8 @@ Running
 Instructions are provided on how to run LAMMPS for the following
 systems:
 
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`LAMMPSRunATS4`)
-  * Profiling with Kokkos Tools on El Capitan (see
-    :ref:`LAMMPSProfileKokkosToolsElCapitan`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see :ref:`LAMMPSRunATS4`)
+* Profiling with Kokkos Tools on El Capitan (see :ref:`LAMMPSProfileKokkosToolsElCapitan`)
 
 
 .. _LAMMPSRunATS4:
@@ -409,7 +407,7 @@ provided below.
    lammps_len=64 is_kokkos_tools=1 flux batch --nodes=1 lammps_batch_elcapitan.sh
 
 
-.. _SPARTAProfileKokkosTools:
+.. _LAMMPSProfileKokkosTools:
 
 Profiling with Kokkos Tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -441,7 +439,7 @@ approximately 99.6 GB of memory allocated on each GPU.
    MAX MEMORY ALLOCATED: 99615719.6 kB
 
 
-.. _SPARTAResults:
+.. _LAMMPSResults:
 
 Verification of Results
 =======================
@@ -456,7 +454,7 @@ Single-node results from LAMMPS are provided on the following systems:
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsATS4`)
 
-Multi-node results from SPARTA are provided on the following system(s):
+Multi-node results for LAMMPS are provided on the following system(s):
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsScaleATS4`)
