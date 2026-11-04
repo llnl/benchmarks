@@ -11,16 +11,9 @@ designed to stress-test the HPC data communication fabric with common MPI
 operations implemented in a manner as close as possible to the methods used by
 modeling and simulation codes.
 
-Characteristics
-===============
 
 Problems
---------
-
-The key problems for this procurement are as follows:
-
-MPI Benchmarks
-==============
+========
 
 The ModSim MPI benchmarks target specific characteristics of the proposed
 network interconnects. The evaluation team will use benchmark results to assess
@@ -29,87 +22,6 @@ potential communication bottlenecks. The MPI benchmarks reproduce communication
 patterns representative of NNSA applications but make little or no attempt to
 evaluate the numerical performance of those applications.
 
-MPI Benchmark Execution Considerations
----------------------------------------
-
-Worst-Case Latency
-~~~~~~~~~~~~~~~~~~
-
-Unless otherwise specified, reported latency shall be the worst-case maximum
-latency, not the average after no more than 100 warm-up iterations.
-
-Worst-Case Path
-~~~~~~~~~~~~~~~
-
-The worst-case path is the communication path expected to exhibit the highest
-latency or lowest bandwidth. A path may be worst case because of physical
-topology, hardware locality, routing, contention, or software-stack
-implementation. The Offeror shall make a good-faith effort to identify and
-report the worst-case path and its corresponding latency or throughput.
-
-Buffer Allocation Strategies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-MPI benchmarks shall reflect realistic memory-allocation and memory-use
-practices.
-
-Host allocation uses ``malloc``, or an equivalent mechanism, executed by a CPU
-capable of running an operating-system kernel.
-
-Device allocation uses a mechanism executed by a device that cannot, or is not
-configured to, run the operating-system kernel. Examples include ``hipMalloc``
-and ``cudaMalloc``.
-
-If memory pooling is used, Host and Device memory pools shall remain separate
-and shall not be mixed.
-
-Use of a Memory Portability Layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Phloem benchmarks use Umpire as a memory allocation portability layer. Any
-optimizations related to MPI buffer allocation should be made via the Umpire
-memory allocation portability layer, either by modifying calls to Umpire
-functions, or proposing changes to the framework itself using a GitHub pull
-request workflow. Pooling may be used exclusively via Umpire wherever Umpire is
-used.
-
-Environment Variables and Modifications Requiring User Intervention
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Users cannot reasonably be expected to stop an application, modify or tune its
-execution environment, and restart it to obtain acceptable performance.
-Therefore, no changes between tests, benchmarks, message sizes, allocation
-strategies, or other benchmark conditions shall require user intervention.
-
-Self-tuning MPI, LLCA, LLCA-provider, plugin, or driver implementations are
-permitted, provided that they do not require user intervention.
-
-Affinity
-~~~~~~~~
-
-Unless otherwise specified, each MPI rank shall be bound to a unique
-accelerator or CPU core within a node. The Offeror should verify and document
-rank affinity using a tool such as ``mpibind`` run in verbose mode or an
-equivalent affinity checker.
-
-Low-Noise Cores and System Reserved Cores
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-System-reserved cores are dedicated to operating-system and system-service
-processes that could introduce network or execution noise. Low-noise cores are
-then available for application workloads with minimal interference.
-
-If the Offeror proposes a system noise strategy, it must apply that same
-strategy consistently across all benchmarks and proxy applications.
-
-Optimal Message Sizes
-~~~~~~~~~~~~~~~~~~~~~
-
-Where a benchmark specifies an "Optimal" message size, the Offeror may use
-the minimum message size that delivers optimal bandwidth or protocol efficiency
-for a given benchmark. The selected size can vary by benchmark or for various
-paths, affinities, and allocation strategies. The Offeror will report the
-message size used in each case.
 
 Point-to-Point Benchmarks
 -------------------------
@@ -119,8 +31,7 @@ low-latency point-to-point messaging performance. These benchmarks are intended
 to test the latency and goodput that can be expected from the MPI
 implementation.
 
-Table 4-5: ATS-6 ModSim MPI Point-to-Point Benchmarks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. table:: ATS-6 ModSim MPI Point-to-Point Benchmarks
 
 +----------------------------+------------------------------------------+----------------------+--------------------------+
 | Benchmark                  | Path                                     | Buffer Allocation    | Message Sizes            |
@@ -139,16 +50,16 @@ Table 4-5: ATS-6 ModSim MPI Point-to-Point Benchmarks
 |                            | Inter-node worst-case path               |                      |                          |
 +----------------------------+------------------------------------------+----------------------+--------------------------+
 
+
 Multi-Point Messaging Rate and Global Bandwidth Benchmarks
------------------------------------------------------------
+----------------------------------------------------------
 
 NNSA application codes require the ability to conduct highly asynchronous
 concurrent point-to-point operations without encountering network congestion.
 These benchmarks are designed to stress-test network congestion and fan-in and
 fan-out behavior in communicating nodes in an MPI implementation.
 
-Table 4-6: ATS-6 ModSim MPI Multi-Point Messaging Rate and Global Bandwidth Benchmarks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. table:: ATS-6 ModSim MPI Multi-Point Messaging Rate and Global Bandwidth Benchmarks
 
 +-----------------------------------+--------------------------------------+--------------------------+
 | Benchmark                         | Rank Affinity and Buffer Allocation  | Message Sizes            |
@@ -166,6 +77,7 @@ Table 4-6: ATS-6 ModSim MPI Multi-Point Messaging Rate and Global Bandwidth Benc
 |                                   | cores                                |                          |
 +-----------------------------------+--------------------------------------+--------------------------+
 
+
 Collective Benchmarks
 ---------------------
 
@@ -174,8 +86,7 @@ These benchmarks are intended to test the worst-case latency of some of the
 more common collective operations. All of the benchmarks below are to be run
 both with and without Partitioned Communicators.
 
-Table 4-7: ATS-6 ModSim MPI Collective Benchmarks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. table:: ATS-6 ModSim MPI Collective Benchmarks
 
 +------------------------+--------------------------------------+--------------------------+
 | Benchmark              | Rank Affinity and Buffer Allocation  | Message Sizes            |
@@ -214,10 +125,64 @@ Table 4-7: ATS-6 ModSim MPI Collective Benchmarks
 |                        | cores                                |                          |
 +------------------------+--------------------------------------+--------------------------+
 
+
+Figures of Merit
+================
+
+Unless otherwise specified, reported latency shall be the *worst case maximum
+latency*, not the average, and after no more than 100 warmup iterations.
+
+The *worst-case path* is the communication path expected to exhibit the highest
+latency or lowest bandwidth. A path may be worst case because of physical
+topology, hardware locality, routing, contention, or software stack
+implementation. The Offeror shall make a good faith effort to identify and
+report the worst case path and its corresponding latency or throughput.
+
+
 Source code modifications
 =========================
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
+
+Use of a Memory Portability Layer
+---------------------------------
+
+The Phloem benchmarks use Umpire as a memory allocation portability layer. Any
+optimizations related to MPI buffer allocation should be made via the Umpire
+memory allocation portability layer, either by modifying calls to Umpire
+functions, or proposing changes to the framework itself using a GitHub pull
+request workflow. Pooling may be used exclusively via Umpire wherever Umpire is
+used.
+
+Environment Variables and Modifications Requiring User Intervention
+-------------------------------------------------------------------
+
+Users cannot reasonably be expected to stop an application, modify or tune its
+execution environment, and restart it to obtain acceptable performance.
+Therefore, no changes between tests, benchmarks, message sizes, allocation
+strategies, or other benchmark conditions shall require user intervention.
+
+Self-tuning MPI, LLCA, LLCA-provider, plugin, or driver implementations are
+permitted, provided that they do not require user intervention.
+
+Affinity
+--------
+
+Unless otherwise specified, each MPI rank shall be bound to a unique
+accelerator or CPU core within a node. The Offeror should verify and document
+rank affinity using a tool such as ``mpibind`` run in verbose mode or an
+equivalent affinity checker.
+
+Low-Noise Cores and System Reserved Cores
+-----------------------------------------
+
+System-reserved cores are dedicated to operating-system and system-service
+processes that could introduce network or execution noise. Low-noise cores are
+then available for application workloads with minimal interference.
+
+If the Offeror proposes a system noise strategy, it must apply that same
+strategy consistently across all benchmarks and proxy applications.
+
 
 Building
 ========
@@ -321,6 +286,7 @@ Collectives:
 	srun -N 384 -n 1536 mpiBench Barrier Bcast Allreduce Reduce -e 2097152
 	srun -N 384 -n 32256 mpiBench Barrier Bcast Allreduce Reduce -e 2097152
 
+
 Validation
 ==========
 
@@ -328,8 +294,21 @@ Benchmarks can be run with ``-C`` to ensure buffers are transferred correctly.
 The GPU runtime should be in the banner. If it is not, the test is running on
 host buffers.
 
-Example Results
-===============
+
+Memory Usage
+============
+
+MPI benchmarks shall reflect realistic *memory allocation and memory use*
+practices.
+
+* Host allocation uses ``malloc``, or an equivalent mechanism, executed by a CPU capable of running an operating system kernel.
+* Device allocation uses a mechanism executed by a device that cannot, or is not configured to, run the operating-system kernel.
+  Examples include ``hipMalloc`` and ``cudaMalloc``.
+* If memory pooling is used, Host and Device memory pools shall remain separate and shall not be mixed.
+
+
+Baseline on El Capitan
+======================
 
 .. code-block::
 
@@ -473,5 +452,11 @@ Example Results
 	Reduce                  Bytes:   2097152        Iters:       10 Avg:    2564.0579       Min:    2451.0372       Max:    4797.2759       Comm: MPI_COMM_WORLD    Ranks: 3072
 
 
-References
-==========
+Performance Projections
+=======================
+
+Where a benchmark specifies an ``Optimal`` message size, the Offeror may use
+the minimum message size that delivers optimal bandwidth or protocol efficiency
+for a given benchmark. The selected size can vary by benchmark or for various
+paths, affinities, and allocation strategies. The Offeror will report the
+message size used in each case.
