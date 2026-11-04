@@ -631,7 +631,7 @@ Performance Projection
 For the RAJA Performance Suite Benchmark, we want to know the projected or measured FOM,
 as defined in :ref:`rajaperf_fom-label`. Specifically, for each kernel executed on a single node in 
 a manner that node resources are subscribed fully (as described earlier), the FOM consists of three
-numberical values:
+numerical values:
 
   * the saturation problem size (GB)
   * the compute rate (GFLOP/sec) achieved at the saturation problem size
