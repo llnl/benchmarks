@@ -6,9 +6,9 @@ The RAJA Performance Suite is a collection of loop-based computational kernels
 representing important algorithm patterns found in HPC applications. The RAJA Performance
 Suite Benchmark uses a subset of kernels in the RAJA Performance Suite.
 
-All benchmark source code and run scripts are included in the
-`RAJAPerf-Benchmark <https://github.com/llnl/RAJAPerf-Benchmark> GitHub repo`_,
-the latest version of which is:
+All benchmark source code and run scripts are included in the 
+`RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
+The latest version is:
 
   * Version ``v2026.10.0``, which includes
   * Version ``v2026.07.0`` of `RAJA Performance Suite <https://github.com/LLNL/RAJAPerf>`_
@@ -409,7 +409,7 @@ directory ``./docs/13_rajaperf/baseline_data/RPBenchmark_MI300A_tier1-CPX``.
    :file: ./baseline_data/RPBenchmark_MI300A_tier1-CPX/FOM/combined_fom.csv
    :align: center
    :widths: auto
-  :header-rows: 1
+   :header-rows: 1
  
 .. _rajaperf_results_mi300_throughput-label:
 
@@ -631,7 +631,7 @@ Performance Projection
 For the RAJA Performance Suite Benchmark, we want to know the projected or measured FOM,
 as defined in :ref:`rajaperf_fom-label`. Specifically, for each kernel executed on a single node in 
 a manner that node resources are subscribed fully (as described earlier), the FOM consists of three
-numberical values:
+numerical values:
 
   * the saturation problem size (GB)
   * the compute rate (GFLOP/sec) achieved at the saturation problem size

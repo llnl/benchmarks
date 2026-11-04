@@ -44,7 +44,7 @@ Baseline on El Capitan
 ===========================
 
 The process of running the Tier 2 kernels and generating FOM for them is essentially the
-same as what is described in :ref:`_rajaperf_results-label` for the Tier 1 kernels. Here, we 
+same as what is described in :ref:`rajaperf_results-label` for the Tier 1 kernels. Here, we 
 summarize the process as it applies to the Tier 2 kernels. 
 
 AMD MI300A throughput results (Tier 2 kernels)
