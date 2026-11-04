@@ -74,7 +74,7 @@ request workflow. Pooling may be used exclusively via Umpire wherever Umpire is
 used.
 
 Environment Variables and Modifications Requiring User Intervention
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Users cannot reasonably be expected to stop an application, modify or tune its
 execution environment, and restart it to obtain acceptable performance.
