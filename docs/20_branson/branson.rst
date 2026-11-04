@@ -2,7 +2,7 @@
 Branson
 *******
 
-Branson is a proxy application for parallel Monte Carlo transport.
+Branson [Branson]_ is a proxy application for parallel Monte Carlo transport.
 
 Purpose
 =======
