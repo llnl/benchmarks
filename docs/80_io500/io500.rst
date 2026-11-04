@@ -123,7 +123,7 @@ Basic instructions are:
 Running
 *******
 
-Full instructions for running IO500 are available at `https://io500.org/running`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
+Full instructions for running IO500 are available at `<https://io500.org/benchmark>`_. A `.ini` config file needs to exist that determines which specific tests to run, where to run them, and where to store the output, among other parameters.
 
 The basic steps to run a full IO500 test are:
 
