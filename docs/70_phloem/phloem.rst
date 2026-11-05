@@ -31,24 +31,27 @@ low-latency point-to-point messaging performance. These benchmarks are intended
 to test the latency and goodput that can be expected from the MPI
 implementation.
 
-.. table:: ATS-6 ModSim MPI Point-to-Point Benchmarks
+.. _table-point-to-point:
 
-+----------------------------+------------------------------------------+----------------------+--------------------------+
-| Benchmark                  | Path                                     | Buffer Allocation    | Message Sizes            |
-|                            |                                          | Strategy             |                          |
-+============================+==========================================+======================+==========================+
-| ``com latency``            | Intra-node worst-case path               | Device to Device,    | 8B, 4KiB, 2MiB,          |
-|                            |                                          | Host to Host         | Optimal                  |
-|                            | Inter-node worst-case path, same ToR     |                      |                          |
-|                            | switch                                   |                      |                          |
-|                            | Inter-node worst-case path               |                      |                          |
-+----------------------------+------------------------------------------+----------------------+--------------------------+
-| ``com bidirectional        | Intra-node worst-case path               | Device to Device,    | 8B, 4KiB, 2MiB,          |
-| bandwidth``                |                                          | Host to Host         | Optimal                  |
-|                            | Inter-node worst-case path, same ToR     |                      |                          |
-|                            | switch                                   |                      |                          |
-|                            | Inter-node worst-case path               |                      |                          |
-+----------------------------+------------------------------------------+----------------------+--------------------------+
+.. table:: ATS-6 ModSim MPI Point-to-Point Benchmarks
+   :align: center
+
+   +----------------------------+------------------------------------------+----------------------+--------------------------+
+   | Benchmark                  | Path                                     | Buffer Allocation    | Message Sizes            |
+   |                            |                                          | Strategy             |                          |
+   +============================+==========================================+======================+==========================+
+   | ``com latency``            | Intra-node worst-case path               | Device to Device,    | 8B, 4KiB, 2MiB,          |
+   |                            |                                          | Host to Host         | Optimal                  |
+   |                            | Inter-node worst-case path, same ToR     |                      |                          |
+   |                            | switch                                   |                      |                          |
+   |                            | Inter-node worst-case path               |                      |                          |
+   +----------------------------+------------------------------------------+----------------------+--------------------------+
+   | ``com bidirectional        | Intra-node worst-case path               | Device to Device,    | 8B, 4KiB, 2MiB,          |
+   | bandwidth``                |                                          | Host to Host         | Optimal                  |
+   |                            | Inter-node worst-case path, same ToR     |                      |                          |
+   |                            | switch                                   |                      |                          |
+   |                            | Inter-node worst-case path               |                      |                          |
+   +----------------------------+------------------------------------------+----------------------+--------------------------+
 
 
 Multi-Point Messaging Rate and Global Bandwidth Benchmarks
@@ -61,21 +64,21 @@ fan-out behavior in communicating nodes in an MPI implementation.
 
 .. table:: ATS-6 ModSim MPI Multi-Point Messaging Rate and Global Bandwidth Benchmarks
 
-+-----------------------------------+--------------------------------------+--------------------------+
-| Benchmark                         | Rank Affinity and Buffer Allocation  | Message Sizes            |
-|                                   | Strategy                             |                          |
-+===================================+======================================+==========================+
-| ``com global bisection            | Worst-case performance over 100      | Optimal                  |
-| bandwidth``                       | random rank allocations              |                          |
-|                                   |                                      |                          |
-|                                   | Device, one rank is allocated on     |                          |
-|                                   | each device in the ModSim system     |                          |
-|                                   |                                      |                          |
-|                                   | Host, one rank is allocated on each  |                          |
-|                                   | CPU core in the ModSim system,       |                          |
-|                                   | exclusive of pre-defined noise       |                          |
-|                                   | cores                                |                          |
-+-----------------------------------+--------------------------------------+--------------------------+
+   +-----------------------------------+--------------------------------------+--------------------------+
+   | Benchmark                         | Rank Affinity and Buffer Allocation  | Message Sizes            |
+   |                                   | Strategy                             |                          |
+   +===================================+======================================+==========================+
+   | ``com global bisection            | Worst-case performance over 100      | Optimal                  |
+   | bandwidth``                       | random rank allocations              |                          |
+   |                                   |                                      |                          |
+   |                                   | Device, one rank is allocated on     |                          |
+   |                                   | each device in the ModSim system     |                          |
+   |                                   |                                      |                          |
+   |                                   | Host, one rank is allocated on each  |                          |
+   |                                   | CPU core in the ModSim system,       |                          |
+   |                                   | exclusive of pre-defined noise       |                          |
+   |                                   | cores                                |                          |
+   +-----------------------------------+--------------------------------------+--------------------------+
 
 
 Collective Benchmarks
@@ -88,42 +91,42 @@ both with and without Partitioned Communicators.
 
 .. table:: ATS-6 ModSim MPI Collective Benchmarks
 
-+------------------------+--------------------------------------+--------------------------+
-| Benchmark              | Rank Affinity and Buffer Allocation  | Message Sizes            |
-|                        | Strategy                             |                          |
-+========================+======================================+==========================+
-| ``mpiBench Barrier``   | Device, one rank is allocated on     | N/A                      |
-|                        | each device in the ModSim system     |                          |
-|                        |                                      |                          |
-|                        | Host, one rank is allocated on each  |                          |
-|                        | CPU core in the ModSim system,       |                          |
-|                        | exclusive of pre-defined noise       |                          |
-|                        | cores                                |                          |
-+------------------------+--------------------------------------+--------------------------+
-| ``mpiBench Allreduce`` | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
-|                        | each device in the ModSim system     | Optimal                  |
-|                        |                                      |                          |
-|                        | Host, one rank is allocated on each  |                          |
-|                        | CPU core in the ModSim system,       |                          |
-|                        | exclusive of pre-defined noise       |                          |
-|                        | cores                                |                          |
-+------------------------+--------------------------------------+--------------------------+
-| ``mpiBench Broadcast`` | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
-|                        | each device in the ModSim system     | Optimal                  |
-|                        |                                      |                          |
-|                        | Host, one rank is allocated on each  |                          |
-|                        | CPU core in the ModSim system,       |                          |
-|                        | exclusive of pre-defined noise       |                          |
-|                        | cores                                |                          |
-+------------------------+--------------------------------------+--------------------------+
-| ``mpiBench Reduce``    | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
-|                        | each device in the ModSim system     | Optimal                  |
-|                        |                                      |                          |
-|                        | Host, one rank is allocated on each  |                          |
-|                        | CPU core in the ModSim system,       |                          |
-|                        | exclusive of pre-defined noise       |                          |
-|                        | cores                                |                          |
-+------------------------+--------------------------------------+--------------------------+
+   +------------------------+--------------------------------------+--------------------------+
+   | Benchmark              | Rank Affinity and Buffer Allocation  | Message Sizes            |
+   |                        | Strategy                             |                          |
+   +========================+======================================+==========================+
+   | ``mpiBench Barrier``   | Device, one rank is allocated on     | N/A                      |
+   |                        | each device in the ModSim system     |                          |
+   |                        |                                      |                          |
+   |                        | Host, one rank is allocated on each  |                          |
+   |                        | CPU core in the ModSim system,       |                          |
+   |                        | exclusive of pre-defined noise       |                          |
+   |                        | cores                                |                          |
+   +------------------------+--------------------------------------+--------------------------+
+   | ``mpiBench Allreduce`` | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
+   |                        | each device in the ModSim system     | Optimal                  |
+   |                        |                                      |                          |
+   |                        | Host, one rank is allocated on each  |                          |
+   |                        | CPU core in the ModSim system,       |                          |
+   |                        | exclusive of pre-defined noise       |                          |
+   |                        | cores                                |                          |
+   +------------------------+--------------------------------------+--------------------------+
+   | ``mpiBench Broadcast`` | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
+   |                        | each device in the ModSim system     | Optimal                  |
+   |                        |                                      |                          |
+   |                        | Host, one rank is allocated on each  |                          |
+   |                        | CPU core in the ModSim system,       |                          |
+   |                        | exclusive of pre-defined noise       |                          |
+   |                        | cores                                |                          |
+   +------------------------+--------------------------------------+--------------------------+
+   | ``mpiBench Reduce``    | Device, one rank is allocated on     | 8B, 4KiB, 2MiB,          |
+   |                        | each device in the ModSim system     | Optimal                  |
+   |                        |                                      |                          |
+   |                        | Host, one rank is allocated on each  |                          |
+   |                        | CPU core in the ModSim system,       |                          |
+   |                        | exclusive of pre-defined noise       |                          |
+   |                        | cores                                |                          |
+   +------------------------+--------------------------------------+--------------------------+
 
 
 Figures of Merit
