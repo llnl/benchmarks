@@ -153,7 +153,7 @@ Baseline on El Capitan
 Weak scaling performance of Kripke on El Capitan (AMD Epyc + AMD MI300A) is provided as follows.
 
 .. _kripke-table-weak-scaling:
-.. csv-table::
+.. csv-table:: Kripke Weak Scaling
    :header-rows: 1
    :align: center
    :file: data/kripke_weak_rocm.csv
