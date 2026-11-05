@@ -94,6 +94,15 @@ Example scripts for installing for CUDA and ROCm can be found in the `ScaFFold r
 
 You must use ScaFFold commit ``42d5577c1d1e775dca9dd453fd85384405c7c686``.
 
+The baseline results used ``cce/21.0.2``, ``cray-mpich/9.1.0``, and ``rocm/7.2.1``.
+
+The following environment variables were set for the baseline runs:
+
+.. code-block:: bash
+
+    export SCAFFOLD_GROUPNORM_TRITON=1
+    export SCAFFOLD_CONV_TRITON=1
+
 *********
  Running
 *********
