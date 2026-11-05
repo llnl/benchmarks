@@ -472,12 +472,10 @@ systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`SPARTARunATS4`)
-  * Profiling with Kokkos Tools on El Capitan (see
-    :ref:`SPARTAProfileKokkosToolsElCapitan`)
+  * Profiling with Kokkos Tools on El Capitan (see :ref:`SPARTAProfileKokkosToolsElCapitan`)
 * Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
   known as Hops (see :ref:`SpartaRunCTS2GPU`)
-  * Profiling with Kokkos Tools on Hops (see
-    :ref:`SPARTAProfileKokkosToolsHops`)
+  * Profiling with Kokkos Tools on Hops (see :ref:`SPARTAProfileKokkosToolsHops`)
 
 
 .. _SPARTARunATS4:
@@ -653,8 +651,7 @@ The weak-scaling data are provided in
      :widths: 15 30 30 25
 
   .. figure:: elcapitan-weakscaling.png
-     :alt: SPARTA weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency
-  annotations.
+     :alt: SPARTA weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency annotations.
      :align: center
      :width: 90%
 

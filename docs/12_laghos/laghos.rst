@@ -5,7 +5,7 @@ Laghos
 Purpose
 =======
 
-**Laghos** (LAGrangian High-Order Solver) is a miniapp that solves the time-dependent Euler equations of compressible gas dynamics in a moving Lagrangian frame using unstructured high-order finite element spatial discretization and explicit high-order time-stepping.
+**Laghos** (LAGrangian High-Order Solver) [Laghos]_ is a miniapp that solves the time-dependent Euler equations of compressible gas dynamics in a moving Lagrangian frame using unstructured high-order finite element spatial discretization and explicit high-order time-stepping.
 It is available at https://github.com/CEED/Laghos .
 
 Characteristics
@@ -47,10 +47,9 @@ Rates are averaged over all RK stages taken and for the purposes of benchmarking
 
 Laghos also reports the total rate for these major kernels, which is the **Figure of Merit (FOM)** for benchmarking purposes.
 
+
 Source code modifications
 =========================
-
-.. _LaghosModifications
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 

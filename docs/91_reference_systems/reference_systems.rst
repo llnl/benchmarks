@@ -1,5 +1,3 @@
-.. _DocProject:A
-
 *****************
 Reference Systems
 *****************
