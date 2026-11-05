@@ -377,7 +377,7 @@ Instructions are provided on how to run LAMMPS for the following
 systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see :ref:`LAMMPSRunATS4`)
-* Profiling with Kokkos Tools on El Capitan (see :ref:`LAMMPSProfileKokkosToolsElCapitan`)
+* Profiling with Kokkos Tools on El Capitan (see :ref:`LAMMPSProfileKokkosTools`)
 
 
 .. _LAMMPSRunATS4:
