@@ -59,8 +59,12 @@ To review the available Spack variants for Kripke, use
     spack info kripke
 
 When Kripke is built using Spack, all the required libraries
-are built automatically. For instructions on building Kripke
-libraries without Spack, please refer to :ref:`libraries`.
+are built automatically. When building without Spack, follow the linked build
+instructions for Kripke's required libraries: :ref:`RAJA <library-raja>`,
+:ref:`CHAI <library-chai>`, :ref:`Umpire <library-umpire>`, and
+:ref:`camp <library-camp>`. :ref:`Adiak <library-adiak>` and
+:ref:`Caliper <library-caliper>` are also required when Caliper
+instrumentation is enabled.
 
 Example of a GPU build:
 

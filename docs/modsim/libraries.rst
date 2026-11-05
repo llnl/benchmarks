@@ -6,6 +6,8 @@ Appendix: Building Libraries
 When building without Spack, use the following commands to build the
 libraries.
 
+.. _library-adiak:
+
 Adiak
 ^^^^^
 
@@ -21,6 +23,8 @@ Adiak
         -DBUILD_SHARED_LIBS=ON
     make -C build -j
     make -C build install
+
+.. _library-caliper:
 
 Caliper
 ^^^^^^^
@@ -63,6 +67,8 @@ or
     make -C build -j
     make -C build install
 
+.. _library-fmt:
+
 fmt
 ^^^
 
@@ -76,6 +82,8 @@ fmt
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_CXX_STANDARD=11
     make -C build -j
     make -C build install
+
+.. _library-camp:
 
 camp
 ^^^^
@@ -106,6 +114,8 @@ or
         -DENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH}"
     make -C build -j
     make -C build install
+
+.. _library-umpire:
 
 Umpire
 ^^^^^^
@@ -147,6 +157,8 @@ or
     make -C build -j
     make -C build install
 
+.. _library-raja:
+
 RAJA
 ^^^^
 
@@ -178,6 +190,8 @@ or
         -DENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH}"
     make -C build -j
     make -C build install
+
+.. _library-chai:
 
 CHAI
 ^^^^
