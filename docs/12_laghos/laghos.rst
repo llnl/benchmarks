@@ -47,6 +47,7 @@ Rates are averaged over all RK stages taken and for the purposes of benchmarking
 
 Laghos also reports the total rate for these major kernels, which is the **Figure of Merit (FOM)** for benchmarking purposes.
 
+
 .. _LaghosModifications
 
 Source code modifications
