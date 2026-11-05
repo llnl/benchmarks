@@ -147,11 +147,11 @@ Communicator masks
 
 The mask is the value of ``NCCL_TESTS_SPLIT_MASK``:
 
-* Single group (``0x0``): all MPI ranks belong to one group.
-* Even-odd split (``0x1``): even and odd MPI ranks form two groups that execute
+* Single group (``0x0``): all CCL ranks belong to one group.
+* Even-odd split (``0x1``): even and odd CCL ranks form two groups that execute
   concurrently.
 
-GPU membership depends on the MPI-rank-to-GPU mapping. These masks represent
+GPU membership depends on the CCL-rank-to-GPU mapping. These masks represent
 different communicator configurations.
 
 All-reduce
