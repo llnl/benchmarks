@@ -10,10 +10,7 @@ This section provides information specific to the Tier 2 kernels in the RAJA Per
 .. _rajaperf2_problems-label:
 
 Problems
---------
-
-Tier 2 kernels
-^^^^^^^^^^^^^^^^^^^
+=========
 
 The following list describes the Tier 2 kernels and the RAJA features they exercise.
 In the RAJA Performance Suite repo, they are located in ``RAJAPerf/src`` sub-directories noted below (i.e., ``RAJAPerf/src/<subdir>/<kernel>``):
@@ -32,7 +29,7 @@ In the RAJA Performance Suite repo, they are located in ``RAJAPerf/src`` sub-dir
 .. _rajaperf2_fom-label:
 
 Figure of Merit
----------------
+================
 
 The FOM for each kernel in the RAJA Performance Suite Benchmark is described in :ref:`rajaperf_results-label`.
 Please refer to that section for FOM definition and how it is determined.
@@ -43,11 +40,11 @@ we estimate the saturation point for them based on memory bandwidth data.
 
 .. _rajaperf2_results-label:
 
-Benchmark Results for Tier 2 Kernels
-------------------------------------
+Baseline on El Capitan
+===========================
 
 The process of running the Tier 2 kernels and generating FOM for them is essentially the
-same as what is described in :ref:`_rajaperf_results-label` for the Tier 1 kernels. Here, we 
+same as what is described in :ref:`rajaperf_results-label` for the Tier 1 kernels. Here, we 
 summarize the process as it applies to the Tier 2 kernels. 
 
 AMD MI300A throughput results (Tier 2 kernels)
@@ -207,6 +204,12 @@ The legend in each plot indicates the curves shown.
 |    :align: center                                                                                                    |    :align: center                                                                                                    |
 +----------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 
+
+Baseline on NVIDIA H100
+=============================
+
+For NVIDIA GPUs, we are interested in the same measure of single-node throughput and FOM
+as described above for AMD MI300A.
 
 NVIDIA H100 throughput results (Tier 2 kernels)
 ----------------------------------------------------
