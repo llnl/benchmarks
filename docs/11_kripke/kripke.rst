@@ -58,9 +58,9 @@ To review the available Spack variants for Kripke, use
 
     spack info kripke
 
-When Kripke is built using Spack, all the required dependencies
+When Kripke is built using Spack, all the required libraries
 are built automatically. For instructions on building Kripke
-dependencies without Spack, please refer to :ref:`package-dependencies`.
+libraries without Spack, please refer to :ref:`libraries`.
 
 Example of a GPU build:
 
@@ -68,13 +68,15 @@ With Spack:
 
 .. code-block:: bash
 
-    spack install kripke@1.2.8+caliper+chai+rocm
+    spack install kripke@1.2.8+rocm
 
 or
 
 .. code-block:: bash
 
-    spack install kripke@1.2.8+caliper+chai+cuda
+    spack install kripke@1.2.8+cuda
+
+To enable Caliper, use the variant ``+caliper``
 
 Without Spack:
 

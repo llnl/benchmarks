@@ -27,7 +27,7 @@ ATS-6 Benchmarks. ATTENTION: This page is a work in progress and nothing is cons
    modsim/index
    modsim/priority1
    modsim/priority2
-   modsim/package_dependencies
+   modsim/libraries
 
 .. toctree::
    :maxdepth: 3

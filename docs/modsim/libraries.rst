@@ -1,10 +1,10 @@
-.. _package-dependencies:
+.. _libraries:
 
-Appendix: Dependencies
-======================
+Appendix: Building Libraries
+============================
 
 When building without Spack, use the following commands to build the
-package dependencies.
+libraries.
 
 Adiak
 ^^^^^
