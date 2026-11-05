@@ -69,6 +69,11 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 Building
 ========
 
+The baseline results used `RCCL Tests
+<https://github.com/ROCm/rocm-systems/tree/develop/projects/rccl-tests>`_
+at commit ``60804faca583a141a94bc10d464cc3f3b6c71728`` of the ``rocm-systems`` repository.
+The baseline results used ``cce/20.0.0``, ``cray-mpich/9.0.1``, and ``rocm/6.4.3``.
+
 Running
 =======
 
