@@ -284,20 +284,38 @@ processes on the node.
  Baseline on El Capitan
 ************************
 
+.. note::
+
+   Both scaling studies use five training seeds at 384 nodes and three training
+   seeds at the larger node counts (768 and 1536 nodes). Each median is computed
+   from the seeds available at that node count.
+
 Strong scaling
 --------------
 
 The global batch size is held constant: ``local_batch_size`` halves each time the
 number of nodes doubles. This data is ``local_batch_size=4`` at 384 nodes, ``local_batch_size=2`` at 768 nodes, and ``local_batch_size=1`` at 1536 nodes
 
-.. image:: plots/001-strong-scaling-on-el-capitan-fom.png
+.. figure:: plots/001-strong-scaling-on-el-capitan-fom.png
    :align: center
+
+   Strong scaling of the FOM on El Capitan with a fixed global batch size; higher
+   is better. Parenthesized y-axis values give the corresponding training time in
+   hours. Colored circles show results for individual training seeds, and the
+   thick green line with diamonds shows the median at each node count. Dashed
+   lines show ideal linear scaling. Trial counts are labeled with ``t``.
+   A median annotation
+   such as ``1.5x`` is the current median divided by the previous median,
+   indicating a 50% increase in FOM. In the legend, ``ps`` is problem scale,
+   ``ns`` is the sharding configuration (``488`` means ``[4, 8, 8]``), ``ds`` is
+   the dataset seed, ``ts`` is the training seed, and ``lr`` is the starting
+   learning rate.
 
 .. list-table:: Strong scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -333,14 +351,26 @@ number of nodes doubles. This data is ``local_batch_size=4`` at 384 nodes, ``loc
      - 523
      - 161.7
 
-.. image:: plots/001-strong-scaling-on-el-capitan-per-minibatch-time-median.png
+.. figure:: plots/001-strong-scaling-on-el-capitan-per-minibatch-time-median.png
    :align: center
+
+   Strong scaling of median training minibatch time, in seconds, on El Capitan
+   with a fixed global batch size; lower is better. Colored circles show results
+   for individual training seeds, and the thick green line with diamonds shows
+   the median at each node count. Dashed lines show ideal scaling, with time
+   halving when the node count doubles. Trial counts are labeled with ``t``.
+   Median annotations
+   such as ``1.4x`` give the previous median divided by the current median,
+   expressing the reduction in time as a speedup factor. In the legend, ``ps``
+   is problem scale, ``ns`` is the sharding configuration (``488`` means
+   ``[4, 8, 8]``), ``ds`` is the dataset seed, ``ts`` is the training seed, and
+   ``lr`` is the starting learning rate.
 
 .. list-table:: Strong scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training seed
      - per_minibatch_median_time
    * - 384
      - 13
@@ -382,14 +412,26 @@ Weak scaling
 ``local_batch_size`` is 1 at every node count, so the global batch size doubles with the
 number of nodes.
 
-.. image:: plots/002-weak-scaling-on-el-capitan-fom.png
+.. figure:: plots/002-weak-scaling-on-el-capitan-fom.png
    :align: center
+
+   Weak scaling of the FOM on El Capitan with ``local_batch_size=1``; higher is
+   better. Parenthesized y-axis values give the corresponding training time in
+   hours. Colored circles show results for individual training seeds, and the
+   thick green line with diamonds shows the median at each node count. Dashed
+   lines show the constant-FOM reference for ideal weak scaling. Trial counts
+   are labeled with ``t``.
+   Median annotations give the current median divided by the previous median:
+   ``0.8x`` indicates a 20% decrease in FOM and ``1.1x`` a 10% increase, after
+   rounding. In the legend, ``ps`` is problem scale, ``ns`` is the sharding
+   configuration (``488`` means ``[4, 8, 8]``), ``ds`` is the dataset seed,
+   ``ts`` is the training seed, and ``lr`` is the starting learning rate.
 
 .. list-table:: Weak scaling | tuolumne | dice target | mode=FOM; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training seed
      - FOM (1/Megaseconds)
    * - 384
      - 13
@@ -425,14 +467,26 @@ number of nodes.
      - 523
      - 161.7
 
-.. image:: plots/002-weak-scaling-on-el-capitan-per-minibatch-time-median.png
+.. figure:: plots/002-weak-scaling-on-el-capitan-per-minibatch-time-median.png
    :align: center
+
+   Weak scaling of median training minibatch time, in seconds, on El Capitan
+   with ``local_batch_size=1``; lower is better. Colored circles show results
+   for individual training seeds, and the thick green line with diamonds shows
+   the median at each node count. Dashed lines show ideal weak scaling, with
+   constant minibatch time. Trial counts are labeled with ``t``.
+   Median annotations give the previous
+   median divided by the current median; ``0.9x`` therefore indicates an increase
+   in time and a slowdown relative to the previous node count. In the legend,
+   ``ps`` is problem scale, ``ns`` is the sharding configuration (``488`` means
+   ``[4, 8, 8]``), ``ds`` is the dataset seed, ``ts`` is the training seed, and
+   ``lr`` is the starting learning rate.
 
 .. list-table:: Weak scaling | tuolumne | dice target | mode=per_minibatch_time, stat=median; tuolumne; New-t212-rocm721-datasetseed: ps=10, ns=488, ds=523, lr=0.001
    :header-rows: 1
 
    * - num_nodes
-     - seed
+     - training seed
      - per_minibatch_median_time
    * - 384
      - 13
