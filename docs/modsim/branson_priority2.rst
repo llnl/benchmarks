@@ -27,7 +27,7 @@ It is run with:
 
    mpirun -n <devices_on_node> <install-location/BRANSON> <path/to/branson/inputs/weak_scaling/3D_homogeneous_1.xml>
 
-..
+
 For the multi-node problem, the ``particle_message_size`` value in the input is the main parameter
 that will affect performance, especially on the GPU. Using a larger particle message size means that
 more memory will be used in MPI buffers, which are statically sized to the particle message size and

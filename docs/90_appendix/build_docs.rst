@@ -13,7 +13,7 @@ The documentation is written using the Sphinx Python Documentation
 Generator [Sphinx]_. Sphinx is built atop Python [Python]_ and uses
 reStructuredText [RST]_ as its lightweight markup language. Sphinx can
 output to multiple formats. This documentation targets HTML, PDF (via
-LaTeX [LaTeX]_), Unix manual pages, and Markdown.
+LaTeX [LaTeX]_), Unix manual pages, and Markdown [MarkdownBuilder]_.
 
 * Top-level Sphinx Documentation is in the `Sphinx master top-level contents
   <https://www.sphinx-doc.org/en/master/contents.html>`_.

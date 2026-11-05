@@ -2,7 +2,7 @@
 Branson
 *******
 
-Branson is a proxy application for parallel Monte Carlo transport.
+Branson [Branson]_ is a proxy application for parallel Monte Carlo transport.
 
 Purpose
 =======
@@ -59,14 +59,15 @@ Build requirements:
   * `mpich <http://www.mpich.org>`_
 
 * There are multiple configuration options:
- * ``CMAKE_BUILD_TYPE`` which can be set on the command line with
-  ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the default is Release.
- * If building a GPU enabled version of Branson use the ``USE_GPU`` toggle and Branson will attempt
-   to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a
-   GPU node.
+
+  * ``CMAKE_BUILD_TYPE`` which can be set on the command line with ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the default is Release.
+  * If building a GPU enabled version of Branson use the ``USE_GPU`` toggle and Branson will attempt
+    to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a GPU node.
+
 * If cmake has trouble finding your installed TPLs, you can try:
- * appending their locations to ``CMAKE_PREFIX_PATH``,
- * try running ``ccmake .`` from the build directory and changing the values of
+ 
+  * appending their locations to ``CMAKE_PREFIX_PATH``,
+  * try running ``ccmake .`` from the build directory and changing the values of
     build system variables related to TPL locations.
 
 * If building for multi-node runs Metis should be used for mesh partitioning. See README.md from Branson for more details. Single node CPU and single node GPU runs are run in replicated mode and do not use Metis.
