@@ -72,7 +72,7 @@ Prerequisites:
 * C++20 compiler
 * MPI
 
-These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$CUDACC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
+These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$NVCC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
 
 The minimum required version of each library are:
 
@@ -81,81 +81,6 @@ The minimum required version of each library are:
 * Hypre: v3.2.0
 * MFEM: v4.10
 * Laghos: ats-6
-
-Umpire (required)
------------------
-
-CUDA:
-
-.. code-block:: console
-                
-                git clone --branch v2026.07.2 https://github.com/LLNL/Umpire.git
-                cd Umpire
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=native -DENABLE_CUDA=ON -DUMPIRE_ENABLE_C=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC
-                make -j install
-
-HIP:
-
-.. code-block:: console
-                
-                git clone --branch v2026.07.2 https://github.com/LLNL/Umpire.git
-                cd Umpire
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_HIP_ARCHITECTURES=native -DENABLE_HIP=ON -DUMPIRE_ENABLE_C=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC
-                make -j install
-
-RAJA (required)
-----------------
-
-CUDA:
-
-.. code-block:: console
-                
-                git clone --branch v2026.07.1 https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native
-                make -j install
-
-HIP:
-
-.. code-block:: console
-                
-                git clone --branch v2026.07.1 https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DROCPRIM_DIR=$ROCM_PATH
-                make -j install
-
-Hypre (required)
-----------------
-
-CUDA:
-
-.. code-block:: console
-                
-                git clone --branch v3.2.0 https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
-                make -j install
-
-``HYPRE_ENABLE_GPU_AWARE_MPI`` may be optionally turned off.
-
-HIP:
-
-.. code-block:: console
-                
-                git clone --branch v3.2.0 https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
-                make -j install
-
-``HYPRE_ENABLE_GPU_AWARE_MPI`` may be optionally turned off.
 
 MFEM (required)
 ---------------
