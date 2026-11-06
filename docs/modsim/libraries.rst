@@ -67,6 +67,20 @@ or
     make -C build -j
     make -C build install
 
+Set the ``CALI_CONFIG`` environment variable at runtime to generate the Caliper desired timings:
+
+e.g., for HIP, MPI and CPU profiling, use:
+
+.. code-block:: bash
+
+    export CALI_CONFIG="spot(profile.hip,profile.mpi,time.exclusive)"
+
+and for CUDA, MPI and CPU profiling, use:
+
+.. code-block:: bash
+
+    export CALI_CONFIG="spot(profile.cuda,profile.mpi,time.exclusive)"
+
 .. _library-fmt:
 
 fmt
