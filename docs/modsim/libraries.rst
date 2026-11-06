@@ -142,6 +142,7 @@ Umpire
         -DCMAKE_INSTALL_PREFIX="${UMPIRE_DIR}" \
         -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" \
         -DCMAKE_HIP_COMPILER="${ROCM_PATH}/llvm/bin/amdclang++" \
+        -DUMPIRE_ENABLE_C=ON \ # when building for Hypre
         -Dcamp_DIR="${CAMP_DIR}" \
         -Dfmt_DIR="${FMT_DIR}" \
         -DENABLE_MPI=ON \
@@ -162,6 +163,7 @@ or
         -DCMAKE_INSTALL_PREFIX="${UMPIRE_DIR}" \
         -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" \
         -DCMAKE_CUDA_COMPILER="${NVCC}" \
+        -DUMPIRE_ENABLE_C=ON \ # when building for Hypre
         -Dcamp_DIR="${CAMP_DIR}" \
         -Dfmt_DIR="${FMT_DIR}" \
         -DENABLE_MPI=ON \
@@ -255,23 +257,23 @@ Hypre
     git clone --branch v3.2.0 --recurse-submodules https://github.com/hypre-space/hypre.git
     cd hypre
     cmake -S ./src -B build \
-      -DCMAKE_INSTALL_PREFIX="${HYPRE_DIR}" \
-      -DCMAKE_C_COMPILER="${CC}" \
-      -DCMAKE_CXX_COMPILER="${CXX}" \
-      -DHYPRE_ENABLE_HIP=ON \
-      -DCMAKE_HIP_COMPILER="${ROCM_PATH}/llvm/bin/clang++" \
-      -DCMAKE_HIP_ARCHITECTURES="${ROCM_ARCH}" \
-      -DBUILD_SHARED_LIBS=ON \
-      -DHYPRE_ENABLE_MPI=ON \
-      -DHYPRE_ENABLE_GPU_AWARE_MPI=ON \
-      -DHYPRE_ENABLE_MIXEDINT=ON \
-      -DHYPRE_ENABLE_HYPRE_BLAS=ON \
-      -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
-      -DHYPRE_ENABLE_UMPIRE=ON \
-      -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
-      -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
-      -DHYPRE_ENABLE_CALIPER=ON \
-      -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
+        -DCMAKE_INSTALL_PREFIX="${HYPRE_DIR}" \
+        -DCMAKE_C_COMPILER="${CC}" \
+        -DCMAKE_CXX_COMPILER="${CXX}" \
+        -DHYPRE_ENABLE_HIP=ON \
+        -DCMAKE_HIP_COMPILER="${ROCM_PATH}/llvm/bin/clang++" \
+        -DCMAKE_HIP_ARCHITECTURES="${ROCM_ARCH}" \
+        -DBUILD_SHARED_LIBS=ON \
+        -DHYPRE_ENABLE_MPI=ON \
+        -DHYPRE_ENABLE_GPU_AWARE_MPI=ON \ # GPU-aware MPI
+        -DHYPRE_ENABLE_MIXEDINT=ON \
+        -DHYPRE_ENABLE_HYPRE_BLAS=ON \
+        -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
+        -DHYPRE_ENABLE_UMPIRE=ON \
+        -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
+        -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
+        -DHYPRE_ENABLE_CALIPER=ON \
+        -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
     make -C build -j
     make -C build install
 
@@ -291,7 +293,7 @@ or
         -DCUDAToolkit_ROOT="${CUDA_ROOT}" \
         -DBUILD_SHARED_LIBS=ON \
         -DHYPRE_ENABLE_MPI=ON \
-        -DHYPRE_ENABLE_GPU_AWARE_MPI=OFF \ # if GPU-awre MPI is needed
+        -DHYPRE_ENABLE_GPU_AWARE_MPI=OFF \ # GPU-aware MPI
         -DHYPRE_ENABLE_MIXEDINT=ON \
         -DHYPRE_ENABLE_HYPRE_BLAS=ON \
         -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
