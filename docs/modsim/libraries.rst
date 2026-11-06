@@ -268,8 +268,8 @@ Hypre
       -DHYPRE_ENABLE_HYPRE_BLAS=ON \
       -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
       -DHYPRE_ENABLE_UMPIRE=ON \
-      -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_INCLUDE_DIR}" \
-      -DTPL_UMPIRE_LIBRARIES="${UMPIRE_LIB_DIR}/libumpire.so" \
+      -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
+      -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
       -DHYPRE_ENABLE_CALIPER=ON \
       -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
     make -C build -j
@@ -296,8 +296,8 @@ or
         -DHYPRE_ENABLE_HYPRE_BLAS=ON \
         -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
         -DHYPRE_ENABLE_UMPIRE=ON \
-        -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_INCLUDE_DIR}" \
-        -DTPL_UMPIRE_LIBRARIES="${UMPIRE_LIB_DIR}/libumpire.so" \
+        -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
+        -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
         -DHYPRE_ENABLE_CALIPER=ON \
         -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
     make -C build -j
@@ -310,8 +310,8 @@ MFEM
 
 .. code-block:: bash
 
-    git clone --branch "${MFEM_VERSION}" --recurse-submodules https://github.com/mfem/mfem.git "${MFEM_ROOT_DIR}"
-    pushd "${MFEM_BUILD_DIR}"
+    git clone --branch v4.10 --recurse-submodules https://github.com/mfem/mfem.git
+    cd mfem
     make -j1 config \
       PREFIX="${MFEM_DIR}" \
       CXX="${CXX}" MPICXX="${MPICXX}" \
@@ -335,8 +335,8 @@ or
 
 .. code-block:: bash
 
-    git clone --branch "${MFEM_VERSION}" --recurse-submodules https://github.com/mfem/mfem.git "${MFEM_ROOT_DIR}"
-    pushd "${MFEM_BUILD_DIR}"
+    git clone --branch v4.10 --recurse-submodules https://github.com/mfem/mfem.git
+    cd mfem
     make -j1 config \
       PREFIX="${MFEM_DIR}" \
       CXX="${CXX}" MPICXX="${MPICXX}" \
@@ -355,4 +355,3 @@ or
       CALIPER_DIR="${CALIPER_DIR}" ADIAK_DIR="${ADIAK_DIR}"
     make -j
     make install
-

@@ -80,57 +80,50 @@ The minimum required version of each library are:
 * RAJA: v2026.07.1
 * Hypre: v3.2.0
 * MFEM: v4.10
-* Laghos: ats-6
+* Laghos: v3.2
 
-MFEM (required)
----------------
+To review the available Spack variants for Laghos, use
 
-CUDA:
+.. code-block:: bash
 
-.. code-block:: console
-                
-                git clone --branch v4.10 https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
-                make -j install
+    spack info laghos
 
-HIP:
+When Laghos is built using Spack, all the required libraries
+are built automatically. When building without Spack, follow the linked build
+instructions for Laghos's required libraries: :ref:`Umpire <library-umpire>`,
+:ref:`RAJA <library-raja>`, :ref:`Hypre <library-hypre>`, and
+:ref:`MFEM <library-mfem>`. Additionally, :ref:`Adiak <library-adiak>` and
+:ref:`Caliper <library-caliper>` are required when Caliper
+instrumentation is enabled.
 
-.. code-block:: console
-                
-                git clone --branch v4.10 https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
-                make -j install
+Example of a GPU build:
 
-Laghos (required)
------------------
+With Spack:
 
-CUDA:
+.. code-block:: bash
 
-.. code-block:: console
-                
-                git clone --branch ats-6 https://github.com/CEED/Laghos.git
-                cd Laghos
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
-                make -j
+    spack install laghos@3.2+rocm
 
-HIP:
+or
 
-.. code-block:: console
-                
-                git clone --branch ats-6 https://github.com/CEED/Laghos.git
-                cd Laghos
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
-                make -j
+.. code-block:: bash
+
+    spack install laghos@3.2+cuda
+
+To enable Caliper, use the variant ``+caliper``
+
+Without Spack:
+
+.. code-block:: bash
+
+    git clone --branch v3.2 --recurse-submodules https://github.com/CEED/Laghos.git
+    cd Laghos
+    make -j \
+      MFEM_DIR="${MFEM_DIR}" \
+      CONFIG_MK="${MFEM_DIR}/share/mfem/config.mk" \
+      TEST_MK="${MFEM_DIR}/share/mfem/test.mk" \
+      LAGHOS_USE_CALIPER=ON \
+      CALIPER_DIR="${CALIPER_DIR}" ADIAK_DIR="${ADIAK_DIR}"
 
 .. _RunningLaghos:
 
