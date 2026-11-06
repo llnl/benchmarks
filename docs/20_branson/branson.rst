@@ -12,17 +12,16 @@ Branson source code and documentation are on github:
 
 https://github.com/lanl/branson
 
-Characteristics
-===============
-
 Problem
--------
+=======
+
 The benchmark performance problem is a single-node 3D hohlraum problem that is meant to be run with a 30 group build of Branson.
 It is in domain replicated mode which means the bulk of the work is the transport loop, with little MPI messaging.
-For ATS-6, we use the History based configuration using Struct of Arrays
+For ATS-6, we use the History based configuration using Struct of Arrays.
 
 Figure of Merit
----------------
+===============
+
 The Figure of Merit (FOM) is defined as particles/second and is printed to the screen at the end of the simulation.
 This value is labeled "Photons Per Second (FOM):" in Branson's output. Since the FOM is not normalized
 by the number of parallel resources it will ideally increase in weak and strong scaling studies.
@@ -65,7 +64,7 @@ Build requirements:
     to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a GPU node.
 
 * If cmake has trouble finding your installed TPLs, you can try:
- 
+
   * appending their locations to ``CMAKE_PREFIX_PATH``,
   * try running ``ccmake .`` from the build directory and changing the values of
     build system variables related to TPL locations.
@@ -107,7 +106,7 @@ Testing the build:
 Running
 =======
 
-For Priority 1, we focus on single node performance.
+For Tier 1, we focus on single node performance.
 We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
 and run with a 30 group build of Branson, which is the default in the ats-6 branch.
 To ensure we load the node, we will run 1 MPI rank per device, which will replicate the domains,
@@ -225,11 +224,10 @@ This can be obtained on a CPU system using the following (while the application 
 ..
 
 
-Throughput
-==========
+.. _branson-baseline:
 
-El Capitan
-----------
+Baseline on El Capitan
+======================
 
 Throughput performance of Branson on a single node - 4 GPUs - of El Capitan (AMD Epyc + AMD MI300A) is provided within the following table and figure.
 
@@ -246,8 +244,8 @@ Timings were captured using Caliper and are presented below.
 .. image:: branson_caliper_rocm_throughput.png
    :align: center
 
-Intel(R) Xeon(R) + NVIDIA H100
-------------------------------
+Baseline on NVIDIA H100
+=======================
 
 Throughput performance of Branson on a single node - 4 GPUs - of Intel(R) Xeon(R) + NVIDIA H100 is provided within the following table and figure.
 
@@ -263,6 +261,34 @@ Timings were captured using Caliper and are presented below.
 
 .. image:: branson_caliper_cuda_throughput.png
    :align: center
+
+
+Performance Projection
+======================
+
+The Tier 2 weak scaling problem is the multi-node, domain-decomposed homogeneous
+problem described in the :doc:`ModSim Tier 2 Branson page <../modsim/branson_priority2>`.
+It weak scales the 3D homogeneous input, increasing the number of particles and cells in
+proportion to the parallel resources so that the per-node workload is held fixed as the
+node count grows.
+
+To project Branson weak scaling performance for a Scalable Unit (SU), start from the
+single-node baseline captured in :ref:`branson-baseline`. Select the per-node problem size
+(photons per node) at the point where the single-node FOM saturates.
+Keeping the number of groups fixed, scale the number of particles by the number of nodes in a
+scalable unit. The number of total cells also needs to scale up in the same proportion, to do this
+scale the x, y, and z dimensions, as well as the number of cells
+in the x, y, and z dimensions to arrive at a total number of cells that is a factor of the number of
+nodes in the SU larger than the single node run. Also scale the ``n_x_domains``,
+``n_y_domains``, and ``n_z_domains`` fields so the domain decomposition matches the number
+of GPUs in the SU and the scaling factor applied to each of those dimensions. An example of this
+scale up can be seen by comparing the single node input to the 384 nodes input for the SU of El Cap
+available in the branson inputs folder. The ``particle_message_size`` may be optimized at the SU
+scale. Because the problem is weak scaled, the projected aggregate FOM (photons/second) for the SU
+is the saturated single-node FOM multiplied by the number of nodes in the SU. Note that the
+measured FOM will fall below this ideal projection due to the particle communication and MPI
+messaging introduced by domain decomposition; the gap between the ideal and measured FOM
+reflects the parallel efficiency of the weak scaling study.
 
 
 References
