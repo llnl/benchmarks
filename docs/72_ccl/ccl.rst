@@ -69,6 +69,11 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 Building
 ========
 
+The baseline results used `RCCL Tests
+<https://github.com/ROCm/rocm-systems/tree/develop/projects/rccl-tests>`_
+at commit ``60804faca583a141a94bc10d464cc3f3b6c71728`` of the ``rocm-systems`` repository.
+The baseline results used ``cce/20.0.0``, ``cray-mpich/9.0.1``, and ``rocm/6.4.3``.
+
 Running
 =======
 
@@ -85,8 +90,8 @@ Scaling on El Capitan
 =====================
 
 The following tables and charts show results for one SU (384 nodes) on
-El Capitan. They compare in-place runtimes for masks ``0x0`` and ``0x1``
-across message sizes and data types.
+El Capitan. They compare in-place runtimes for the single group (``0x0``)
+and even-odd split (``0x1``) configurations across message sizes and data types.
 
 Measurement configuration
 -------------------------
@@ -142,80 +147,84 @@ Communicator masks
 
 The mask is the value of ``NCCL_TESTS_SPLIT_MASK``:
 
-* ``0x0`` puts all MPI ranks in one group.
-* ``0x1`` splits even and odd MPI ranks into two groups that execute
+* Single group (``0x0``): all CCL ranks belong to one group.
+* Even-odd split (``0x1``): even and odd CCL ranks form two groups that execute
   concurrently.
 
-GPU membership depends on the MPI-rank-to-GPU mapping. These masks represent
+GPU membership depends on the CCL-rank-to-GPU mapping. These masks represent
 different communicator configurations.
 
 All-reduce
 ----------
 
 .. figure:: figures/all-reduce_table.png
-   :alt: All-reduce runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-reduce runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-reduce runtime comparison by message size and data type.
+   All-reduce runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-reduce_charts.png
    :alt: All-reduce runtime and speedup versus message size for bfloat16, float, and half.
    :align: center
    :width: 100%
 
-   All-reduce runtime and speedup relative to mask ``0x0``.
+   All-reduce runtime and speedup relative to single group (``0x0``).
 
 All-gather
 ----------
 
 .. figure:: figures/all-gather_table.png
-   :alt: All-gather runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-gather runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-gather runtime comparison by message size and data type.
+   All-gather runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-gather_charts.png
    :alt: All-gather runtime and speedup versus message size for float and half.
    :align: center
    :width: 100%
 
-   All-gather runtime and speedup relative to mask ``0x0``.
+   All-gather runtime and speedup relative to single group (``0x0``).
 
 Reduce-scatter
 --------------
 
 .. figure:: figures/reduce-scatter_table.png
-   :alt: Reduce-scatter runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: Reduce-scatter runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   Reduce-scatter runtime comparison by message size and data type.
+   Reduce-scatter runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/reduce-scatter_charts.png
    :alt: Reduce-scatter runtime and speedup versus message size for bfloat16, float, and half.
    :align: center
    :width: 100%
 
-   Reduce-scatter runtime and speedup relative to mask ``0x0``.
+   Reduce-scatter runtime and speedup relative to single group (``0x0``).
 
 All-to-all
 ----------
 
 .. figure:: figures/all-to-all_table.png
-   :alt: All-to-all runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-to-all runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-to-all runtime comparison by message size and data type.
+   All-to-all runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-to-all_charts.png
    :alt: All-to-all runtime and speedup versus message size for float and half.
    :align: center
    :width: 100%
 
-   All-to-all runtime and speedup relative to mask ``0x0``.
+   All-to-all runtime and speedup relative to single group (``0x0``).
 
 .. _ccl-performance-projections:
 
