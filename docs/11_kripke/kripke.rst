@@ -105,6 +105,7 @@ On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), t
 Furthermore on a system similar to El Capitan, one of the following environment variables should be set if ``ENABLE_GPU_AWARE_MPI`` and/or ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE`` are on. Either of these may improve GPU-aware MPI performance, depending on the system being used:
 
         export MPICH_NOLOCAL=1
+
         export MPICH_GPU_IPC_CACHE_MAX_SIZE=1000
 
 Run Kripke with the desired problem parameters by doing:
