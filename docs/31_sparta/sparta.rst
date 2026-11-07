@@ -2,9 +2,6 @@
 SPARTA
 ******
 
-.. note::
-   There may be some gaps with the performance data.
-
 This is the documentation for the benchmark [SPARTA]_. The content
 herein was created by the following authors (in alphabetical order).
 
@@ -603,7 +600,7 @@ Single-node results from SPARTA are provided on the following systems:
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsSpartaATS4`)
 * Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
-  known as Hops (see :ref:`ResultsSpartaCTS2GPU`).
+  known as Hops (see :ref:`ResultsSpartaScaleCTS2GPU`).
 
 Multi-node results from SPARTA are provided on the following system(s):
 
@@ -645,20 +642,20 @@ El Capitan - Many Nodes
 -----------------------
 
 The weak-scaling data are provided in
-  :download:`elcapitan-weakscaling.csv <elcapitan-weakscaling.csv>`.
+:download:`elcapitan-weakscaling.csv <elcapitan-weakscaling.csv>`.
 
-  .. csv-table:: SPARTA weak-scaling results on El Capitan
-     :file: elcapitan-weakscaling.csv
-     :header-rows: 1
-     :widths: 15 30 30 25
+.. csv-table:: SPARTA weak-scaling results on El Capitan
+   :file: elcapitan-weakscaling.csv
+   :header-rows: 1
+   :widths: 15 30 30 25
 
-  .. figure:: elcapitan-weakscaling.png
-     :alt: SPARTA weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency annotations.
-     :align: center
-     :width: 90%
+.. figure:: elcapitan-weakscaling.png
+   :alt: SPARTA weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency annotations.
+   :align: center
+   :width: 90%
 
-     SPARTA weak-scaling Figure of Merit on El Capitan. Point annotations show
-     the corresponding parallel efficiency at each node count.
+   SPARTA weak-scaling Figure of Merit on El Capitan. Point annotations show
+   the corresponding parallel efficiency at each node count.
 
 
 .. _ResultsSpartaScaleCTS2GPU:

@@ -44,5 +44,5 @@ set label 1 '100.0%' at graph 0, first 8.95167051 left offset char 0.3,1.1 tc rg
 set label 2 '88.6%' at graph 1, first 7.93476074 right offset char -0.3,-1.4 tc rgb '#374151'
 
 plot 'elcapitan-weakscaling.csv' every ::1 using 1:3 with linespoints ls 1 title 'FOM per node', \
-     '' every ::1 using (($1 != 1 && $1 != 4096 && $0 % 2 == 0) ? $1 : 1/0):3:(sprintf('%.1f%%', $4 * 100.0)) with labels center offset char 0,1.1 tc rgb '#374151' notitle, \
-     '' every ::1 using (($1 != 1 && $1 != 4096 && $0 % 2 == 1) ? $1 : 1/0):3:(sprintf('%.1f%%', $4 * 100.0)) with labels center offset char 0,-1.4 tc rgb '#374151' notitle
+     '' every ::1 using (($1 != 1 && $1 != 4096 && int($0) % 2 == 0) ? $1 : 1/0):3:(sprintf('%.1f%%', $4 * 100.0)) with labels center offset char 0,1.1 tc rgb '#374151' notitle, \
+     '' every ::1 using (($1 != 1 && $1 != 4096 && int($0) % 2 == 1) ? $1 : 1/0):3:(sprintf('%.1f%%', $4 * 100.0)) with labels center offset char 0,-1.4 tc rgb '#374151' notitle
