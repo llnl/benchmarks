@@ -2,9 +2,6 @@
 SPARTA
 ******
 
-.. note::
-   There may be some gaps with the performance data.
-
 This is the documentation for the benchmark [SPARTA]_. The content
 herein was created by the following authors (in alphabetical order).
 
@@ -487,8 +484,6 @@ GPU.
    MAX MEMORY ALLOCATED: 82222221.9 kB
 
 
-.. _SPARTAResults:
-
 .. _SPARTACorrectness:
 
 Validation
@@ -606,6 +601,8 @@ through the Kokkos Tools profiling instructions for El Capitan and Hops in
 :ref:`SPARTAProfileKokkosToolsElCapitan` and :ref:`SPARTAProfileKokkosToolsHops`.
 
 
+.. _SPARTAResults:
+
 Baseline on El Capitan
 ======================
 
@@ -630,6 +627,7 @@ El Capitan - Single Node
 .. note::
    This data is forthcoming.
 
+
 .. _ResultsSpartaScaleATS4:
 
 El Capitan - Many Nodes
@@ -652,8 +650,8 @@ The weak-scaling data are provided in
    the corresponding parallel efficiency at each node count.
 
 
-Baseline on Hops
-================
+Results on Hops
+---------------
 
 SPARTA performance data on Hops (CTS-2 with Nvidia H100 GPUs) is provided as
 follows.
@@ -674,6 +672,7 @@ Hops - Many Nodes
 
 .. note::
    This data is forthcoming.
+
 
 
 Performance Projection
