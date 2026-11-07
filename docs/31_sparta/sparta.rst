@@ -2,9 +2,6 @@
 SPARTA
 ******
 
-.. note::
-   There may be some gaps with the performance data.
-
 This is the documentation for the benchmark [SPARTA]_. The content
 herein was created by the following authors (in alphabetical order).
 
