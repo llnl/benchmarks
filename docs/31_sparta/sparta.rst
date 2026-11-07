@@ -43,45 +43,17 @@ Heavily pulled from their [site]_:
    LAMMPS use different underlying algorithms).
 
 
-Characteristics
-===============
+.. _SPARTAProblem:
+
+Problems
+========
+
 
 The goal is to utilize the specified version of SPARTA (see
 :ref:`SPARTAApplicationVersion`) that runs the benchmark problem (see
 :ref:`SPARTAProblem`) correctly (see :ref:`SPARTACorrectness` if
 changes are made to SPARTA).
 
-
-.. _SPARTAApplicationVersion:
-
-Application Version
--------------------
-
-The command to clone is provided below.
-
-.. literalinclude:: sparta_clone.sh
-   :language: sh
-   :lines: 2-
-
-.. note::
-   This version of SPARTA has been updated to include the full
-   inclusion of Kokkos 5 and the CMake build along with at-scale
-   performance enhancements.
-
-The script to clone can be downloaded from :download:`sparta_clone.sh
-<sparta_clone.sh>`. It can also be executed in place to clone into
-``docs/31_sparta/sparta``.
- 
-.. code-block:: bash
-
-   cd docs/31_sparta
-   ./sparta_clone.sh
-
-
-.. _SPARTAProblem:
-
-Problem
--------
 
 This input sets up a SPARTA simulation of argon gas particles moving
 through a 3-D box. The particles collide with each other using a
@@ -278,111 +250,12 @@ maximize this throughput FOM while utilizing at least 50% of available
 memory.
 
 
-.. _SPARTACorrectness:
+Source code modifications
+==========================
 
-Correctness
------------
-
-The aforementioned relevant block of output within "log.sparta" is
-replicated below.
-
-.. code-block::
-
-       Step          CPU        S/CPU         Np      Natt     Ncoll
-          0            0            0 9079240000 903884280 641603306
-        200    24.009253    8.3301203 9079240000 903879874 641591530
-   Loop time of 24.3716 on 32 procs for 200 steps with 9079240000 particles
-   Performance: 8.206 timesteps/s, 74.507 Gparticle-step/s
-
-There are several columns of interest regarding correctness; these are
-listed below.
-
-``Step``
-   This is the step number and is the first column.
-
-``CPU``
-   This is the elapsed time and is the second column.
-
-``S/CPU``
-   This is the number of steps per CPU. It is a simulation rate that
-   allows one to view relative performance across different output
-   steps.
-
-``Np``
-   This is the number of particles and is the third column.
-
-``Natt``
-   This is the number of attempts and is the fourth column.
-
-``Ncoll``
-   This is the number of collisions and is the fifth column.
-
-Assessing the correctness will involve comparing these quantities
-across modified (henceforth denoted with "mod" subscript) and
-unmodified ("unmod" subscript) SPARTA subject to the methodology
-below.
-
-The **first** step is to adjust the ``run`` input file parameter so
-that SPARTA\ :sub:`mod` has ``CPU`` output that exceeds 600 seconds
-(per :ref:`SPARTAFigureOfMerit`). Also, adjust the ``stats`` parameter
-to a value of 1 so fine-grained output is generated; if this is
-significantly slowing down computation, then it can be increased to a
-value of 10. Then, produce output from SPARTA\ :sub:`unmod` with the
-same ``run`` and ``stats`` settings.
-
-The **second** step is to compute the absolute differences between
-modified and unmodified SPARTA for ``Np``, ``Natt``, and ``Ncoll`` for
-each row, *i*, whose ``Step`` is relevant for the FOM for SPARTA\
-:sub:`mod`,
-
-.. math::
-   \Delta \texttt{Np}_i &= | \texttt{Np}_{\textrm{mod},i}-\texttt{Np}_{\textrm{unmod},i} | \\
-   \Delta \texttt{Natt}_i &= | \texttt{Natt}_{\textrm{mod},i}-\texttt{Natt}_{\textrm{unmod},i} | \\
-   \Delta \texttt{Ncoll}_i &= | \texttt{Ncoll}_{\textrm{mod},i}-\texttt{Ncoll}_{\textrm{unmod},i} |
-
-where
-
-* *i* is each line whose ``CPU`` time is between 300 and 600 seconds for SPARTA\ :sub:`mod`
-
-The **third** step is to compute the arithmetic mean of each of the
-aforementioned quantities over the *n* rows,
-
-.. math::
-   \mu _{\Delta \texttt{Np}} &= \frac{\sum_{i} \Delta \texttt{Np}_i}{n} \\
-   \mu _{\Delta \texttt{Natt}} &= \frac{\sum_{i} \Delta \texttt{Natt}_i}{n} \\
-   \mu _{\Delta \texttt{Ncoll}} &= \frac{\sum_{i} \Delta \texttt{Ncoll}_i}{n}
-
-where
-
-.. math::
-   n = \sum_{i} 1
-
-The **fourth** step is to compute the arithmetic mean of the *n*
-matching rows of the unmodified SPARTA,
-
-.. math::
-   \mu _{\texttt{Np},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Np}_{\textrm{unmod},i}}{n} \\
-   \mu _{\texttt{Natt},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Natt}_{\textrm{unmod},i}}{n} \\
-   \mu _{\texttt{Ncoll},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Ncoll}_{\textrm{unmod},i}}{n}
-
-The **fifth** step is to normalize the differences with the baseline
-values to create the error ratios,
-
-.. math::
-   \varepsilon _{\texttt{Np}} &= \frac{\mu _{\Delta \texttt{Np}}}{\mu _{\texttt{Np},\textrm{unmod}}} \\
-   \varepsilon _{\texttt{Natt}} &= \frac{\mu _{\Delta \texttt{Natt}}}{\mu _{\texttt{Natt},\textrm{unmod}}} \\
-   \varepsilon _{\texttt{Ncoll}} &= \frac{\mu _{\Delta \texttt{Ncoll}}}{\mu _{\texttt{Ncoll},\textrm{unmod}}}
-
-The **sixth** and final step is to check over all of the error ratios
-and if any of them exceed 25%, then the modifications are not approved
-without discussing them with this benchmark's authors. This is the
-same criteria that SPARTA uses for its own testing. The success
-criteria are:
-
-.. math::
-   \varepsilon _{\texttt{Np}} &\le 25\% \\
-   \varepsilon _{\texttt{Natt}} &\le 25\% \\
-   \varepsilon _{\texttt{Ncoll}} &\le 25\%
+Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
+For SPARTA, source code modifications should satisfy the correctness criteria in
+:ref:`SPARTACorrectness` when changes are made to SPARTA.
 
 
 System Information
@@ -399,6 +272,32 @@ described below.
 
 Building
 ========
+
+.. _SPARTAApplicationVersion:
+
+Application Version
+-------------------
+
+The command to clone is provided below.
+
+.. literalinclude:: sparta_clone.sh
+   :language: sh
+   :lines: 2-
+
+.. note::
+   This version of SPARTA has been updated to include the full
+   inclusion of Kokkos 5 and the CMake build along with at-scale
+   performance enhancements.
+
+The script to clone can be downloaded from :download:`sparta_clone.sh
+<sparta_clone.sh>`. It can also be executed in place to clone into
+``docs/31_sparta/sparta``.
+ 
+.. code-block:: bash
+
+   cd docs/31_sparta
+   ./sparta_clone.sh
+
 
 A script (``sparta_clone.sh``) is provided to clone the SPARTA
 repository within the "sparta" folder. Instructions are provided on
@@ -590,27 +489,128 @@ GPU.
 
 .. _SPARTAResults:
 
-Verification of Results
-=======================
+.. _SPARTACorrectness:
 
-Additional information:
+Validation
+==========
 
-* The sub-section :ref:`SPARTAComputeFOM` describes how to compute the
-  FOM
 
-Single-node results from SPARTA are provided on the following systems:
+The aforementioned relevant block of output within "log.sparta" is
+replicated below.
 
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`ResultsSpartaATS4`)
-* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
-  known as Hops (see :ref:`ResultsSpartaScaleCTS2GPU`).
+.. code-block::
 
-Multi-node results from SPARTA are provided on the following system(s):
+       Step          CPU        S/CPU         Np      Natt     Ncoll
+          0            0            0 9079240000 903884280 641603306
+        200    24.009253    8.3301203 9079240000 903879874 641591530
+   Loop time of 24.3716 on 32 procs for 200 steps with 9079240000 particles
+   Performance: 8.206 timesteps/s, 74.507 Gparticle-step/s
 
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`ResultsSpartaScaleATS4`)
-* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
-  known as Hops (see :ref:`ResultsSpartaScaleCTS2GPU`).
+There are several columns of interest regarding correctness; these are
+listed below.
+
+``Step``
+   This is the step number and is the first column.
+
+``CPU``
+   This is the elapsed time and is the second column.
+
+``S/CPU``
+   This is the number of steps per CPU. It is a simulation rate that
+   allows one to view relative performance across different output
+   steps.
+
+``Np``
+   This is the number of particles and is the third column.
+
+``Natt``
+   This is the number of attempts and is the fourth column.
+
+``Ncoll``
+   This is the number of collisions and is the fifth column.
+
+Assessing the correctness will involve comparing these quantities
+across modified (henceforth denoted with "mod" subscript) and
+unmodified ("unmod" subscript) SPARTA subject to the methodology
+below.
+
+The **first** step is to adjust the ``run`` input file parameter so
+that SPARTA\ :sub:`mod` has ``CPU`` output that exceeds 600 seconds
+(per :ref:`SPARTAFigureOfMerit`). Also, adjust the ``stats`` parameter
+to a value of 1 so fine-grained output is generated; if this is
+significantly slowing down computation, then it can be increased to a
+value of 10. Then, produce output from SPARTA\ :sub:`unmod` with the
+same ``run`` and ``stats`` settings.
+
+The **second** step is to compute the absolute differences between
+modified and unmodified SPARTA for ``Np``, ``Natt``, and ``Ncoll`` for
+each row, *i*, whose ``Step`` is relevant for the FOM for SPARTA\
+:sub:`mod`,
+
+.. math::
+   \Delta \texttt{Np}_i &= | \texttt{Np}_{\textrm{mod},i}-\texttt{Np}_{\textrm{unmod},i} | \\
+   \Delta \texttt{Natt}_i &= | \texttt{Natt}_{\textrm{mod},i}-\texttt{Natt}_{\textrm{unmod},i} | \\
+   \Delta \texttt{Ncoll}_i &= | \texttt{Ncoll}_{\textrm{mod},i}-\texttt{Ncoll}_{\textrm{unmod},i} |
+
+where
+
+* *i* is each line whose ``CPU`` time is between 300 and 600 seconds for SPARTA\ :sub:`mod`
+
+The **third** step is to compute the arithmetic mean of each of the
+aforementioned quantities over the *n* rows,
+
+.. math::
+   \mu _{\Delta \texttt{Np}} &= \frac{\sum_{i} \Delta \texttt{Np}_i}{n} \\
+   \mu _{\Delta \texttt{Natt}} &= \frac{\sum_{i} \Delta \texttt{Natt}_i}{n} \\
+   \mu _{\Delta \texttt{Ncoll}} &= \frac{\sum_{i} \Delta \texttt{Ncoll}_i}{n}
+
+where
+
+.. math::
+   n = \sum_{i} 1
+
+The **fourth** step is to compute the arithmetic mean of the *n*
+matching rows of the unmodified SPARTA,
+
+.. math::
+   \mu _{\texttt{Np},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Np}_{\textrm{unmod},i}}{n} \\
+   \mu _{\texttt{Natt},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Natt}_{\textrm{unmod},i}}{n} \\
+   \mu _{\texttt{Ncoll},\textrm{unmod}} &= \frac{\sum_{i} \texttt{Ncoll}_{\textrm{unmod},i}}{n}
+
+The **fifth** step is to normalize the differences with the baseline
+values to create the error ratios,
+
+.. math::
+   \varepsilon _{\texttt{Np}} &= \frac{\mu _{\Delta \texttt{Np}}}{\mu _{\texttt{Np},\textrm{unmod}}} \\
+   \varepsilon _{\texttt{Natt}} &= \frac{\mu _{\Delta \texttt{Natt}}}{\mu _{\texttt{Natt},\textrm{unmod}}} \\
+   \varepsilon _{\texttt{Ncoll}} &= \frac{\mu _{\Delta \texttt{Ncoll}}}{\mu _{\texttt{Ncoll},\textrm{unmod}}}
+
+The **sixth** and final step is to check over all of the error ratios
+and if any of them exceed 25%, then the modifications are not approved
+without discussing them with this benchmark's authors. This is the
+same criteria that SPARTA uses for its own testing. The success
+criteria are:
+
+.. math::
+   \varepsilon _{\texttt{Np}} &\le 25\% \\
+   \varepsilon _{\texttt{Natt}} &\le 25\% \\
+   \varepsilon _{\texttt{Ncoll}} &\le 25\%
+
+
+Memory Usage
+============
+
+SPARTA memory usage depends on the selected problem size and on the Kokkos
+backend used for a given system. Memory-usage guidance is currently captured
+through the Kokkos Tools profiling instructions for El Capitan and Hops in
+:ref:`SPARTAProfileKokkosToolsElCapitan` and :ref:`SPARTAProfileKokkosToolsHops`.
+
+
+Baseline on El Capitan
+======================
+
+SPARTA weak scaling performance on El Capitan (AMD Epyc + AMD MI300A) is
+provided as follows.
 
 
 .. _SPARTAComputeFOM:
@@ -629,13 +629,6 @@ El Capitan - Single Node
 
 .. note::
    This data is forthcoming.
-
-Hops - Single Node
-------------------
-
-.. note::
-   This data is forthcoming.
-
 
 .. _ResultsSpartaScaleATS4:
 
@@ -659,6 +652,21 @@ The weak-scaling data are provided in
    the corresponding parallel efficiency at each node count.
 
 
+Baseline on Hops
+================
+
+SPARTA performance data on Hops (CTS-2 with Nvidia H100 GPUs) is provided as
+follows.
+
+.. _ResultsSpartaCTS2GPU:
+
+Hops - Single Node
+------------------
+
+.. note::
+   This data is forthcoming.
+
+
 .. _ResultsSpartaScaleCTS2GPU:
 
 Hops - Many Nodes
@@ -666,6 +674,16 @@ Hops - Many Nodes
 
 .. note::
    This data is forthcoming.
+
+
+Performance Projection
+======================
+
+Use the system-specific memory guidance and baseline weak-scaling results above
+to select SPARTA problem sizes that use the available node memory while
+completing the benchmark run successfully. The El Capitan results can be used to
+project ATS-4 scalable-unit performance; analogous Hops data can be used for
+CTS-2+GPU projections once available.
 
 
 References
