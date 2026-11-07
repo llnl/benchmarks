@@ -630,6 +630,8 @@ El Capitan - Single Node
 .. note::
    This data is forthcoming.
 
+.. _ResultsSpartaCTS2GPU:
+
 Hops - Single Node
 ------------------
 
