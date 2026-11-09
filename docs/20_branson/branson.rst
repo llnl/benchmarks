@@ -36,7 +36,7 @@ Building
 
 Accessing the sources
 
-* Clone the ats6 branch from the branson github https://github.com/lanl/branson.git
+* Clone the Branson version 0.9 from the Branson github page: https://github.com/lanl/branson/releases/tag/0.90
 
 .. code-block:: bash
 
