@@ -4,8 +4,6 @@ Kripke
 
 https://github.com/LLNL/Kripke
 
-Kripke source code is near-final at this point. The problem to run is yet to be finalized.
-
 Purpose
 =======
 
@@ -105,6 +103,7 @@ On a system similar to El Capitan (Cray system with AMD CPUs and MI300A GPUs), t
 Furthermore on a system similar to El Capitan, one of the following environment variables should be set if ``ENABLE_GPU_AWARE_MPI`` and/or ``ENABLE_DIRECT_UMPIRE_PLANE_STORAGE`` are on. Either of these may improve GPU-aware MPI performance, depending on the system being used:
 
         export MPICH_NOLOCAL=1
+
         export MPICH_GPU_IPC_CACHE_MAX_SIZE=1000
 
 Run Kripke with the desired problem parameters by doing:
@@ -114,6 +113,40 @@ Run Kripke with the desired problem parameters by doing:
 
 Validation
 ==========
+
+At the end of each iteration in Kripke, a particle count is produced, along with an associated change in particle count. See the example Kripke output:
+
+        Steady State Solve
+
+        iter 0: particle count=5.499225e+07, change=1.000000e+00
+
+        iter 1: particle count=8.223750e+07, change=3.312996e-01
+
+        iter 2: particle count=9.569370e+07, change=1.406174e-01
+
+        iter 3: particle count=1.023260e+08, change=6.481557e-02
+
+        iter 4: particle count=1.055884e+08, change=3.089706e-02
+
+        iter 5: particle count=1.071896e+08, change=1.493820e-02
+
+        iter 6: particle count=1.079737e+08, change=7.261910e-03
+
+        iter 7: particle count=1.083568e+08, change=3.535318e-03
+
+        iter 8: particle count=1.085435e+08, change=1.720397e-03
+
+        iter 9: particle count=1.086344e+08, change=8.361880e-04
+
+        Solver terminated
+
+The CPU results of the per-iteration particle count and change are treated as
+the ground truth, correct answers. To obtain the correct answers for a problem
+configuration, simply run Kripke with the inputs desired on a CPU system. 
+Particle counts and change on the proposed system must match the CPU-generated 
+particle counts and change for every iteration, provided that the same Kripke 
+input parameters are used in both the proposed system run and the CPU-generated 
+run.
 
 .. _kripke-memory-usage:
 
