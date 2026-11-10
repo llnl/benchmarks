@@ -2,13 +2,13 @@
 Branson
 *******
 
-Branson is a proxy application for parallel Monte Carlo transport.
+Branson [Branson]_ is a proxy application for parallel Monte Carlo transport.
 
 Purpose
 =======
 
 For the ATS-6 procurement, we use the 3D hohlraum problem.
-Branson source code and documentation are on github: 
+Branson source code and documentation are on github:
 
 https://github.com/lanl/branson
 
@@ -23,8 +23,9 @@ For ATS-6, we use the History based configuration using Struct of Arrays
 
 Figure of Merit
 ---------------
-The Figure of Merit is defined as particles/second and is printed to the screen at the end of the simulation.
-This value is labeled "Photons Per Second (FOM):" in Branson's output.
+The Figure of Merit (FOM) is defined as particles/second and is printed to the screen at the end of the simulation.
+This value is labeled "Photons Per Second (FOM):" in Branson's output. Since the FOM is not normalized
+by the number of parallel resources it will ideally increase in weak and strong scaling studies.
 
 Source code modifications
 =========================
@@ -58,14 +59,15 @@ Build requirements:
   * `mpich <http://www.mpich.org>`_
 
 * There are multiple configuration options:
- * ``CMAKE_BUILD_TYPE`` which can be set on the command line with
-  ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the default is Release.
- * If building a GPU enabled version of Branson use the ``USE_GPU`` toggle and Branson will attempt
-   to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a
-   GPU node.
+
+  * ``CMAKE_BUILD_TYPE`` which can be set on the command line with ``-DCMAKE_BUILD_TYPE=<Debug|Release>`` and the default is Release.
+  * If building a GPU enabled version of Branson use the ``USE_GPU`` toggle and Branson will attempt
+    to find a GPU compiler. Note that the GPU architecture is found by CMake if configuring from a GPU node.
+
 * If cmake has trouble finding your installed TPLs, you can try:
- * appending their locations to ``CMAKE_PREFIX_PATH``,
- * try running ``ccmake .`` from the build directory and changing the values of
+ 
+  * appending their locations to ``CMAKE_PREFIX_PATH``,
+  * try running ``ccmake .`` from the build directory and changing the values of
     build system variables related to TPL locations.
 
 * If building for multi-node runs Metis should be used for mesh partitioning. See README.md from Branson for more details. Single node CPU and single node GPU runs are run in replicated mode and do not use Metis.
@@ -105,7 +107,7 @@ Testing the build:
 Running
 =======
 
-For Priority 1, we focus on single node performance. 
+For Priority 1, we focus on single node performance.
 We use the the 3D hohlraum input file, ``3D_hohlraum_single_node.xml``, in the ``inputs`` folder,
 and run with a 30 group build of Branson, which is the default in the ats-6 branch.
 To ensure we load the node, we will run 1 MPI rank per device, which will replicate the domains,
@@ -118,7 +120,6 @@ Use the following command to run:
    mpirun -n <gpus_on_node> <install-location/BRANSON> <path/to/branson/inputs/3D_hohlaum_single_node.xml>
 
 ..
-
 
 Validation
 ==========

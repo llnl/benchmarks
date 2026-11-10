@@ -146,7 +146,19 @@ def do_wrk_scripts(logger):
     files.extend(glob.glob("*.bash"))
     for fl in files:
         logger.info("Executing BSH/BASH script {}...".format(fl))
-        do_cmd("bash ./" + fl)
+        foo = do_cmd("bash ./" + fl)
+        if foo.stdout:
+            sys.stdout.write(foo.stdout)
+        if foo.stderr:
+            sys.stderr.write(foo.stderr)
+        if foo.returncode != 0:
+            logger.critical(
+                "BSH/BASH script {} exited with non-zero ({}) exit code!".format(
+                    fl, foo.returncode
+                )
+            )
+            os.chdir(dir_base)
+            sys.exit(EXIT_CODES["app run issue"])
 
     os.chdir(dir_base)
 

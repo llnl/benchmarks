@@ -2,12 +2,10 @@
 Laghos
 ******
 
-Laghos source code is near-final at this point. The problems to run are yet to be finalized.
-
 Purpose
 =======
 
-**Laghos** (LAGrangian High-Order Solver) is a miniapp that solves the time-dependent Euler equations of compressible gas dynamics in a moving Lagrangian frame using unstructured high-order finite element spatial discretization and explicit high-order time-stepping.
+**Laghos** (LAGrangian High-Order Solver) [Laghos]_ is a miniapp that solves the time-dependent Euler equations of compressible gas dynamics in a moving Lagrangian frame using unstructured high-order finite element spatial discretization and explicit high-order time-stepping.
 It is available at https://github.com/CEED/Laghos .
 
 Characteristics
@@ -49,21 +47,20 @@ Rates are averaged over all RK stages taken and for the purposes of benchmarking
 
 Laghos also reports the total rate for these major kernels, which is the **Figure of Merit (FOM)** for benchmarking purposes.
 
+
 Source code modifications
 =========================
-
-.. _LaghosModifications
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 For Laghos we define the following restrictions on source code modifications:
 
-* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results of double precision accuracy shown in :ref:`ValidateLaghos`.
+* Laghos must use MFEM and Hypre as the solver library, available at https://github.com/mfem/mfem and https://github.com/hypre-space/hypre respectively. Hypre must be built with ``HYPRE_ENABLE_MIXEDINT=ON``. The final validated results must match or exceed the results shown in :ref:`ValidateLaghos`.
 * Laghos and MFEM must be built using RAJA, available at https://github.com/llnl/raja . Depending on system configuration RAJA can be built with "CUDA" or "HIP" device backends.
 * The listed command line options for Laghos shown in :ref:`RunningLaghos` must be used without modifications. Adding the appropriate options to enable GPU execution or GPU-aware MPI is ok. Users may configure MPI to launch Laghos as desired. Example: on El Capitan in order to use GPU-aware MPI the `MPICH_GPU_SUPPORT_ENABLED` environment variable must be set.
-* Hypre/MFEM/Laghos may optionally be built with Umpire (https://github.com/LLNL/Umpire). The host and device memory allocators may be changed to any available allocator in MFEM.
+* Hypre/MFEM/Laghos must be built with Umpire (https://github.com/LLNL/Umpire). The host memory allocator may be changed to any of the ones available in mfem. The device memory allocators must use Umpire pool(s), though the allocation strategy may be changed; for example: separate Umpire pools for Hypre and MFEM, using managed memory pools, etc.
 * `LAGHOS_DEVICE_SYNC` in `laghos_solver.cpp` must not be changed to get an accurate FOM.
-* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision even if Laghos is modified to run with single precision.
+* Code related to validating the Sedov solution must not be changed. These include `sedov_sol.hpp`, `sedov_sol.cpp`, `bisect.hpp`, `adaptive_quad.hpp`, and `err_order` in `laghos.cpp`. The Sedov solution must be computed using double precision regardless of the precision Laghos simulations are computed in.
 
 Building
 ========
@@ -75,160 +72,83 @@ Prerequisites:
 * C++20 compiler
 * MPI
 
-These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$CUDACC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
+These instructions install all dependencies to a user-defined ``$INSTALLDIR`` using a user-defined ``$CC`` C compiler, ``$CXX`` C++-17 compiler, ``$NVCC`` CUDA compiler (for CUDA acceleration), and ``$HIPCC`` HIP compiler (for HIP acceleration). Both ``nvcc`` and ``clang`` are supported as the CUDA compiler.
 
-Umpire (required)
------------------
+The minimum required version of each library are:
 
-CUDA:
+* Umpire: v2026.07.2
+* RAJA: v2026.07.1
+* Hypre: v3.2.0
+* MFEM: v4.10
+* Laghos: v3.2
 
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/Umpire.git
-                cd Umpire
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=native -DENABLE_CUDA=ON -DUMPIRE_ENABLE_C=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC
-                make -j install
+To review the available Spack variants for Laghos, use
 
-HIP:
+.. code-block:: bash
 
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/Umpire.git
-                cd Umpire
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_HIP_ARCHITECTURES=native -DENABLE_HIP=ON -DUMPIRE_ENABLE_C=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC
-                make -j install
+    spack info laghos
 
-RAJA (required)
-----------------
+When Laghos is built using Spack, all the required libraries
+are built automatically. When building without Spack, follow the linked build
+instructions for Laghos's required libraries: :ref:`Umpire <library-umpire>`,
+:ref:`RAJA <library-raja>`, :ref:`Hypre <library-hypre>`, and
+:ref:`MFEM <library-mfem>`. Additionally, :ref:`Adiak <library-adiak>` and
+:ref:`Caliper <library-caliper>` are required when Caliper
+instrumentation is enabled.
 
-CUDA:
+Example of a GPU build:
 
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native
-                make -j install
+With Spack:
 
-HIP:
+.. code-block:: bash
 
-.. code-block:: console
-                
-                git clone https://github.com/LLNL/RAJA.git
-                cd RAJA
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DRAJA_ENABLE_EXAMPLES=Off -DRAJA_ENABLE_TESTS=Off -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DROCPRIM_DIR=$ROCM_PATH
-                make -j install
+    spack install laghos@3.2+rocm
 
-Hypre (required)
-----------------
+or
 
-CUDA:
+.. code-block:: bash
 
-.. code-block:: console
-                
-                git clone https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
-                make -j install
+    spack install laghos@3.2+cuda
 
-``HYPRE_ENABLE_GPU_AWARE_MPI`` and ``HYPRE_ENABLE_UMPIRE`` may be optionally turned off.
+To enable Caliper, use the variant ``+caliper``
 
-HIP:
+Without Spack:
 
-.. code-block:: console
-                
-                git clone https://github.com/hypre-space/hypre.git
-                cd hypre/build
-                cmake ../src -DCMAKE_BUILD_TYPE=Release -DHYPRE_ENABLE_MIXEDINT=ON -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_ENABLE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DHYPRE_ENABLE_GPU_AWARE_MPI=ON -DHYPRE_ENABLE_UMPIRE=ON
-                make -j install
+.. code-block:: bash
 
-``HYPRE_ENABLE_GPU_AWARE_MPI`` and ``HYPRE_ENABLE_UMPIRE`` may be optionally turned off.
-
-MFEM (required)
----------------
-
-CUDA:
-
-.. code-block:: console
-                
-                git clone https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_CUDA=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
-                make -j install
-
-``MFEM_USE_UMPIRE`` may be optionally turned off.
-
-HIP:
-
-.. code-block:: console
-                
-                git clone https://github.com/mfem/mfem.git
-                cd mfem
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DHYPRE_DIR=$INSTALLDIR -DRAJA_DIR=$INSTALL_DIR -DMFEM_USE_MPI=ON -DMFEM_USE_HIP=ON -DMFEM_USE_UMPIRE=ON -DMFEM_USE_RAJA=ON -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DUMPIRE_DIR=$INSTALLDIR -DCMAKE_CXX_STANDARD=20
-                make -j install
-
-``MFEM_USE_UMPIRE`` may be optionally turned off.
-
-Laghos (required)
------------------
-
-CUDA:
-
-.. code-block:: console
-                
-                git clone https://github.com/CEED/Laghos.git
-                cd Laghos
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CUDA_COMPILER=$CUDACC -DCMAKE_CUDA_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
-                make -j
-
-HIP:
-
-.. code-block:: console
-                
-                git clone https://github.com/CEED/Laghos.git
-                cd Laghos
-                mkdir build
-                cd build
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_HIP_COMPILER=$HIPCC -DCMAKE_HIP_ARCHITECTURES=native -DCMAKE_CXX_STANDARD=20
-                make -j
+    git clone --branch v3.2 --recurse-submodules https://github.com/CEED/Laghos.git
+    cd Laghos
+    make -j \
+      MFEM_DIR="${MFEM_DIR}" \
+      CONFIG_MK="${MFEM_DIR}/share/mfem/config.mk" \
+      TEST_MK="${MFEM_DIR}/share/mfem/test.mk" \
+      LAGHOS_USE_CALIPER=ON \
+      CALIPER_DIR="${CALIPER_DIR}" ADIAK_DIR="${ADIAK_DIR}"
 
 .. _RunningLaghos:
 
 Running
 =======
 
-Benchmark runs should target approximately 4194304 (`4x1024x1024`) quadrature points per "compute device" (i.e. one GPU).
-The `-epm` parameter will generate a domain which has the specified number of elements/zones per MPI rank and equally distribute them to all ranks.
-The following table has the number of quadrature points per zone for various orders, and `-epm` values for each MPI rank being assigned one GPU.
+Benchmark runs should aim to maximize the FOM by choosing an appropriate `-epm` (element per mpi rank) value.
+To ensure domains are well shaped and minimize the impact of MPI communications it is recommended to set `-epm` to either a power of 2, or something of the form `b*2^a`, where b is small and a is large.
+Note that MFEM/Laghos currently does not support more than 32-bit local indexing so avoid choosing epm values which can result in more than `2^31-1` quadrature points per rank.
+The number of rank local quadrature points can be computed by multiplying the epm by the number of quadrature points per zone (tabulated below).
 
-.. table:: Elements per rank with one compute device per rank.
+.. table:: Quadrature points per zone.
    :align: center
 
-   +--------+----------------+--------+
-   | Order  |  QPts per zone | epm    |
-   +--------+----------------+--------+
-   | Q1Q0   |   8            | 524288 |
-   +--------+----------------+--------+
-   | Q2Q1   |   64           | 65536  |
-   +--------+----------------+--------+
-   | Q3Q2   |  216           | 19418  |
-   +--------+----------------+--------+
+   +--------+----------------+
+   | Order  |  QPts per zone |
+   +--------+----------------+
+   | Q1Q0   |   8            |
+   +--------+----------------+
+   | Q2Q1   |   64           |
+   +--------+----------------+
+   | Q3Q2   |  216           |
+   +--------+----------------+
 
-Run commands using the tabulated values for `-epm` are given below.
+Example run commands using `-epm` values to achieve 16 million quadrature points per rank are given below.
   
 .. code-block:: console
                 
@@ -284,11 +204,6 @@ The **Density L2 error** for other resolutions is shown in the following plot (f
 
    **Density L2 error** for an ``NxNxN`` zone domain
 
-Example Scalability Results
-===========================
-
-TODO
-
 Memory Usage
 ============
 
@@ -317,17 +232,69 @@ Sample CPU and GPU memory usage on a single El Capitan node are shown below.
 
    GPU memory use on El Capitan with 4 ranks on a single node per DOF
 
-Strong Scaling on El Capitan
-============================
-
-Please see :ref:`ElCapitanSystemDescription` for El Capitan system description.
-
-TODO
-
-Weak Scaling on El Capitan
+Baseline on El Capitan
 ==========================
 
-TODO
+Weak scaling performance of Laghos on El Capitan (AMD Epyc + AMD MI300A) for each order is provided as follows.
+
+Linear (Q1Q0)
+-------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_linear_weak_rocm.csv
+
+.. image:: plots/laghos_linear_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_linear_weak_rocm.png
+   :align: center
+
+Quadratic (Q2Q1)
+----------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_quadratic_weak_rocm.csv
+
+.. image:: plots/laghos_quadratic_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_quadratic_weak_rocm.png
+   :align: center
+
+Cubic (Q3Q2)
+------------
+
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: data/laghos_cubic_weak_rocm.csv
+
+.. image:: plots/laghos_cubic_weak_rocm.png
+   :align: center
+
+Timings were captured using Caliper and are presented below.
+
+.. image:: plots/laghos_caliper_cubic_weak_rocm.png
+   :align: center
+
+Performance Projection
+======================
+
+The last row of each table in the above baselines captures the performance on a single Scalable Unit (SU) of El Capitan (384 nodes, 1536 GPUs).
+
+To project Laghos performance for a Scalable Unit (SU), scale the number of MPI ranks to match the number of GPUs in the SU. There can be one or more MPI rank per GPU as long as each GPU has the same number of ranks. All other configuration options, including `-epm`, must remain unchanged.
+
+Any `-epm` value which uses **at least** 10% of the memory available on each node of the SU may be used.
+See :ref:`RunningLaghos` for recommendations for selecting an appropriate `-epm` value.
+
 
 References
 ==========

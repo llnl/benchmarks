@@ -1,4 +1,25 @@
 Kernel,Variant,Tuning,Problem size,Checksum,Mean time per rep (sec.),Bandwidth (GiB per sec.),Mean gFlops (gigaFLOP per sec.),__source_file__,Backend,Variant_Tuning
+Stream_TRIAD,Base_Seq,default,33334, PASSED     ,7.10542e-06,104.86,9.3827,./RPBenchmark_H100_tier1/TRIAD_factor_16-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,33334, PASSED     ,2.19003e-06,340.211,30.4416,./RPBenchmark_H100_tier1/TRIAD_factor_16-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,33334, PASSED     ,2.18924e-06,340.334,30.4526,./RPBenchmark_H100_tier1/TRIAD_factor_16-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,533334, PASSED     ,0.000330033,36.1205,3.23201,./RPBenchmark_H100_tier1/TRIAD_factor_256-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,533334, PASSED     ,3.55731e-06,3351.11,299.852,./RPBenchmark_H100_tier1/TRIAD_factor_256-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,533334, PASSED     ,3.55955e-06,3349.0,299.664,./RPBenchmark_H100_tier1/TRIAD_factor_256-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,6250000, PASSED     ,0.00813389,17.1749,1.53678,./RPBenchmark_H100_tier1/TRIAD_factor_3000-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,6250000, PASSED     ,5.14975e-05,2712.72,242.73,./RPBenchmark_H100_tier1/TRIAD_factor_3000-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,6250000, PASSED     ,5.14972e-05,2712.74,242.732,./RPBenchmark_H100_tier1/TRIAD_factor_3000-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,66667, PASSED     ,1.55159e-05,96.0387,8.5934,./RPBenchmark_H100_tier1/TRIAD_factor_32-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,66667, PASSED     ,2.27653e-06,654.559,58.5689,./RPBenchmark_H100_tier1/TRIAD_factor_32-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,66667, PASSED     ,2.28323e-06,652.638,58.397,./RPBenchmark_H100_tier1/TRIAD_factor_32-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,8334, PASSED     ,1.78122e-06,104.58,9.35764,./RPBenchmark_H100_tier1/TRIAD_factor_4-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,8334, PASSED     ,2.12201e-06,87.7845,7.85482,./RPBenchmark_H100_tier1/TRIAD_factor_4-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,8334, PASSED     ,2.1229e-06,87.7477,7.85153,./RPBenchmark_H100_tier1/TRIAD_factor_4-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,1066667, PASSED     ,0.000875484,27.2328,2.43675,./RPBenchmark_H100_tier1/TRIAD_factor_512-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,1066667, PASSED     ,5.50844e-06,4328.24,387.285,./RPBenchmark_H100_tier1/TRIAD_factor_512-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,1066667, PASSED     ,5.48478e-06,4346.91,388.955,./RPBenchmark_H100_tier1/TRIAD_factor_512-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
+Stream_TRIAD,Base_Seq,default,133334, PASSED     ,7.95522e-05,37.4628,3.35211,./RPBenchmark_H100_tier1/TRIAD_factor_64-kernel-run-data.csv,Seq,Base_Seq-default
+Stream_TRIAD,Base_CUDA,block_256,133334, PASSED     ,2.47541e-06,1203.94,107.727,./RPBenchmark_H100_tier1/TRIAD_factor_64-kernel-run-data.csv,CUDA,Base_CUDA-block_256
+Stream_TRIAD,RAJA_CUDA,block_256,133334, PASSED     ,2.47733e-06,1203.01,107.643,./RPBenchmark_H100_tier1/TRIAD_factor_64-kernel-run-data.csv,CUDA,RAJA_CUDA-block_256
 Apps_DIFFUSION3DPA,Base_Seq,default,405, PASSED     ,5.74992e-06,9.0691,16.0515,./RPBenchmark_H100_tier1/DIFFUSION3DPA_factor_1-kernel-run-data.csv,Seq,Base_Seq-default
 Apps_DIFFUSION3DPA,Base_CUDA,block_64,405, PASSED     ,4.1243e-06,12.6437,22.3783,./RPBenchmark_H100_tier1/DIFFUSION3DPA_factor_1-kernel-run-data.csv,CUDA,Base_CUDA-block_64
 Apps_DIFFUSION3DPA,RAJA_CUDA,block_64,405, PASSED     ,3.88748e-06,13.414,23.7416,./RPBenchmark_H100_tier1/DIFFUSION3DPA_factor_1-kernel-run-data.csv,CUDA,RAJA_CUDA-block_64

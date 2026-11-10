@@ -2,7 +2,7 @@
 
 module load craype-accel-amd-gfx942
 module load PrgEnv-cray
-module load rocm/6.2.1
+module load rocm/6.4.3
 module load python
 
 export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
@@ -23,6 +23,6 @@ export FI_HMEM="rocr"
 export HUGETLB_MORECORE=yes
 
 # restrict libhugetlbfs to be enabled for these executables only:
-export HUGETLB_RESTRICT_EXE="defrag:lmp"
+export HUGETLB_RESTRICT_EXE="defrag"
 
 export HSA_XNACK=1
