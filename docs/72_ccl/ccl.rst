@@ -45,21 +45,17 @@ size:
      - 4 KiB, 32 MiB, 1 GiB, Optimal
    * - ``alltoall``
      - ``half``, ``float``
-     - 32 MiB, 1 GiB, 32 GiB, Optimal
+     - 32 MiB, 256 MiB, 1 GiB, Optimal
    * - ``reduce_scatter``
      - ``half``, ``bfloat16``, ``float``
-     - 32 MiB, 1 GiB, 32 GiB, Optimal
+     - 32 MiB, 256 MiB, 1 GiB, Optimal
 
 Use 4 KiB only for all-reduce; omit it for all-gather, all-to-all, and
 reduce-scatter because of the number of ranks at the tested scale.
 
-The 32 GiB (``32G``) cases provide additional large-message coverage for
-all-gather, all-to-all, and reduce-scatter. The supplied all-reduce results
-cover 4 KiB, 32 MiB, and 1 GiB.
-
 For the ``Optimal`` case, you may use the minimum message size that achieves
 optimal bandwidth or protocol efficiency. Report the selected size. The
-supplied 32 GiB results do not establish that size as optimal.
+supplied results do not identify an optimal size.
 
 Source code modifications
 =========================
@@ -72,7 +68,23 @@ Building
 The baseline results used `RCCL Tests
 <https://github.com/ROCm/rocm-systems/tree/develop/projects/rccl-tests>`_
 at commit ``60804faca583a141a94bc10d464cc3f3b6c71728`` of the ``rocm-systems`` repository.
-The baseline results used ``cce/20.0.0``, ``cray-mpich/9.0.1``, and ``rocm/6.4.3``.
+The baseline results used ``cce/21.0.2``, ``cray-mpich/9.1.0``, and ``rocm/7.2.1``.
+The NCCL_NET_PLUGIN environment variable was set to a system installation of the AWS OFI libfabric plugin (aws-ofi-rccl), to avoid using sockets.
+
+The following environment variables were also set for the baseline results:
+
+.. code-block:: sh
+
+   export FI_MR_CACHE_MONITOR=userfaultfd
+   export NCCL_SOCKET_IFNAME=hsi
+   export FI_CXI_RDZV_PROTO=alt_read
+   export FI_CXI_RDZV_THRESHOLD=0
+   export FI_CXI_RDZV_GET_MIN=0
+   export FI_CXI_RDZV_EAGER_SIZE=0
+   export FI_CXI_DEFAULT_TX_SIZE=1024
+   export FI_CXI_DISABLE_HOST_REGISTER=1
+   export FI_CXI_DEFAULT_CQ_SIZE=131072
+   export FI_CXI_RX_MATCH_MODE=hybrid
 
 Running
 =======
@@ -126,6 +138,8 @@ Warmup iterations depend on message size:
      - 100
    * - 32 MiB (``32M``)
      - 50
+   * - 256 MiB (``256M``)
+     - 10
    * - At least 1 GiB (``>=1G``, including ``32G``)
      - 3
 
@@ -251,8 +265,7 @@ Required parameters
      - Every combination in :ref:`ccl-problem`.
    * - Message sizes
      - The sizes listed for each operation in :ref:`ccl-problem`, including
-       the selected ``Optimal`` size. Use 4 KiB only for all-reduce and
-       include 32 GiB for all-gather, all-to-all, and reduce-scatter.
+       the selected ``Optimal`` size.
    * - Communicators
      - Both unpartitioned and partitioned communicators. The El Capitan
        results use the configurations in :ref:`ccl-communicator-masks`.
