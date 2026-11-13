@@ -214,14 +214,19 @@ Memory Usage
 ============
 
 Memory footprint is the sum of all Branson processes resident set size (or equivalent) on the node.
-This can be obtained on a CPU system using the following (while the application is in step 2):
 
-.. code-block:: bash
+At the end of each timestep, Branson outputs the max and mean memory usage (``proc_max``, ``proc_mean``, ``node_max``, ``node_mean``).
+Additionally, when Umpire is enabled, the per-rank high-water mark of the Umpire device-memory pool is also displayed.
 
-   ps -C BRANSON -o euser,c,pid,ppid,cmd,%cpu,%mem,rss --sort=-rss
+Memory usage of Branson on a single node - 4 GPUs - of El Capitan (AMD Epyc + AMD MI300A) is provided within the following table and figure.
 
-   ps -C BRANSON -o rss | awk '{sum+=$1;} END{print sum/1024/1024;}'
-..
+.. csv-table::
+   :header-rows: 1
+   :align: center
+   :file: branson_rocm_memoryusage.csv
+
+.. image:: branson_rocm_memoryusage.png
+   :align: center
 
 
 .. _branson-baseline:
