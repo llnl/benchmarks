@@ -37,6 +37,10 @@ not bytes) multiplied by the size of a particle. The ``particle_message_size`` i
 ``common`` block in the Branson XML input file.
 
 
+Baseline on El Capitan
+======================
+
+
 Performance Projection
 ======================
 
@@ -63,6 +67,3 @@ is the saturated single-node FOM multiplied by the number of nodes in the SU. No
 measured FOM will fall below this ideal projection due to the particle communication and MPI
 messaging introduced by domain decomposition; the gap between the ideal and measured FOM
 reflects the parallel efficiency of the weak scaling study.
-
-Scaling on El Capitan
-=====================
