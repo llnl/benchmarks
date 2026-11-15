@@ -4,6 +4,7 @@ AMG2023
 
 This is the documentation for Benchmark - parallel algebraic multigrid solver for 3D diffusion problems. 
 
+.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 Purpose
 =======
