@@ -4,6 +4,8 @@ Kripke
 
 https://github.com/LLNL/Kripke
 
+.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+
 Purpose
 =======
 
