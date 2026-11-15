@@ -249,8 +249,8 @@ Timings were captured using Caliper and are presented below.
 .. image:: branson_caliper_rocm_throughput.png
    :align: center
 
-Baseline on NVIDIA H100
-=======================
+Results on NVIDIA H100
+----------------------
 
 Throughput performance of Branson on a single node - 4 GPUs - of Intel(R) Xeon(R) + NVIDIA H100 is provided within the following table and figure.
 
@@ -271,29 +271,7 @@ Timings were captured using Caliper and are presented below.
 Performance Projection
 ======================
 
-The Tier 2 weak scaling problem is the multi-node, domain-decomposed homogeneous
-problem described in the :doc:`ModSim Tier 2 Branson page <../modsim/branson_priority2>`.
-It weak scales the 3D homogeneous input, increasing the number of particles and cells in
-proportion to the parallel resources so that the per-node workload is held fixed as the
-node count grows.
-
-To project Branson weak scaling performance for a Scalable Unit (SU), start from the
-single-node baseline captured in :ref:`branson-baseline`. Select the per-node problem size
-(photons per node) at the point where the single-node FOM saturates.
-Keeping the number of groups fixed, scale the number of particles by the number of nodes in a
-scalable unit. The number of total cells also needs to scale up in the same proportion, to do this
-scale the x, y, and z dimensions, as well as the number of cells
-in the x, y, and z dimensions to arrive at a total number of cells that is a factor of the number of
-nodes in the SU larger than the single node run. Also scale the ``n_x_domains``,
-``n_y_domains``, and ``n_z_domains`` fields so the domain decomposition matches the number
-of GPUs in the SU and the scaling factor applied to each of those dimensions. An example of this
-scale up can be seen by comparing the single node input to the 384 nodes input for the SU of El Cap
-available in the branson inputs folder. The ``particle_message_size`` may be optimized at the SU
-scale. Because the problem is weak scaled, the projected aggregate FOM (photons/second) for the SU
-is the saturated single-node FOM multiplied by the number of nodes in the SU. Note that the
-measured FOM will fall below this ideal projection due to the particle communication and MPI
-messaging introduced by domain decomposition; the gap between the ideal and measured FOM
-reflects the parallel efficiency of the weak scaling study.
+Throughput of the benchmark on a single node.
 
 
 References
