@@ -9,6 +9,7 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
+.. note:: For any questions about ATS-6 Storage Benchmarks, please contact ATS6-Storage-Benchmarks <ats6-storage-benchmarks@llnl.gov>.
 
 ******************
 Benchmark Overview

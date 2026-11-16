@@ -8,6 +8,7 @@ MLPerf Storage
 
 `MLPerf Storage <https://github.com/mlcommons/storage/blob/main/docs/README.md>`_ is a benchmark suite developed to test storage performance under AI-type workloads. MLPerf Storage is part of the standard ML Commons consortium and is built around the `DLIO <https://github.com/argonne-lcf/dlio_benchmark>`_ deep learning benchmark.
 
+.. note:: For any questions about ATS-6 Storage Benchmarks, please contact ATS6-Storage-Benchmarks <ats6-storage-benchmarks@llnl.gov>.
 
 Purpose
 *******
