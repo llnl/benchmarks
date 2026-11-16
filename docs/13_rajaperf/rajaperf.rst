@@ -6,6 +6,8 @@ The RAJA Performance Suite is a collection of loop-based computational kernels
 representing important algorithm patterns found in HPC applications. The RAJA Performance
 Suite Benchmark uses a subset of kernels in the RAJA Performance Suite.
 
+.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+
 All benchmark source code and run scripts are included in the 
 `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
 The latest version is:
@@ -301,7 +303,7 @@ will be determined by the application context in which they are used.
 .. _rajaperf_results_elcap-label:
 
 Baseline on El Capitan
-===========================
+======================
 
 We are interested in single-node throughput with this Benchmark and the FOM
 described above. To generate throughput curves and
@@ -499,8 +501,8 @@ impact on run time performance.
 
 .. _rajaperf_results_h100-label:
 
-Baseline on NVIDIA H100
-=============================
+Performance on NVIDIA H100
+--------------------------
 
 For NVIDIA GPUs, we are interested in the same measure of single-node throughput and FOM
 as described above for AMD MI300A. To generate throughput curves and
