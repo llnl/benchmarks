@@ -6,7 +6,7 @@ The RAJA Performance Suite is a collection of loop-based computational kernels
 representing important algorithm patterns found in HPC applications. The RAJA Performance
 Suite Benchmark uses a subset of kernels in the RAJA Performance Suite.
 
-.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 All benchmark source code and run scripts are included in the 
 `RAJAPerf-Benchmark GitHub repo <https://github.com/llnl/RAJAPerf-Benchmark>`_
