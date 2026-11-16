@@ -6,7 +6,7 @@ Documentation for Remhos (REMap High-Order Solver).
 
 https://github.com/CEED/Remhos
 
-Remhos source code is not finalized at this point. The problems to run are yet to be defined.
+.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 Purpose
 =======
