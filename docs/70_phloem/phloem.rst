@@ -6,7 +6,7 @@ MPI: Phloem
 Purpose
 =======
 
-`Phloem <https://github.com/llnl/phloem>`` is a suite of MPI Microbenchmarks
+``Phloem <https://github.com/llnl/phloem>`` is a suite of MPI Microbenchmarks
 designed to stress-test the HPC data communication fabric with common MPI
 operations implemented in a manner as close as possible to the methods used by
 modeling and simulation codes.
