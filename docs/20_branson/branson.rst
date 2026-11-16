@@ -40,15 +40,6 @@ Accessing the sources
 
 * Clone the Branson version 0.9 from the Branson github page: https://github.com/lanl/branson/releases/tag/0.90
 
-.. code-block:: bash
-
-   git clone https://github.com/lanl/branson.git
-   cd branson
-   git checkout ats6
-
-..
-
-
 Build requirements:
 
 * C/C++ compiler(s) with support for C11 and C++17.
