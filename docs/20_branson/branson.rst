@@ -4,6 +4,8 @@ Branson
 
 Branson [Branson]_ is a proxy application for parallel Monte Carlo transport.
 
+.. note:: For any questions about ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+
 Purpose
 =======
 
