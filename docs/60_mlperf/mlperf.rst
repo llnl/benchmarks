@@ -2,6 +2,8 @@
 MLPerf Llama 3.1 405B training
 ******************************
 
+.. note:: For any questions about ATS-6 SI4Sim benchmarks, please contact ATS6-SI-Benchmarks <ats6-si-benchmarks@llnl.gov>.
+
 
 Purpose
 =======

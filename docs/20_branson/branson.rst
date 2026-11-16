@@ -4,6 +4,8 @@ Branson
 
 Branson [Branson]_ is a proxy application for parallel Monte Carlo transport.
 
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+
 Purpose
 =======
 
@@ -37,15 +39,6 @@ Building
 Accessing the sources
 
 * Clone the Branson version 0.9 from the Branson github page: https://github.com/lanl/branson/releases/tag/0.90
-
-.. code-block:: bash
-
-   git clone https://github.com/lanl/branson.git
-   cd branson
-   git checkout ats6
-
-..
-
 
 Build requirements:
 

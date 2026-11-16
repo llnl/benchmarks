@@ -5,7 +5,7 @@
 ScaFFold is the Scale-free Fractal benchmark for deep learning. The source code and
 documentation are on `GitHub <https://github.com/LBANN/ScaFFold>`_.
 
-The ScaFFold problem description and source are near-final.
+.. note:: For any questions about ATS-6 SI4Sim benchmarks, please contact ATS6-SI-Benchmarks <ats6-si-benchmarks@llnl.gov>.
 
 .. important::
 

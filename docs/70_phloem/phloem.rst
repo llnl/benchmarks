@@ -6,10 +6,12 @@ MPI: Phloem
 Purpose
 =======
 
-`Phloem <https://github.com/llnl/phloem>`` is a suite of MPI Microbenchmarks
+``Phloem <https://github.com/llnl/phloem>`` is a suite of MPI Microbenchmarks
 designed to stress-test the HPC data communication fabric with common MPI
 operations implemented in a manner as close as possible to the methods used by
 modeling and simulation codes.
+
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 
 Problems
