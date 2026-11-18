@@ -31,10 +31,14 @@ Benchmark Overview
      | CUDA/HIP
    - PyTorch
  * - MLPerf
-   - Llama 3.1 405B training
+   - | MLPerf Training v6.0 Llama 3.1 405B,
+     | Proxy for large transformer and
+     | MoE model training
    - Python
-   - NCCL+CUDA
-   - NVIDIA NeMo
+   - | NCCL+CUDA
+     | (or equivalent)
+   - | NVIDIA NeMo,
+     | Megatron-Core
 
 .. _AI4SIMRunRules:
 .. _SI4SIMRunRules:
