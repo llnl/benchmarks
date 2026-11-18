@@ -16,7 +16,7 @@ MLPerf Training v6.0. Published results are on the `MLCommons results site
     MLPerf Training v6.0. For acceptance testing, the benchmark will be
     augmented by a mixture-of-experts (MoE) pretraining task based on
     a then-current LLNS-designated reasonable state-of-the-art MoE
-    architecture. The MoE benchmark in MLPerf Training v6.1 does not
+    architecture. The MoE benchmark in MLPerf Training v6.0 and v6.1 does not
     meet the benchmark requirements and will not be used. See
     :ref:`mlperf-moe-acceptance`.
 
@@ -26,16 +26,17 @@ MLPerf Training v6.0. Published results are on the `MLCommons results site
 
 This benchmark measures how well a system trains large transformer
 models, and later MoE models, at scale. Training a model with hundreds
-of billions of dense parameters exercises the whole deep learning
-systems stack (in the future expected MoE with ~1 trillion total parameters
-and many tens of billons of active parameters):
+of billions of dense parameters (and, in the future, an MoE model with
+about 1 trillion total parameters and many tens of billions of active
+parameters) exercises the whole deep learning systems stack:
 
 * Dense matrix multiplication at low precision (BF16, FP8, and FP4 formats).
 * High-bandwidth memory capacity, to hold model weights, optimizer state, and activations.
-* The scale-up interconnect, which carries tensor- and context-parallel communication
-  within a model replica.
-* The scale-out network, which carries pipeline-parallel and data-parallel communication
-  between nodes.
+* The scale-up interconnect, which carries tensor- and context-parallel communication,
+  and pipeline-parallel communication when a model replica fits within one scale-up
+  domain.
+* The scale-out network, which carries data-parallel gradient reduction between model
+  replicas, and pipeline-parallel communication when a replica spans scale-up domains.
 * The software stack (framework, communication libraries, and kernels) that integrates
   these components.
 
@@ -110,8 +111,10 @@ Training v6.0 rules:
 
 * Each benchmark result needs at least three runs. With three runs, the score is the
   median run time (the olympic mean of three runs).
-* If a result converges in fewer samples than the reference convergence points (RCPs)
-  allow, the score is normalized to the RCP mean.
+* Convergence is compared with the reference convergence points (RCPs) for the global
+  batch size used. A result that converges faster than the RCP mean, but within the
+  allowed statistical range, has its score normalized to the RCP mean. A result that
+  converges faster than the allowed range fails the RCP check.
 
 See :ref:`mlperf-timing` for what the timed region includes and excludes.
 
@@ -119,19 +122,21 @@ See :ref:`mlperf-timing` for what the timed region includes and excludes.
  Source code modifications
 ***************************
 
-See :ref:`GlobalRunRules` for general guidance on allowed modifications.
-
-The required projection must follow the MLPerf Training v6.0 closed-division rules. In
-summary:
+This benchmark is governed only by the `MLPerf Training v6.0 rules`_; the general ATS-6
+run rules do not apply. The required projection must follow the closed-division rules.
+In summary:
 
 * The model architecture, dataset, tokenizer, starting checkpoint, quality target, and
   evaluation schedule are fixed.
 * Hyperparameters are fixed or constrained as described in
   :ref:`mlperf-performance-projections`. Hyperparameter borrowing is not allowed for
   this benchmark.
-* The framework, parallelization strategy, kernels, communication libraries, and numeric
-  formats may be changed, provided the run reaches the quality target and passes the
-  compliance and RCP checks.
+* The framework, parallelization strategy, kernels, and communication libraries may be
+  changed, provided the run reaches the quality target and passes the compliance and
+  RCP checks.
+* Numerical formats may be changed to any of the MLPerf pre-approved formats (including
+  BF16, FP8, MXFP4, and NVFP4) with numerically safe techniques; other formats need
+  approval from the MLPerf Training working group.
 
 An open-division result may be reported in addition to the closed result. See
 :ref:`mlperf-open-division`.
@@ -150,7 +155,10 @@ are recommended:
 * The implementation used for the reference result, in the `Azure submission
   <https://github.com/mlcommons/training_results_v6.0/tree/main/Azure/benchmarks/llama31_405b/implementations/2048xAzure_GB200>`__
   of ``mlcommons/training_results_v6.0``. Its ``README.md`` describes building the
-  container and preparing data; ``README_azure.md`` describes the Azure launcher.
+  container and preparing data. The NVIDIA base configurations are in
+  ``configs/nvidia/``. The Azure configurations in ``configs/azure/`` and the launcher
+  described in ``README_azure.md`` add settings specific to the Azure system (network
+  interfaces, MPI modules, and hard-coded data and container paths).
 
 The reference result used the following software stack:
 
@@ -186,17 +194,21 @@ must reproduce the same data, model, and hyperparameters.
 
 #. Download the NeMo-formatted Llama 3.1 405B checkpoint (more than 1.5 TB).
 
-#. Select a configuration and submit the job. The NVIDIA base flow sources a
-   configuration file and submits ``run.sub`` with Slurm:
+#. Select a configuration and submit the job. The NVIDIA flow sources a configuration
+   file and submits ``run.sub`` with Slurm. This example reproduces the reference
+   result's run configuration by starting from the NVIDIA base configuration it was
+   derived from:
 
    ::
 
+       source configs/nvidia/config_GB200_640x4x24xtp4pp8cp2_cg_fp4.sh
+       export DGXNNODES=2048
+       export MINIBS=8
        export DATADIR=<path/to/dataset>
        export LOAD_CHECKPOINTS_PATH=<path/to/checkpoint>
        export LOAD_CHECKPOINT=/load_checkpoints/405b
        export LOGDIR=<path/to/logs>
        export CONT=<container image>
-       source configs/azure/run_sweep.sh 128 8
        sbatch -N ${DGXNNODES} --time=${WALLTIME} run.sub
 
 .. list-table::
@@ -204,20 +216,26 @@ must reproduce the same data, model, and hyperparameters.
 
     - - Argument
       - Meaning
-    - - ``run_sweep.sh 128 8``
-      - Sources the Azure configuration with 128 data-parallel replicas and a
-        mini-batch of 8 sequences per replica. It sets ``DGXNNODES`` to 128 × 16 =
-        2,048 nodes and gives a global batch size of 1,024.
-    - - ``DGXNNODES``
-      - Number of nodes, set by the configuration.
+    - - ``config_GB200_640x4x24xtp4pp8cp2_cg_fp4.sh``
+      - NVIDIA GB200 configuration: TP = 4, PP = 8, CP = 2, NVFP4, and CUDA graphs.
+        As named, it is for 640 nodes with ``MINIBS`` = 24.
+    - - ``DGXNNODES=2048``, ``MINIBS=8``
+      - Override the node count and mini-batch size. With 64 GPUs per model replica,
+        2,048 nodes give 128 data-parallel replicas and a global batch size of
+        128 × 8 = 1,024. These are the values the Azure ``run_sweep.sh 128 8`` sets.
+    - - ``DATADIR``, ``LOAD_CHECKPOINTS_PATH``, ``LOGDIR``, ``CONT``
+      - Dataset, checkpoint, and log locations and the container image. Set them after
+        sourcing the configuration, because some configurations (including the Azure
+        ones) set their own values.
     - - ``WALLTIME``
       - Job time limit, set by the configuration.
     - - ``run.sub``
       - Slurm batch script that starts the container on every node (Pyxis and Enroot)
         and runs ``run_and_time.sh``.
 
-The Azure launcher ``launch_405b.py --hostfile <hostfile> --minibs 8`` does the same thing.
-It computes the number of data-parallel replicas as the number of hosts divided by 16.
+The reference result itself was launched with the Azure wrapper ``launch_405b.py``, which
+sources ``configs/azure/run_sweep.sh``. That script sources the Azure configuration and
+sets the number of nodes to 16 times the number of data-parallel replicas.
 
 Each job writes MLPerf log lines (prefixed ``:::MLLOG``) to a ``result_*.txt`` file in
 ``LOGDIR``. These logs are the input to the compliance checker (see `Validation`_).
@@ -249,7 +267,10 @@ Data parallelism (DP)
 
 ``INTERLEAVED_PIPELINE``
     Virtual pipeline stages (VP). The GBS should be divisible by DP × VP, and the
-    126 layers should be divisible by PP × VP.
+    pipeline layers should be divisible by PP × VP. The reference result uses PP = 8 and
+    VP = 8 and sets ``ASYM_PP_EMBED`` and ``ASYM_PP_LOSS``, which count the embedding
+    and the loss as pipeline layers. That gives 126 + 2 = 128 layers, which divides
+    evenly into 64 stages.
 
 The GBS determines the learning rate schedule (see :ref:`mlperf-required-parameters`).
 
@@ -272,12 +293,13 @@ A run is valid if:
 The model state is large compared with accelerator memory, so memory capacity sets the
 minimum size of a model replica. At about 16 to 18 bytes per parameter for BF16 weights,
 FP32 gradients, FP32 master weights, and AdamW moments, the weights and optimizer state
-take about 6.5 to 7.3 TB before activations. Activation memory grows with the sequence
-length (8,192) and the micro-batch size, and is reduced by context parallelism and
-activation recomputation.
+take about 6.5 to 7.3 TB before activations. This is an estimate, not a measurement. A
+distributed optimizer can also shard the optimizer state across data-parallel replicas.
+Activation memory grows with the sequence length (8,192) and the micro-batch size, and
+is reduced by context parallelism and activation recomputation.
 
 The reference result has 189,471 MiB of HBM3e per GPU and 1.7 TB of host memory per node.
-Each 64-GPU model replica therefore has about 12 TB of HBM.
+Each 64-GPU model replica therefore has about 12.7 TB (11.6 TiB) of HBM.
 
 .. _mlperf-reference-result:
 
@@ -355,8 +377,8 @@ by Azure. There is no El Capitan baseline for this benchmark.
       -
 
 The score is the median of the three runs. Run times are measured from ``run_start`` to
-``run_stop`` in the published logs. Initialization took about 8.5 minutes per run and is
-not part of the score.
+``run_stop`` in the published logs. Initialization, including loading the starting
+checkpoint, took 8.5 to 8.7 minutes per run and is not part of the score.
 
 .. _mlperf-performance-projections:
 
@@ -446,7 +468,8 @@ For each projection, report:
 * The numeric formats used for weights, activations, gradients, and communication.
 * The hardware, system software, framework, communication library and kernel library
   versions, and build options.
-* Any source code modifications, following :ref:`GlobalRunRules`.
+* Any source code modifications and how they comply with the `MLPerf Training v6.0
+  rules`_.
 
 Identify the measurements used to support each projection and describe the extrapolation
 method and its assumptions. When comparing with the reference result, state how the
@@ -458,12 +481,12 @@ proposed system's configuration differs from it.
  Planned MoE benchmark for acceptance tests
 *******************************************
 
-Acceptance testing will use an MoE pretraining benchmark in addition
-to Llama 3.1 405B, to represent sparse expert models in addition to
-dense transformers. The MoE model will be based on a then-current
-LLNS-designated reasonable state-of-the-art MoE architecture. The
-MLPerf Training v6.1 MoE benchmark does not meet the benchmark
-requirements and will not be used.
+Acceptance testing will add an MoE pretraining benchmark to Llama 3.1
+405B, so that sparse expert models are represented as well as dense
+transformers. The MoE model will be based on a then-current
+LLNS-designated reasonable state-of-the-art MoE architecture. The MoE
+pretraining benchmark in MLPerf Training v6.0 and v6.1 does not meet
+the benchmark requirements and will not be used.
 
 The model, dataset, quality target, and run rules for the MoE benchmark will be provided
 in a later update to this document.
@@ -524,8 +547,8 @@ The clock cannot be paused during a run.
  References
 ************
 
-* `MLPerf Training rules
-  <https://github.com/mlcommons/training_policies/blob/master/training_rules.adoc>`__
+* `MLPerf Training v6.0 rules`_ (``mlcommons/training_policies`` at commit
+  ``ee11d795cc9cc43dc37b083d252516fa279e0821``, the last revision before v6.1 changes)
 * `MLCommons Llama 3.1 405B reference implementation
   <https://github.com/mlcommons/training/tree/master/retired_benchmarks/large_language_model_pretraining/nemo>`__
 * `MLPerf Training v6.0 results <https://results.mlcommons.org/training#view=reports&round=v6.0>`__
@@ -533,3 +556,5 @@ The clock cannot be paused during a run.
 * `MLPerf logging and compliance checker <https://github.com/mlcommons/logging>`__
 * A. Grattafiori et al., "The Llama 3 Herd of Models," 2024,
   `arXiv:2407.21783 <https://arxiv.org/abs/2407.21783>`__
+
+.. _MLPerf Training v6.0 rules: https://github.com/mlcommons/training_policies/blob/ee11d795cc9cc43dc37b083d252516fa279e0821/training_rules.adoc
