@@ -1,2 +1,2 @@
 #!/bin/sh
-git clone --branch 27Aug2026 git@github.com:sparta/sparta.git
+git clone --branch stable_30Sep2026_update1 git@github.com:lammps/lammps.git
