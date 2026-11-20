@@ -10,7 +10,7 @@ dir_root="`git rev-parse --show-toplevel`"
 dir_pwd="` pwd -P `"
 dir_src="${dir_pwd}/kokkos-tools/profiling/space-time-stack"
 dir_build="${dir_pwd}/kokkos-tools/profiling/space-time-stack"
-file_log="${dir_pwd}/kokkos_tools_build.log"
+file_log="${dir_pwd}/kokkos-tools-build.log"
 
 # redirect STDOUT and STDERR through tee
 exec &> >(tee >(ts '[%Y-%m-%d %H:%M:%S]' > "${file_log}"))
@@ -37,7 +37,7 @@ popd
 # list current environment
 module list
 # alter environment
-. lammps_env_elcapitan.sh
+. sparta_env_elcapitan.sh
 # list current environment
 module list
 pushd "${dir_build}"
