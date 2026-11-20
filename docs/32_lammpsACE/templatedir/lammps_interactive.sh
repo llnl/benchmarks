@@ -46,3 +46,5 @@ flux run \
          -in in.pace.fcr \
          -var Lprime ${lammps_lprime} \
          -var nscale ${lammps_nscale}
+
+
