@@ -1,2 +1,4 @@
 lmp
 log.lammps
+kokkos_tools_env_hops.sh
+lammps_env_hops.sh
