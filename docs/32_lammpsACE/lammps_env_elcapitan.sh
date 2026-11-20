@@ -3,7 +3,7 @@
 module load craype-accel-amd-gfx942
 module load PrgEnv-cray
 module load rocm/6.4.3
-module load python
+module load aue/python/3.13.2
 
 export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 

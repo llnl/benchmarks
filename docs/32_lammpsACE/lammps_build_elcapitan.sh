@@ -8,9 +8,9 @@ set -x
 # create vars for common directories and files
 dir_root="`git rev-parse --show-toplevel`"
 dir_pwd="` pwd -P `"
-dir_src="${dir_pwd}/sparta"
-dir_build="${dir_pwd}/sparta/_build"
-file_log="${dir_pwd}/sparta_build.log"
+dir_src="${dir_pwd}/lammps"
+dir_build="${dir_pwd}/lammps/_build"
+file_log="${dir_pwd}/lammps_build.log"
 
 # redirect STDOUT and STDERR through tee
 exec &> >(tee >(ts '[%Y-%m-%d %H:%M:%S]' > "${file_log}"))
@@ -37,14 +37,16 @@ mkdir -p "${dir_build}"
 #   list current environment
 module list
 #   alter environment
-. sparta_env_elcapitan.sh
+echo "Alter environment"
+. lammps_env_elcapitan.sh
 #   list current environment
 module list
 pushd "${dir_build}"
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
-    -D SPARTA_DEFAULT_CXX_COMPILE_FLAGS="-DSPARTA_BIGBIG" \
-    -D BUILD_MPI=on \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D LAMMPS_SIZES=bigbig \
+    -D PKG_ML-PACE=on \
     ../cmake
 /usr/bin/time --verbose -- \
     nice -n 1 \
