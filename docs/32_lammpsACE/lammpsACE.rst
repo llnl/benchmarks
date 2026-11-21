@@ -98,7 +98,7 @@ An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 3,4,11,33,40
+   :emphasize-lines: 3,4,11,13,35,42
 
    # simple test of fcc Cu with ACE product
    <snip>
@@ -109,6 +109,8 @@ provided below.
    region          box block 0 ${L} 0 ${L} 0 ${L}
    create_box      1 box
    create_atoms    1 box
+   <snip>
+   thermo_modify   flush yes
    <snip>
    thermo          100
    <snip>
@@ -153,6 +155,10 @@ These parameters are described below.
    This parameters facilitates weak scaling the problem, i.e., it
    increases the problem size based on the number of nodes. Set it to
    the number of nodes for weak scaling.
+
+``thermo_modify flush yes``
+   This enables the log output to buffer continuously. It does a flush
+   on the buffer.
 
 ``thermo``
    Compute and print thermodynamic info (e.g., temperature, energy,
