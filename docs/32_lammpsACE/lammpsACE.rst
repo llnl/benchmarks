@@ -76,7 +76,7 @@ A template run directory was created to help ease performing a
 simulation; this directory is ``templatedir``. There are some key
 files within it.
 
-``templatedir/in.pace.product``
+``templatedir/in.pace.fcr``
    This is a modified version of the input file with some key
    parameters changed to be more appropriate as a benchmark. It is
    designed to run for approximately 11 minutes in 2 phases of 5.5
@@ -98,54 +98,80 @@ An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 2,7
+   :emphasize-lines: 3,4,11,33,40
 
+   # simple test of fcc Cu with ACE product
    <snip>
-   variable        L index 64.0
+   variable        Lprime index 64.0
+   variable        nscale index 1.0
+   variable        pacechunksize index 32768
+   variable        L equal ${Lprime}*(${nscale})^(1/3)
    region          box block 0 ${L} 0 ${L} 0 ${L}
+   create_box      1 box
+   create_atoms    1 box
    <snip>
-   pair_style      pace product chunksize 49152
-   <snip>
-   thermo          10
-   thermo_style    custom step cpu temp epair etotal press v_delenergy v_delpress
+   thermo          100
    <snip>
    ##################################
    ### Benchmarking modifications ###
    ##################################
-   
+
    # Add a thermostat to keep temperature from falling
-   variable        tdamp equal $(dt)
-   fix             mynvt all nvt temp 300.0 300.0 ${tdamp}
-   
-   # Some systems buffer extensively
-   thermo_modify   flush yes
-   
+
+   velocity        all create 300 8728 loop geom
+   fix             thermostat all temp/rescale 10 300.0 300.0 0.1 1.0
+   fix             integrate all nve
+
    # Print out the value of L for parsing ease
-   print "The value of L is $L" 
-   
+   print           "The value of L is $L" 
+   print           " Weak scaling factor (nscale) = ${nscale}"
+   print           " Baseline L (Lprime) = ${Lprime}"
+   print           " Simulation cell length (L) = ${L}"
+   print           " PACE Chunk Size (pacechunksize) = ${pacechunksize}"
+
    ### Throw out first 5 minutes for hardware equilibrium
-   
+
    # Stop after 5.5 minutes
    fix             2 all halt 10 tlimit > 330.0 message no error continue
    run             10000000
-   
+
    ### Run another 5 minutes for final FOM
    unfix           2
-   
+
    # Stop after 5.5 minutes
    fix             3 all halt 10 tlimit > 330.0 message no
    run             10000000
 
 These parameters are described below.
 
-``L``
+``Lprime``
    This corresponds to the **l**\ ength scale factor. This will scale
-   the dimensions of the problem.
+   the dimensions of the problem, i.e., increase the memory needed for
+   the problem.
+
+``nscale``
+   This parameters facilitates weak scaling the problem, i.e., it
+   increases the problem size based on the number of nodes. Set it to
+   the number of nodes for weak scaling.
 
 ``thermo``
    Compute and print thermodynamic info (e.g., temperature, energy,
    pressure) on timesteps that are a multiple of this parameter and at
-   the beginning and end of a simulation.
+   the beginning and end of a simulation. In general, this produces
+   file I/O that is useful for debugging. It also causes
+   introspection. Ergo, this overhead can slow down the
+   simulation. This value must be greater than zero and less than or
+   equal to the default setting.
+
+``fix 2 all halt 10 tlimit > 330.0 message no error continue``
+   Run for 330 seconds (5.5 minutes), save state, and stop the
+   simulation. This first period is meant to be discarded from a
+   performance perspective.
+
+``fix 3 all halt 10 tlimit > 330.0 message no``
+   Restart and run for 330 seconds (5.5 minutes), save state, and stop
+   the simulation. This is the period that is assessed from a
+   performance perspective (from which the FOM is calculated).
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -162,23 +188,21 @@ end of this simulation is a block that resembles the following
 example.
 
 .. code-block::
-   :emphasize-lines: 11
+   :emphasize-lines: 8
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress
-    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
-    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11
-   <snip>
-   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
-   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
-   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
-   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+   Per MPI rank memory allocation (min/avg/max) = 8304 | 8305 | 8305 Mbytes
+   Step          CPU           S/CPU           Temp          E_pair         TotEng         Press       v_delenergy     v_delpress
+   200           0             0               300           -3804588.4     -3763926.7     73487.854   1.44355e-08     4.6566129e-10
+   300           27.847235     3.5910204       300           -3834711.6     -3794049.9     61360.94    -4.1909516e-09  -2.4738256e-10
+   400           55.516002     3.6141835       300           -3840621.4     -3799959.7     59468.504   -8.8475645e-09  -2.1827873e-10
+   Loop time of 55.5257 on 4 procs for 200 steps with 1048576 atoms
 
-   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
-   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+   Performance: 0.156 ns/day, 154.238 hours/ns, 3.602 timesteps/s, 3.777 Matom-step/s
 
-The quantity of interest (QOI) is "Mega atom steps per second," which
-is directly computed as ``Matom-step/s`` in the example above.
+The **F**\ igure **O**\ f **M**\ erit is "Mega atom steps per second,"
+which is directly computed as ``Matom-step/s`` in the example
+above. This output is scaled with other prefixes (e.g., Giga) as scale
+increases.
 
 It is desired to capture the FOM for varying problem sizes that
 encompass utilizing 50% to 80% of available memory (when all PEs are
@@ -190,7 +214,9 @@ Source code modifications
 ==========================
 
 Please see :ref:`GlobalRunRules` for general guidance on allowed
-modifications.
+modifications. For LAMMPS ACE, source code modifications should
+satisfy the correctness criteria in :ref:`LAMMPSCorrectness` when
+changes are made to LAMMPS.
 
 
 System Information
@@ -216,9 +242,6 @@ The command to clone is provided below.
 .. literalinclude:: lammps_clone.sh
    :language: sh
    :lines: 2-
-
-.. note::
-   The Git SHA will be updated with a tag soon.
 
 The script to clone can be downloaded from :download:`lammps_clone.sh
 <lammps_clone.sh>`. It can also be executed in place to clone into
@@ -348,20 +371,16 @@ The aforementioned relevant block of output within "log.lammps" is
 replicated below.
 
 .. code-block::
-   :emphasize-lines: 2,3,4,6,7,8
+   :emphasize-lines: 3,4,5
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress
-    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
-    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11
-   <snip>
-   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
-   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
-   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
-   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+   Per MPI rank memory allocation (min/avg/max) = 8304 | 8305 | 8305 Mbytes
+   Step          CPU           S/CPU           Temp          E_pair         TotEng         Press       v_delenergy     v_delpress
+   200           0             0               300           -3804588.4     -3763926.7     73487.854   1.44355e-08     4.6566129e-10
+   300           27.847235     3.5910204       300           -3834711.6     -3794049.9     61360.94    -4.1909516e-09  -2.4738256e-10
+   400           55.516002     3.6141835       300           -3840621.4     -3799959.7     59468.504   -8.8475645e-09  -2.1827873e-10
+   Loop time of 55.5257 on 4 procs for 200 steps with 1048576 atoms
 
-   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
-   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+   Performance: 0.156 ns/day, 154.238 hours/ns, 3.602 timesteps/s, 3.777 Matom-step/s
 
 There are several columns of interest regarding correctness; these are
 listed below.
