@@ -179,6 +179,14 @@ These parameters are described below.
    the simulation. This is the period that is assessed from a
    performance perspective (from which the FOM is calculated).
 
+.. note::
+
+   First, one scales the problem size on a single node to match the
+   needed memory characteristics via ``Lprime``. Then, one weak scales
+   from a single node to an arbitrary number by changing
+   ``nscale``. Both of these parameters are defined via ``index``, so
+   they can be altered on the command line invocation of LAMMPS.
+
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
 within Kokkos that helps to keep this problem as well behaved from a
