@@ -9,6 +9,7 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
+.. note:: For any questions about ATS-6 SI4Sim benchmarks, please contact ATS6-SI-Benchmarks <ats6-si-benchmarks@llnl.gov>.
 
 ******************
 Benchmark Overview
@@ -30,10 +31,14 @@ Benchmark Overview
      | CUDA/HIP
    - PyTorch
  * - MLPerf
-   - Llama 3.1 405B training
+   - | MLPerf Training v6.0 Llama 3.1 405B,
+     | Proxy for large transformer and
+     | MoE model training
    - Python
-   - NCCL+CUDA
-   - NVIDIA NeMo
+   - | NCCL+CUDA
+     | (or equivalent)
+   - | NVIDIA NeMo,
+     | Megatron-Core
 
 .. _AI4SIMRunRules:
 .. _SI4SIMRunRules:

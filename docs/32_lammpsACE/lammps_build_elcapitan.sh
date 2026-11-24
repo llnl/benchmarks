@@ -37,15 +37,16 @@ mkdir -p "${dir_build}"
 #   list current environment
 module list
 #   alter environment
+echo "Alter environment"
 . lammps_env_elcapitan.sh
 #   list current environment
 module list
 pushd "${dir_build}"
 cmake \
     -C ../cmake/presets/elcapitan_kokkos.cmake \
-    -DPKG_ML-PACE=on \
-    -DBUILD_MPI=on \
     -D CMAKE_BUILD_TYPE=Release \
+    -D LAMMPS_SIZES=bigbig \
+    -D PKG_ML-PACE=on \
     ../cmake
 /usr/bin/time --verbose -- \
     nice -n 1 \

@@ -12,4 +12,3 @@ Tier 1
    ../31_sparta/sparta
    ../70_phloem/phloem
    ../71_omb/omb
-   ../72_smb/smb

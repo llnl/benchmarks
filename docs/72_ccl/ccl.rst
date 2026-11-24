@@ -2,6 +2,8 @@
 CCL Tests
 *********
 
+.. note:: For any questions about ATS-6 SI4Sim benchmarks, please contact ATS6-SI-Benchmarks <ats6-si-benchmarks@llnl.gov>.
+
 .. note::
 
    Build instructions and execution commands are under development.
@@ -45,21 +47,17 @@ size:
      - 4 KiB, 32 MiB, 1 GiB, Optimal
    * - ``alltoall``
      - ``half``, ``float``
-     - 32 MiB, 1 GiB, 32 GiB, Optimal
+     - 32 MiB, 256 MiB, 1 GiB, Optimal
    * - ``reduce_scatter``
      - ``half``, ``bfloat16``, ``float``
-     - 32 MiB, 1 GiB, 32 GiB, Optimal
+     - 32 MiB, 256 MiB, 1 GiB, Optimal
 
 Use 4 KiB only for all-reduce; omit it for all-gather, all-to-all, and
 reduce-scatter because of the number of ranks at the tested scale.
 
-The 32 GiB (``32G``) cases provide additional large-message coverage for
-all-gather, all-to-all, and reduce-scatter. The supplied all-reduce results
-cover 4 KiB, 32 MiB, and 1 GiB.
-
 For the ``Optimal`` case, you may use the minimum message size that achieves
 optimal bandwidth or protocol efficiency. Report the selected size. The
-supplied 32 GiB results do not establish that size as optimal.
+supplied results do not identify an optimal size.
 
 Source code modifications
 =========================
@@ -68,6 +66,27 @@ Please see :ref:`GlobalRunRules` for general guidance on allowed modifications.
 
 Building
 ========
+
+The baseline results used `RCCL Tests
+<https://github.com/ROCm/rocm-systems/tree/develop/projects/rccl-tests>`_
+at commit ``60804faca583a141a94bc10d464cc3f3b6c71728`` of the ``rocm-systems`` repository.
+The baseline results used ``cce/21.0.2``, ``cray-mpich/9.1.0``, and ``rocm/7.2.1``.
+The NCCL_NET_PLUGIN environment variable was set to a system installation of the AWS OFI libfabric plugin (aws-ofi-rccl), to avoid using sockets.
+
+The following environment variables were also set for the baseline results:
+
+.. code-block:: sh
+
+   export FI_MR_CACHE_MONITOR=userfaultfd
+   export NCCL_SOCKET_IFNAME=hsi
+   export FI_CXI_RDZV_PROTO=alt_read
+   export FI_CXI_RDZV_THRESHOLD=0
+   export FI_CXI_RDZV_GET_MIN=0
+   export FI_CXI_RDZV_EAGER_SIZE=0
+   export FI_CXI_DEFAULT_TX_SIZE=1024
+   export FI_CXI_DISABLE_HOST_REGISTER=1
+   export FI_CXI_DEFAULT_CQ_SIZE=131072
+   export FI_CXI_RX_MATCH_MODE=hybrid
 
 Running
 =======
@@ -85,8 +104,8 @@ Scaling on El Capitan
 =====================
 
 The following tables and charts show results for one SU (384 nodes) on
-El Capitan. They compare in-place runtimes for masks ``0x0`` and ``0x1``
-across message sizes and data types.
+El Capitan. They compare in-place runtimes for the single group (``0x0``)
+and even-odd split (``0x1``) configurations across message sizes and data types.
 
 Measurement configuration
 -------------------------
@@ -121,6 +140,8 @@ Warmup iterations depend on message size:
      - 100
    * - 32 MiB (``32M``)
      - 50
+   * - 256 MiB (``256M``)
+     - 10
    * - At least 1 GiB (``>=1G``, including ``32G``)
      - 3
 
@@ -142,80 +163,84 @@ Communicator masks
 
 The mask is the value of ``NCCL_TESTS_SPLIT_MASK``:
 
-* ``0x0`` puts all MPI ranks in one group.
-* ``0x1`` splits even and odd MPI ranks into two groups that execute
+* Single group (``0x0``): all CCL ranks belong to one group.
+* Even-odd split (``0x1``): even and odd CCL ranks form two groups that execute
   concurrently.
 
-GPU membership depends on the MPI-rank-to-GPU mapping. These masks represent
+GPU membership depends on the CCL-rank-to-GPU mapping. These masks represent
 different communicator configurations.
 
 All-reduce
 ----------
 
 .. figure:: figures/all-reduce_table.png
-   :alt: All-reduce runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-reduce runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-reduce runtime comparison by message size and data type.
+   All-reduce runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-reduce_charts.png
    :alt: All-reduce runtime and speedup versus message size for bfloat16, float, and half.
    :align: center
    :width: 100%
 
-   All-reduce runtime and speedup relative to mask ``0x0``.
+   All-reduce runtime and speedup relative to single group (``0x0``).
 
 All-gather
 ----------
 
 .. figure:: figures/all-gather_table.png
-   :alt: All-gather runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-gather runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-gather runtime comparison by message size and data type.
+   All-gather runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-gather_charts.png
    :alt: All-gather runtime and speedup versus message size for float and half.
    :align: center
    :width: 100%
 
-   All-gather runtime and speedup relative to mask ``0x0``.
+   All-gather runtime and speedup relative to single group (``0x0``).
 
 Reduce-scatter
 --------------
 
 .. figure:: figures/reduce-scatter_table.png
-   :alt: Reduce-scatter runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: Reduce-scatter runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   Reduce-scatter runtime comparison by message size and data type.
+   Reduce-scatter runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/reduce-scatter_charts.png
    :alt: Reduce-scatter runtime and speedup versus message size for bfloat16, float, and half.
    :align: center
    :width: 100%
 
-   Reduce-scatter runtime and speedup relative to mask ``0x0``.
+   Reduce-scatter runtime and speedup relative to single group (``0x0``).
 
 All-to-all
 ----------
 
 .. figure:: figures/all-to-all_table.png
-   :alt: All-to-all runtimes, percentage changes, and speedups for masks 0x0 and 0x1.
+   :alt: All-to-all runtimes, percentage changes, and speedups for single group (0x0) and even-odd split (0x1).
    :align: center
    :width: 100%
 
-   All-to-all runtime comparison by message size and data type.
+   All-to-all runtime comparison by message size and data type for single
+   group (``0x0``) and even-odd split (``0x1``).
 
 .. figure:: figures/all-to-all_charts.png
    :alt: All-to-all runtime and speedup versus message size for float and half.
    :align: center
    :width: 100%
 
-   All-to-all runtime and speedup relative to mask ``0x0``.
+   All-to-all runtime and speedup relative to single group (``0x0``).
 
 .. _ccl-performance-projections:
 
@@ -242,8 +267,7 @@ Required parameters
      - Every combination in :ref:`ccl-problem`.
    * - Message sizes
      - The sizes listed for each operation in :ref:`ccl-problem`, including
-       the selected ``Optimal`` size. Use 4 KiB only for all-reduce and
-       include 32 GiB for all-gather, all-to-all, and reduce-scatter.
+       the selected ``Optimal`` size.
    * - Communicators
      - Both unpartitioned and partitioned communicators. The El Capitan
        results use the configurations in :ref:`ccl-communicator-masks`.

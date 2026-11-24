@@ -9,13 +9,14 @@
    70-89 :: Microbenchmarks
    90-99 :: Appendices
 
-
 ******************
 Benchmark Overview
 ******************
 
 ModSim benchmarks are features, components, performance characteristics,
 or other properties that are important to the Laboratories.
+
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 **ModSim Tier 1**
 

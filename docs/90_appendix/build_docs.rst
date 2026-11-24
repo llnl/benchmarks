@@ -133,10 +133,12 @@ Building
 
 Building the documentation is mostly managed through the
 ``build_doc.py`` Python script. Its help page can be viewed with the
-command ``build_doc.py -h``.  Running the command sans command line
-parameters will generate the HTML and PDF builds of the
-documentation. This script puts the build files and final outputs
-within the ``_build`` directory.
+command ``./build_doc.py -h``. Run the script from the ``docs``
+directory and select the desired output target with ``--html``,
+``--pdf``, or ``--all``. This script first runs the worker scripts in
+``wrk/`` to regenerate figures from checked-in Gnuplot and Matplotlib
+sources, then puts the build files and final outputs within the
+``_build`` directory.
 
 .. note::
 

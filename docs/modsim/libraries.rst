@@ -142,6 +142,7 @@ Umpire
         -DCMAKE_INSTALL_PREFIX="${UMPIRE_DIR}" \
         -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" \
         -DCMAKE_HIP_COMPILER="${ROCM_PATH}/llvm/bin/amdclang++" \
+        -DUMPIRE_ENABLE_C=ON \ # when building for Hypre
         -Dcamp_DIR="${CAMP_DIR}" \
         -Dfmt_DIR="${FMT_DIR}" \
         -DENABLE_MPI=ON \
@@ -162,6 +163,7 @@ or
         -DCMAKE_INSTALL_PREFIX="${UMPIRE_DIR}" \
         -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" \
         -DCMAKE_CUDA_COMPILER="${NVCC}" \
+        -DUMPIRE_ENABLE_C=ON \ # when building for Hypre
         -Dcamp_DIR="${CAMP_DIR}" \
         -Dfmt_DIR="${FMT_DIR}" \
         -DENABLE_MPI=ON \
@@ -244,3 +246,114 @@ or
         -DBUILD_SHARED_LIBS=ON
     make -C build -j
     make -C build install
+
+.. _library-hypre:
+
+Hypre
+^^^^^
+
+.. code-block:: bash
+
+    git clone --branch v3.2.0 --recurse-submodules https://github.com/hypre-space/hypre.git
+    cd hypre
+    cmake -S ./src -B build \
+        -DCMAKE_INSTALL_PREFIX="${HYPRE_DIR}" \
+        -DCMAKE_C_COMPILER="${CC}" \
+        -DCMAKE_CXX_COMPILER="${CXX}" \
+        -DHYPRE_ENABLE_HIP=ON \
+        -DCMAKE_HIP_COMPILER="${ROCM_PATH}/llvm/bin/clang++" \
+        -DCMAKE_HIP_ARCHITECTURES="${ROCM_ARCH}" \
+        -DBUILD_SHARED_LIBS=ON \
+        -DHYPRE_ENABLE_MPI=ON \
+        -DHYPRE_ENABLE_GPU_AWARE_MPI=ON \ # GPU-aware MPI
+        -DHYPRE_ENABLE_MIXEDINT=ON \
+        -DHYPRE_ENABLE_HYPRE_BLAS=ON \
+        -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
+        -DHYPRE_ENABLE_UMPIRE=ON \
+        -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
+        -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
+        -DHYPRE_ENABLE_CALIPER=ON \
+        -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
+    make -C build -j
+    make -C build install
+
+or
+
+.. code-block:: bash
+
+    git clone --branch v3.2.0 --recurse-submodules https://github.com/hypre-space/hypre.git
+    cd hypre
+    cmake -S ./src -B build \
+        -DCMAKE_INSTALL_PREFIX="${HYPRE_DIR}" \
+        -DCMAKE_C_COMPILER="${CC}" \
+        -DCMAKE_CXX_COMPILER="${CXX}" \
+        -DHYPRE_ENABLE_CUDA=ON \
+        -DCMAKE_CUDA_COMPILER="${NVCC}" -DCMAKE_CUDA_HOST_COMPILER="${CXX}" \
+        -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCH}" \
+        -DCUDAToolkit_ROOT="${CUDA_ROOT}" \
+        -DBUILD_SHARED_LIBS=ON \
+        -DHYPRE_ENABLE_MPI=ON \
+        -DHYPRE_ENABLE_GPU_AWARE_MPI=OFF \ # GPU-aware MPI
+        -DHYPRE_ENABLE_MIXEDINT=ON \
+        -DHYPRE_ENABLE_HYPRE_BLAS=ON \
+        -DHYPRE_ENABLE_HYPRE_LAPACK=ON \
+        -DHYPRE_ENABLE_UMPIRE=ON \
+        -DTPL_UMPIRE_INCLUDE_DIRS="${UMPIRE_DIR}/include" \
+        -DTPL_UMPIRE_LIBRARIES="${UMPIRE_DIR}/lib64/libumpire.so" \
+        -DHYPRE_ENABLE_CALIPER=ON \
+        -Dcaliper_DIR="${CALIPER_DIR}/share/cmake/caliper"
+    make -C build -j
+    make -C build install
+
+.. _library-mfem:
+
+MFEM
+^^^^
+
+.. code-block:: bash
+
+    git clone --branch v4.10 --recurse-submodules https://github.com/mfem/mfem.git
+    cd mfem
+    make -j1 config \
+      PREFIX="${MFEM_DIR}" \
+      CXX="${CXX}" MPICXX="${MPICXX}" \
+      MFEM_DEBUG=NO MFEM_USE_MPI=YES MFEM_USE_HIP=YES \
+      HIP_CXX="${HIPCC}" HIP_ARCH="${ROCM_ARCH}" HIP_DIR="${ROCM_PATH}" \
+      MFEM_USE_METIS=NO MFEM_USE_METIS_5=NO \
+      HYPRE_OPT="-I${HYPRE_DIR}/include -I${UMPIRE_DIR}/include" \
+      HYPRE_LIB="-L${HYPRE_DIR}/lib64 -lHYPRE" \
+      MFEM_USE_RAJA=YES \
+      RAJA_OPT="-I${RAJA_DIR}/include -I${CAMP_DIR}/include" \
+      RAJA_LIB="-L${RAJA_DIR}/lib -lRAJA" \
+      MFEM_USE_UMPIRE=YES \
+      UMPIRE_OPT="-I${UMPIRE_DIR}/include -I${CAMP_DIR}/include -I${FMT_DIR}/include" \
+      UMPIRE_LIB="-L${UMPIRE_DIR}/lib64 -lumpire" \
+      MFEM_USE_CALIPER=YES \
+      CALIPER_DIR="${CALIPER_DIR}" ADIAK_DIR="${ADIAK_DIR}"
+    make -j
+    make install
+
+or
+
+.. code-block:: bash
+
+    git clone --branch v4.10 --recurse-submodules https://github.com/mfem/mfem.git
+    cd mfem
+    make -j1 config \
+      PREFIX="${MFEM_DIR}" \
+      CXX="${CXX}" MPICXX="${MPICXX}" \
+      MFEM_DEBUG=NO MFEM_USE_MPI=YES MFEM_USE_CUDA=YES \
+      CUDA_CXX="${NVCC}" CUDA_ARCH="sm_${CUDA_ARCH}" \
+      MFEM_USE_METIS=NO MFEM_USE_METIS_5=NO \
+      HYPRE_OPT="-I${HYPRE_DIR}/include -I${UMPIRE_DIR}/include" \
+      HYPRE_LIB="-L${HYPRE_DIR}/lib64 -Xlinker=-rpath,${HYPRE_DIR}/lib64 -lHYPRE -L${CUDA_ROOT}/lib64 -Xlinker=-rpath,${CUDA_ROOT}/lib64 -lcusolver -lcusparse -lcurand -lcublas" \
+      MFEM_USE_RAJA=YES \
+      RAJA_OPT="-I${RAJA_DIR}/include -I${CAMP_DIR}/include" \
+      RAJA_LIB="-L${RAJA_DIR}/lib -lRAJA" \
+      MFEM_USE_UMPIRE=YES \
+      UMPIRE_OPT="-I${UMPIRE_DIR}/include -I${CAMP_DIR}/include -I${FMT_DIR}/include" \
+      UMPIRE_LIB="-L${UMPIRE_DIR}/lib64 -Xlinker=-rpath,${UMPIRE_DIR}/lib64 -lumpire" \
+      MFEM_USE_CALIPER=YES \
+      CALIPER_DIR="${CALIPER_DIR}" ADIAK_DIR="${ADIAK_DIR}"
+    make -j
+    make install

@@ -11,3 +11,4 @@ Tier 2
    branson_priority2
    ../40_remhos/remhos
    ../50_miniem/miniem
+   ../72_smb/smb
