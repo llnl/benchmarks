@@ -477,6 +477,27 @@ backend used for a given system. Memory-usage guidance is currently captured
 through the Kokkos Tools profiling instructions for El Capitan in
 :ref:`LAMMPSProfileKokkosTools`.
 
+.. _LAMMPSMemoryUsageElCapitan:
+
+El Capitan - Single Node Memory and Problem Size
+------------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node El Capitan data showing how
+   LAMMPS ACE memory usage and performance vary with problem size.
+
+
+.. _LAMMPSMemoryUsageHops:
+
+Hops - Single Node Memory and Problem Size
+------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node Hops data showing how LAMMPS
+   ACE memory usage and performance vary with problem size.
+
 
 .. _LAMMPSResults:
 
@@ -492,11 +513,15 @@ Single-node results from LAMMPS are provided on the following systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsATS4`)
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`ResultsLammpsHops`)
 
 Multi-node results for LAMMPS are provided on the following system(s):
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsScaleATS4`)
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`ResultsLammpsScaleHops`)
 
 
 .. _LAMMPSComputeFOM:
@@ -534,7 +559,8 @@ El Capitan - Single Node
 
 .. note::
 
-   This section will be updated with some more content soon.
+   Single-node El Capitan results showing memory and problem-size variations are
+   forthcoming. See :ref:`LAMMPSMemoryUsageElCapitan`.
 
 A single-node example is below that showcases 2.010 Mega atom
 steps per second per node. The other relevant parameters are displayed
@@ -577,6 +603,33 @@ The weak-scaling data are provided in
 
    LAMMPS ACE weak-scaling Figure of Merit on El Capitan. Point annotations show
    the corresponding parallel efficiency at each node count.
+
+
+Supplemental Results on Hops
+============================
+
+LAMMPS ACE performance data on Hops (CTS-2 with NVIDIA H100 GPUs) is provided as
+follows.
+
+.. _ResultsLammpsHops:
+
+Hops - Single Node
+------------------
+
+.. note::
+
+   Single-node Hops results showing memory and problem-size variations are
+   forthcoming. See :ref:`LAMMPSMemoryUsageHops`.
+
+
+.. _ResultsLammpsScaleHops:
+
+Hops - Many Nodes
+-----------------
+
+.. note::
+
+   Hops weak-scaling trend data are forthcoming.
 
 
 Performance Projection

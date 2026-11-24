@@ -602,6 +602,27 @@ backend used for a given system. Memory-usage guidance is currently captured
 through the Kokkos Tools profiling instructions for El Capitan and Hops in
 :ref:`SPARTAProfileKokkosToolsElCapitan` and :ref:`SPARTAProfileKokkosToolsHops`.
 
+.. _SPARTAMemoryUsageElCapitan:
+
+El Capitan - Single Node Memory and Problem Size
+------------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node El Capitan data showing how
+   SPARTA memory usage and performance vary with problem size.
+
+
+.. _SPARTAMemoryUsageHops:
+
+Hops - Single Node Memory and Problem Size
+------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node Hops data showing how SPARTA
+   memory usage and performance vary with problem size.
+
 
 .. _SPARTAResults:
 
@@ -627,7 +648,9 @@ El Capitan - Single Node
 ------------------------
 
 .. note::
-   This data is forthcoming.
+
+   Single-node El Capitan results showing memory and problem-size variations are
+   forthcoming. See :ref:`SPARTAMemoryUsageElCapitan`.
 
 
 .. _ResultsSpartaScaleATS4:
@@ -652,8 +675,8 @@ The weak-scaling data are provided in
    the corresponding parallel efficiency at each node count.
 
 
-Results on Hops
----------------
+Supplemental Results on Hops
+============================
 
 SPARTA performance data on Hops (CTS-2 with Nvidia H100 GPUs) is provided as
 follows.
@@ -664,7 +687,9 @@ Hops - Single Node
 ------------------
 
 .. note::
-   This data is forthcoming.
+
+   Single-node Hops results showing memory and problem-size variations are
+   forthcoming. See :ref:`SPARTAMemoryUsageHops`.
 
 
 .. _ResultsSpartaScaleCTS2GPU:
@@ -673,7 +698,8 @@ Hops - Many Nodes
 -----------------
 
 .. note::
-   This data is forthcoming.
+
+   Hops weak-scaling trend data are forthcoming.
 
 
 
