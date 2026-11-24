@@ -3,7 +3,11 @@
 This folder contains a skeleton that can be used to create Sphinx
 documentation. Some relevant links are provided below.
 
-- [How to build documentation](9_appendix/build_docs.rst)
+- [How to build documentation](90_appendix/build_docs.rst)
+
+Use `build_doc.py` rather than invoking `make html` directly from a clean
+checkout. The build driver first runs the worker scripts in `wrk/` to regenerate
+figures from checked-in Gnuplot and Matplotlib sources, then invokes Sphinx.
 
 ## CI/CD
 
@@ -21,10 +25,10 @@ pages:
   script:
     - module load anaconda3/2021.05
     - export PATH="/path/to/texlive:${PATH}"
-    - pushd doc/sphinx
+    - pushd docs
     - ./build_doc.py --all
     - popd
-    - cp -a doc/sphinx/_build/html public
+    - cp -a docs/_build/html public
     - touch .nojekyll
     - touch public/.nojekyll
   artifacts:
