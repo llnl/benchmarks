@@ -28,7 +28,7 @@ set mxtics 1
 set format x '%g'
 
 set format y '%.2f'
-set yrange [7.6:9.3]
+set yrange [2.55:3.15]
 
 set lmargin 12
 set rmargin 9
@@ -40,8 +40,8 @@ set arrow 1 from graph 0, first baseline_fom to graph 1, first baseline_fom nohe
 set style textbox opaque fc rgb '#ffffff' noborder margins 0.6,0.25
 set label 3 sprintf('Node 1 FOM = %.2f', baseline_fom) at graph 0.58, first baseline_fom center front boxed tc rgb '#374151'
 
-set label 1 '100.0%' at graph 0, first 8.95167051 left offset char 0.3,1.1 tc rgb '#374151'
-set label 2 '88.6%' at graph 1, first 7.93476074 right offset char -0.3,-1.4 tc rgb '#374151'
+set label 1 '100.0%' at graph 0, first 3.055 left offset char 0.3,1.1 tc rgb '#374151'
+set label 2 '87.6%' at graph 1, first 2.676 right offset char -0.3,-1.4 tc rgb '#374151'
 
 plot 'elcapitan-weakscaling.csv' every ::1 using 1:3 with linespoints ls 1 title 'FOM per node', \
      '' every ::1 using (($1 != 1 && $1 != 4096 && int($0) % 2 == 0) ? $1 : 1/0):3:(sprintf('%.1f%%', $4 * 100.0)) with labels center offset char 0,1.1 tc rgb '#374151' notitle, \
