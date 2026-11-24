@@ -2,6 +2,8 @@
 SPARTA
 ******
 
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
+
 This is the documentation for the benchmark [SPARTA]_. The content
 herein was created by the following authors (in alphabetical order).
 
@@ -161,28 +163,28 @@ provided below.
    These parameters are described below.
 
 ``nloc``
-   This corresponds to the **l**\ ength scale factor. This will scale
-   the x and y dimensions of the problem, e.g., a doubling of this
-   parameter will result in a domain that is 4x larger. This is used
-   to weak scale a problem, e.g., setting this to 32 would be
-   sufficient to weak scale a single-node problem onto 1,024 nodes.
+   This corresponds to the number of cells in a single dimension,
+   e.g., if you double ``nloc``, you will have increased the problem
+   size by a factor of 8. This is the parameter that is used to size
+   the problem on a single node.
 
 ``nscale``
-   This sets the **p**\ articles **p**\ er **c**\ ell variable. This
-   variable controls the size of the problem and, accordingly, the
-   amount of memory it uses. Adjust this if the initial memory size is
-   too high and a value of ``L`` would need to be less than 1.0.
+   This parameters facilitates weak scaling the problem, i.e., it
+   increases the problem size based on the number of nodes. Set it to
+   the number of nodes for weak scaling.
 
 ``stats``
-   This sets the interval at which the output required to compute the
-   :ref:`SPARTAFigureOfMerit` is generated. In general, it is good to
-   select a value that will produce approx. 20 entries between the
-   time range of interest. If it produces too much data, then it may
-   slow down the simulaton.  If it produces too little, then it may
-   adversely impact the FOM calculations.
+   Compute and print statistical info (e.g., temperature, number of
+   collisions) on timesteps that are a multiple of this parameter and
+   at the beginning and end of a simulation. In general, this produces
+   file I/O that is useful for debugging. It also causes
+   introspection. Ergo, this overhead can slow down the
+   simulation. This value must be greater than zero and less than or
+   equal to the default setting.
 
 ``stats_modify flush yes``
-   This enables the log output to buffer continuously on El Capitan.
+   This enables the log output to buffer continuously. It does a flush
+   on the buffer.
 
 ``run 30``
    This sets the first sub-job to run for 30 steps at a large timestep
@@ -263,8 +265,8 @@ described below.
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ElCapitanSystemDescription`)
-* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
-  known as Hops.
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`HopsSystemDescription`)
 
 
 Building
@@ -600,6 +602,27 @@ backend used for a given system. Memory-usage guidance is currently captured
 through the Kokkos Tools profiling instructions for El Capitan and Hops in
 :ref:`SPARTAProfileKokkosToolsElCapitan` and :ref:`SPARTAProfileKokkosToolsHops`.
 
+.. _SPARTAMemoryUsageElCapitan:
+
+El Capitan - Single Node Memory and Problem Size
+------------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node El Capitan data showing how
+   SPARTA memory usage and performance vary with problem size.
+
+
+.. _SPARTAMemoryUsageHops:
+
+Hops - Single Node Memory and Problem Size
+------------------------------------------
+
+.. note::
+
+   This section will be updated with single-node Hops data showing how SPARTA
+   memory usage and performance vary with problem size.
+
 
 .. _SPARTAResults:
 
@@ -625,7 +648,9 @@ El Capitan - Single Node
 ------------------------
 
 .. note::
-   This data is forthcoming.
+
+   Single-node El Capitan results showing memory and problem-size variations are
+   forthcoming. See :ref:`SPARTAMemoryUsageElCapitan`.
 
 
 .. _ResultsSpartaScaleATS4:
@@ -650,8 +675,8 @@ The weak-scaling data are provided in
    the corresponding parallel efficiency at each node count.
 
 
-Results on Hops
----------------
+Supplemental Results on Hops
+============================
 
 SPARTA performance data on Hops (CTS-2 with Nvidia H100 GPUs) is provided as
 follows.
@@ -662,7 +687,9 @@ Hops - Single Node
 ------------------
 
 .. note::
-   This data is forthcoming.
+
+   Single-node Hops results showing memory and problem-size variations are
+   forthcoming. See :ref:`SPARTAMemoryUsageHops`.
 
 
 .. _ResultsSpartaScaleCTS2GPU:
@@ -671,7 +698,8 @@ Hops - Many Nodes
 -----------------
 
 .. note::
-   This data is forthcoming.
+
+   Hops weak-scaling trend data are forthcoming.
 
 
 

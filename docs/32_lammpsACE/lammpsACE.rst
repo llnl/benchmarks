@@ -2,9 +2,7 @@
 LAMMPS ACE
 **********
 
-.. note::
-   The documentation herein needs to be updated for current
-   performance.
+.. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
 This is the documentation for the benchmark [LAMMPS]_, specifically
 KOKKOS-LAMMPS (see [KOKKOS-LAMMPS]_). The content herein was created
@@ -41,43 +39,16 @@ Heavily pulled from their [lammps-site]_:
    functionality.
 
 
-Characteristics
-===============
+.. _LAMMPSProblem:
+
+Problems
+========
 
 The goal is to utilize the specified version of LAMMPS (see
 :ref:`LAMMPSApplicationVersion`) that runs the benchmark problem (see
 :ref:`LAMMPSProblem`) correctly (see :ref:`LAMMPSCorrectness` if
 changes are made to LAMMPS).
 
-
-.. _LAMMPSApplicationVersion:
-
-Application Version
--------------------
-
-The command to clone is provided below.
-
-.. literalinclude:: lammps_clone.sh
-   :language: sh
-   :lines: 2-
-
-.. note::
-   The Git SHA will be updated with a tag soon.
-
-The script to clone can be downloaded from :download:`lammps_clone.sh
-<lammps_clone.sh>`. It can also be executed in place to clone into
-``docs/32_lammpsACE/lammps``.
- 
-.. code-block:: bash
-
-   cd docs/32_lammpsACE
-   ./lammps_clone.sh
-
-
-.. _LAMMPSProblem:
-
-Problem
--------
 
 This problem runs an ACE (atomic cluster expansion) machine-learned
 potential for a copper crystal using a face-entered cubic (fcc)
@@ -103,7 +74,7 @@ A template run directory was created to help ease performing a
 simulation; this directory is ``templatedir``. There are some key
 files within it.
 
-``templatedir/in.pace.product``
+``templatedir/in.pace.fcr``
    This is a modified version of the input file with some key
    parameters changed to be more appropriate as a benchmark. It is
    designed to run for approximately 11 minutes in 2 phases of 5.5
@@ -125,54 +96,94 @@ An excerpt from this input file that has its key parameters is
 provided below.
 
 .. code-block::
-   :emphasize-lines: 2,7
+   :emphasize-lines: 3,4,11,13,35,42
 
+   # simple test of fcc Cu with ACE product
    <snip>
-   variable        L index 64.0
+   variable        Lprime index 64.0
+   variable        nscale index 1.0
+   variable        pacechunksize index 32768
+   variable        L equal ${Lprime}*(${nscale})^(1/3)
    region          box block 0 ${L} 0 ${L} 0 ${L}
+   create_box      1 box
+   create_atoms    1 box
    <snip>
-   pair_style      pace product chunksize 49152
+   thermo_modify   flush yes
    <snip>
-   thermo          10
-   thermo_style    custom step cpu temp epair etotal press v_delenergy v_delpress
+   thermo          100
    <snip>
    ##################################
    ### Benchmarking modifications ###
    ##################################
-   
+
    # Add a thermostat to keep temperature from falling
-   variable        tdamp equal $(dt)
-   fix             mynvt all nvt temp 300.0 300.0 ${tdamp}
-   
-   # Some systems buffer extensively
-   thermo_modify   flush yes
-   
+
+   velocity        all create 300 8728 loop geom
+   fix             thermostat all temp/rescale 10 300.0 300.0 0.1 1.0
+   fix             integrate all nve
+
    # Print out the value of L for parsing ease
-   print "The value of L is $L" 
-   
+   print           "The value of L is $L" 
+   print           " Weak scaling factor (nscale) = ${nscale}"
+   print           " Baseline L (Lprime) = ${Lprime}"
+   print           " Simulation cell length (L) = ${L}"
+   print           " PACE Chunk Size (pacechunksize) = ${pacechunksize}"
+
    ### Throw out first 5 minutes for hardware equilibrium
-   
+
    # Stop after 5.5 minutes
    fix             2 all halt 10 tlimit > 330.0 message no error continue
    run             10000000
-   
+
    ### Run another 5 minutes for final FOM
    unfix           2
-   
+
    # Stop after 5.5 minutes
    fix             3 all halt 10 tlimit > 330.0 message no
    run             10000000
 
 These parameters are described below.
 
-``L``
+``Lprime``
    This corresponds to the **l**\ ength scale factor. This will scale
-   the dimensions of the problem.
+   the dimensions of the problem, i.e., increase the memory needed for
+   the problem.
+
+``nscale``
+   This parameters facilitates weak scaling the problem, i.e., it
+   increases the problem size based on the number of nodes. Set it to
+   the number of nodes for weak scaling.
+
+``thermo_modify flush yes``
+   This enables the log output to buffer continuously. It does a flush
+   on the buffer.
 
 ``thermo``
    Compute and print thermodynamic info (e.g., temperature, energy,
    pressure) on timesteps that are a multiple of this parameter and at
-   the beginning and end of a simulation.
+   the beginning and end of a simulation. In general, this produces
+   file I/O that is useful for debugging. It also causes
+   introspection. Ergo, this overhead can slow down the
+   simulation. This value must be greater than zero and less than or
+   equal to the default setting.
+
+``fix 2 all halt 10 tlimit > 330.0 message no error continue``
+   Run for 330 seconds (5.5 minutes), save state, and stop the
+   simulation. This first period is meant to be discarded from a
+   performance perspective.
+
+``fix 3 all halt 10 tlimit > 330.0 message no``
+   Restart and run for 330 seconds (5.5 minutes), save state, and stop
+   the simulation. This is the period that is assessed from a
+   performance perspective (from which the FOM is calculated).
+
+.. note::
+
+   First, one scales the problem size on a single node to match the
+   needed memory characteristics via ``Lprime``. Then, one weak scales
+   from a single node to an arbitrary number by changing
+   ``nscale``. Both of these parameters are defined via ``index``, so
+   they can be altered on the command line invocation of LAMMPS.
 
 This problem exhibits different runtime characteristics whether or not
 Kokkos is enabled. Specifically, there is some work that is performed
@@ -180,7 +191,6 @@ within Kokkos that helps to keep this problem as well behaved from a
 throughput perspective as possible. Ergo, Kokkos must be enabled for
 the simulations regardless of the hardware being used (the cases
 herein have configurations that enable it for reference).
-
 
 Figure of Merit
 ---------------
@@ -190,23 +200,21 @@ end of this simulation is a block that resembles the following
 example.
 
 .. code-block::
-   :emphasize-lines: 11
+   :emphasize-lines: 8
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
-    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
-    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
-   <snip>
-   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
-   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
-   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
-   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+   Per MPI rank memory allocation (min/avg/max) = 8304 | 8305 | 8305 Mbytes
+   Step          CPU           S/CPU           Temp          E_pair         TotEng         Press       v_delenergy     v_delpress
+   200           0             0               300           -3804588.4     -3763926.7     73487.854   1.44355e-08     4.6566129e-10
+   300           27.847235     3.5910204       300           -3834711.6     -3794049.9     61360.94    -4.1909516e-09  -2.4738256e-10
+   400           55.516002     3.6141835       300           -3840621.4     -3799959.7     59468.504   -8.8475645e-09  -2.1827873e-10
+   Loop time of 55.5257 on 4 procs for 200 steps with 1048576 atoms
 
-   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
-   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+   Performance: 0.156 ns/day, 154.238 hours/ns, 3.602 timesteps/s, 3.777 Matom-step/s
 
-The quantity of interest (QOI) is "Mega atom steps per second," which
-is directly computed as ``Matom-step/s`` in the example above.
+The **F**\ igure **O**\ f **M**\ erit is "Mega atom steps per second,"
+which is directly computed as ``Matom-step/s`` in the example
+above. This output is scaled with other prefixes (e.g., Giga) as scale
+increases.
 
 It is desired to capture the FOM for varying problem sizes that
 encompass utilizing 50% to 80% of available memory (when all PEs are
@@ -214,29 +222,180 @@ utilized). The ultimate goal is to maximize this throughput FOM while
 utilizing at least 50% of available memory.
 
 
+Source code modifications
+==========================
+
+Please see :ref:`GlobalRunRules` for general guidance on allowed
+modifications. For LAMMPS ACE, source code modifications should
+satisfy the correctness criteria in :ref:`LAMMPSCorrectness` when
+changes are made to LAMMPS.
+
+
+System Information
+==================
+
+The platforms utilized for benchmarking activities are listed and
+described below.
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`ElCapitanSystemDescription`)
+
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`HopsSystemDescription`)
+
+
+Building
+========
+
+.. _LAMMPSApplicationVersion:
+
+Application Version
+-------------------
+
+The command to clone is provided below.
+
+.. literalinclude:: lammps_clone.sh
+   :language: sh
+   :lines: 2-
+
+The script to clone can be downloaded from :download:`lammps_clone.sh
+<lammps_clone.sh>`. It can also be executed in place to clone into
+``docs/32_lammpsACE/lammps``.
+
+.. code-block:: bash
+
+   cd docs/32_lammpsACE
+   ./lammps_clone.sh
+
+
+A script (``lammps_clone.sh``) is provided to clone the LAMMPS
+repository within the "lammps" folder. Instructions are provided on
+how to build LAMMPS for the following systems:
+
+* Generic (see :ref:`BuildLammpsGeneric`)
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
+  :ref:`BuildLammpsATS4`)
+
+
+.. _BuildLammpsGeneric:
+
+Generic
+-------
+
+Refer to LAMMP's [lammps-build]_ documentation for generic
+instructions.
+
+
+.. _BuildLammpsATS4:
+
+El Capitan
+----------
+
+Instructions for building on El Capitan are provided below. These
+instructions assume this repository has been cloned and that the
+current working directory is at the top level of this repository. 
+
+.. code-block:: bash
+
+   cd docs/32_lammpsACE
+   ./lammps_build_elcapitan.sh
+
+The script discussed above is :download:`lammps_build_elcapitan.sh
+<lammps_build_elcapitan.sh>` and is produced below for convenience and
+reference.
+
+.. literalinclude:: lammps_build_elcapitan.sh
+   :language: bash
+
+
+Running
+=======
+
+Instructions are provided on how to run LAMMPS for the following
+systems:
+
+* Advanced Technology System 4 (ATS-4), also known as El Capitan (see :ref:`LAMMPSRunATS4`)
+  * Profiling with Kokkos Tools on El Capitan (see :ref:`LAMMPSProfileKokkosTools`)
+
+
+.. _LAMMPSRunATS4:
+
+El Capitan
+----------
+
+.. note::
+
+   This section will be updated with some more content soon.
+
+An example for performing simulations on El Capitan is
+provided below.
+
+.. code-block:: bash
+
+   # first, copy templatedir into something useful
+   cp -a templatedir useful
+
+   # next, go into the run folder
+   cd useful
+
+   # submit job and set parameters on command line if desired
+   #   this example sets L (aka lammps_len) to 64
+   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
+   #   this example runs on 1 node (aka --nodes=1)
+   lammps_len=64 is_kokkos_tools=1 flux batch --nodes=1 lammps_batch_elcapitan.sh
+
+
+.. _LAMMPSProfileKokkosTools:
+
+Profiling with Kokkos Tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scripts are provided to clone and build Kokkos Tools. The steps to do
+both are provided below.
+
+.. code-block:: bash
+
+   # go into the LAMMPS documentation folder
+   cd docs/32_lammpsACE
+
+   # clone Kokkos Tools
+   ./kokkos_tools_clone.sh
+
+   # build Kokkos Tools' Space Time
+   ./kokkos_tools_build_elcapitan.sh
+
+Once built, the command line variable ``is_kokkos_tools`` can be set
+to ``1`` for the batch script to turn it on. After a successful run,
+it will output additional memory information. An example of this (for
+``L`` equal to 64) on El Capitan is provided below that shows
+approximately 99.6 GB of memory allocated on each GPU.
+
+.. code-block::
+
+   KOKKOS HIP SPACE:
+   ===================
+   MAX MEMORY ALLOCATED: 99615719.6 kB
+
+
 .. _LAMMPSCorrectness:
 
-Correctness
------------
+Validation
+==========
 
 The aforementioned relevant block of output within "log.lammps" is
 replicated below.
 
 .. code-block::
-   :emphasize-lines: 2,3,4,6,7,8
+   :emphasize-lines: 3,4,5
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
-    640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
-    650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
-   <snip>
-   1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
-   1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
-   1280   333.79045   300.1357    -3834154.7   -3793474.6   62856.262   -1.1641532e-08    1.6734703e-10
-   Loop time of 333.812 on 4 procs for 640 steps with 1048576 atoms
+   Per MPI rank memory allocation (min/avg/max) = 8304 | 8305 | 8305 Mbytes
+   Step          CPU           S/CPU           Temp          E_pair         TotEng         Press       v_delenergy     v_delpress
+   200           0             0               300           -3804588.4     -3763926.7     73487.854   1.44355e-08     4.6566129e-10
+   300           27.847235     3.5910204       300           -3834711.6     -3794049.9     61360.94    -4.1909516e-09  -2.4738256e-10
+   400           55.516002     3.6141835       300           -3840621.4     -3799959.7     59468.504   -8.8475645e-09  -2.1827873e-10
+   Loop time of 55.5257 on 4 procs for 200 steps with 1048576 atoms
 
-   Performance: 0.083 ns/day, 289.767 hours/ns, 1.917 timesteps/s, 2.010 Matom-step/s
-   45.1% CPU use with 4 MPI tasks x 1 OpenMP threads
+   Performance: 0.156 ns/day, 154.238 hours/ns, 3.602 timesteps/s, 3.777 Matom-step/s
 
 There are several columns of interest regarding correctness; these are
 listed below.
@@ -309,140 +468,41 @@ criteria are:
    \varepsilon _{\texttt{Temp}} &\le 5\% \\
    \varepsilon _{\texttt{Press}} &\le 5\%
 
- 
-Source Code Modifications
-=========================
 
-Please see :ref:`GlobalRunRules` for general guidance on allowed
-modifications.
+Memory Usage
+============
 
+LAMMPS ACE memory usage depends on the selected problem size and on the Kokkos
+backend used for a given system. Memory-usage guidance is currently captured
+through the Kokkos Tools profiling instructions for El Capitan in
+:ref:`LAMMPSProfileKokkosTools`.
 
-System Information
-==================
+.. _LAMMPSMemoryUsageElCapitan:
 
-The platforms utilized for benchmarking activities are listed and
-described below.
-
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`ElCapitanSystemDescription`)
-
-
-Building
-========
-
-A script (``lammps_clone.sh``) is provided to clone the LAMMPS
-repository within the "lammps" folder. Instructions are provided on
-how to build LAMMPS for the following systems:
-
-* Generic (see :ref:`BuildLammpsGeneric`)
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see
-  :ref:`BuildLammpsATS4`)
-
-
-.. _BuildLammpsGeneric:
-
-Generic
--------
-
-Refer to LAMMP's [lammps-build]_ documentation for generic
-instructions.
-
-
-.. _BuildLammpsATS4:
-
-El Capitan
-----------
-
-Instructions for building on El Capitan are provided below. These
-instructions assume this repository has been cloned and that the
-current working directory is at the top level of this repository. 
-
-.. code-block:: bash
-
-   cd docs/32_lammpsACE
-   ./lammps_build_elcapitan.sh
-
-The script discussed above is :download:`lammps_build_elcapitan.sh
-<lammps_build_elcapitan.sh>` and is produced below for convenience and
-reference.
-
-.. literalinclude:: lammps_build_elcapitan.sh
-   :language: bash
-
-
-Running
-=======
-
-Instructions are provided on how to run LAMMPS for the following
-systems:
-
-* Advanced Technology System 4 (ATS-4), also known as El Capitan (see :ref:`LAMMPSRunATS4`)
-* Profiling with Kokkos Tools on El Capitan (see :ref:`LAMMPSProfileKokkosTools`)
-
-
-.. _LAMMPSRunATS4:
-
-El Capitan
-----------
+El Capitan - Single Node Memory and Problem Size
+------------------------------------------------
 
 .. note::
 
-   This section will be updated with some more content soon.
-
-An example for performing simulations on El Capitan is
-provided below.
-
-.. code-block:: bash
-
-   # first, copy templatedir into something useful
-   cp -a templatedir useful
-
-   # next, go into the run folder
-   cd useful
-
-   # submit job and set parameters on command line if desired
-   #   this example sets L (aka lammps_len) to 64
-   #   this example turns on Kokkos Tools profiling (aka kokkos_tools)
-   #   this example runs on 1 node (aka --nodes=1)
-   lammps_len=64 is_kokkos_tools=1 flux batch --nodes=1 lammps_batch_elcapitan.sh
+   This section will be updated with single-node El Capitan data showing how
+   LAMMPS ACE memory usage and performance vary with problem size.
 
 
-.. _LAMMPSProfileKokkosTools:
+.. _LAMMPSMemoryUsageHops:
 
-Profiling with Kokkos Tools
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Hops - Single Node Memory and Problem Size
+------------------------------------------
 
-Scripts are provided to clone and build Kokkos Tools. The steps to do
-both are provided below.
+.. note::
 
-.. code-block:: bash
-
-   # go into the LAMMPS documentation folder
-   cd docs/32_lammpsACE
-
-   # clone Kokkos Tools
-   ./kokkos_tools_clone.sh
-
-   # build Kokkos Tools' Space Time
-   ./kokkos_tools_build_elcapitan.sh
-
-Once built, the command line variable ``is_kokkos_tools`` can be set
-to ``1`` for the batch script to turn it on. After a successful run,
-it will output additional memory information. An example of this (for
-``L`` equal to 64) on El Capitan is provided below that shows
-approximately 99.6 GB of memory allocated on each GPU.
-
-.. code-block::
-
-   KOKKOS HIP SPACE:
-   ===================
-   MAX MEMORY ALLOCATED: 99615719.6 kB
+   This section will be updated with single-node Hops data showing how LAMMPS
+   ACE memory usage and performance vary with problem size.
 
 
 .. _LAMMPSResults:
 
-Verification of Results
-=======================
+Baseline on El Capitan
+======================
 
 Additional information:
 
@@ -453,11 +513,15 @@ Single-node results from LAMMPS are provided on the following systems:
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsATS4`)
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`ResultsLammpsHops`)
 
 Multi-node results for LAMMPS are provided on the following system(s):
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ResultsLammpsScaleATS4`)
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`ResultsLammpsScaleHops`)
 
 
 .. _LAMMPSComputeFOM:
@@ -472,10 +536,10 @@ phase. The relevant excerpt from the "log.lammps" output is below.
 .. code-block::
    :emphasize-lines: 11
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
+   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress
     640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
     650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
+    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11
    <snip>
    1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
    1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
@@ -495,7 +559,8 @@ El Capitan - Single Node
 
 .. note::
 
-   This section will be updated with some more content soon.
+   Single-node El Capitan results showing memory and problem-size variations are
+   forthcoming. See :ref:`LAMMPSMemoryUsageElCapitan`.
 
 A single-node example is below that showcases 2.010 Mega atom
 steps per second per node. The other relevant parameters are displayed
@@ -504,10 +569,10 @@ as part of the output.
 .. code-block::
    :emphasize-lines: 11
 
-   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress  
+   Step         CPU        Temp       E_pair       TotEng       Press      v_delenergy       v_delpress
     640   0           299.7264    -3834241     -3793616.4   62562.774   -3.7252903e-08    4.8748916e-10
     650   5.1882405   300.1416    -3834085.9   -3793405     62656.487    3.7252903e-08    2.2555469e-10
-    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11 
+    660   10.389581   300.04536   -3834003.9   -3793336     62705.836   -1.4901161e-08    2.910383e-11
    <snip>
    1260   323.38353   300.55705   -3834187.5   -3793450.4   62842.117    9.778887e-09     1.5279511e-10
    1270   328.58739   300.25528   -3834141.7   -3793445.4   62861.607    1.0244548e-08   -5.0931703e-10
@@ -523,9 +588,57 @@ as part of the output.
 El Capitan - Many Nodes
 -----------------------
 
+The weak-scaling data are provided in
+:download:`elcapitan-weakscaling.csv <elcapitan-weakscaling.csv>`.
+
+.. csv-table:: LAMMPS ACE weak-scaling results on El Capitan
+   :file: elcapitan-weakscaling.csv
+   :header-rows: 1
+   :widths: 15 30 30 25
+
+.. figure:: elcapitan-weakscaling.png
+   :alt: LAMMPS ACE weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency annotations.
+   :align: center
+   :width: 90%
+
+   LAMMPS ACE weak-scaling Figure of Merit on El Capitan. Point annotations show
+   the corresponding parallel efficiency at each node count.
+
+
+Supplemental Results on Hops
+============================
+
+LAMMPS ACE performance data on Hops (CTS-2 with NVIDIA H100 GPUs) is provided as
+follows.
+
+.. _ResultsLammpsHops:
+
+Hops - Single Node
+------------------
+
 .. note::
 
-   This section will be updated with some more content soon.
+   Single-node Hops results showing memory and problem-size variations are
+   forthcoming. See :ref:`LAMMPSMemoryUsageHops`.
+
+
+.. _ResultsLammpsScaleHops:
+
+Hops - Many Nodes
+-----------------
+
+.. note::
+
+   Hops weak-scaling trend data are forthcoming.
+
+
+Performance Projection
+======================
+
+Use the system-specific memory guidance and baseline results above to select
+LAMMPS ACE problem sizes that use the available node memory while completing the
+benchmark run successfully. The El Capitan results can be used to project ATS-4
+scalable-unit performance.
 
 
 References

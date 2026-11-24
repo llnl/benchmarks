@@ -13,10 +13,11 @@
 # e.g., to turn on Kokkos Tools Space Time:          is_kokkos_tools=1 flux batch lammps_batch.sh
 
 # define runtime params
-lammps_len=${lammps_len:-1}
+lammps_lprime=${lammps_lprime:-64.0}
+lammps_nscale=${lammps_nscale:-1.0}
 is_kokkos_tools=${is_kokkos_tools:-0}
 flux_job_nodes=${flux_job_nodes:-`flux resource list -s up -no {nnodes}`}
-echo "lammps_len=${lammps_len}"
+echo "lammps_lprime=${lammps_lprime}"
 echo "is_kokkos_tools=${is_kokkos_tools}"
 echo "flux_job_nodes=${flux_job_nodes}"
 
@@ -41,5 +42,6 @@ flux run \
      -o mpibind=on,smt:1,verbose:0 \
      "${dir_base}/lammps/_build/lmp" \
          -sf kk -k on g 1 -pk kokkos neigh half newton on \
-         -in in.pace.product \
-         -var L ${lammps_len}
+         -in in.pace.fcr \
+         -var Lprime ${lammps_lprime} \
+         -var nscale ${lammps_nscale}
