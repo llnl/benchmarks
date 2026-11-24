@@ -265,8 +265,8 @@ described below.
 
 * Advanced Technology System 4 (ATS-4), also known as El Capitan (see
   :ref:`ElCapitanSystemDescription`)
-* Commodity Technology System 2 (CTS-2) with 4x Nvidia H100 GPUs, also
-  known as Hops.
+* Commodity Technology System 2 (CTS-2) GPU system Hops (see
+  :ref:`HopsSystemDescription`)
 
 
 Building
