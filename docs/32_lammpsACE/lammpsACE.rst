@@ -561,9 +561,21 @@ as part of the output.
 El Capitan - Many Nodes
 -----------------------
 
-.. note::
+The weak-scaling data are provided in
+:download:`elcapitan-weakscaling.csv <elcapitan-weakscaling.csv>`.
 
-   This section will be updated with some more content soon.
+.. csv-table:: LAMMPS ACE weak-scaling results on El Capitan
+   :file: elcapitan-weakscaling.csv
+   :header-rows: 1
+   :widths: 15 30 30 25
+
+.. figure:: elcapitan-weakscaling.png
+   :alt: LAMMPS ACE weak-scaling FOM on El Capitan from 1 to 4096 nodes, with parallel efficiency annotations.
+   :align: center
+   :width: 90%
+
+   LAMMPS ACE weak-scaling Figure of Merit on El Capitan. Point annotations show
+   the corresponding parallel efficiency at each node count.
 
 
 Performance Projection
