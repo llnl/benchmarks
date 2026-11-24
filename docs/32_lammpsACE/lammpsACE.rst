@@ -4,10 +4,6 @@ LAMMPS ACE
 
 .. note:: For any questions about ATS-6 ModSim benchmarks, please contact ATS6-ModSim-benchmarks <ats6-modsim-benchmarks@llnl.gov>.
 
-.. note::
-   The documentation herein needs to be updated for current
-   performance.
-
 This is the documentation for the benchmark [LAMMPS]_, specifically
 KOKKOS-LAMMPS (see [KOKKOS-LAMMPS]_). The content herein was created
 by the following authors (in alphabetical order).
